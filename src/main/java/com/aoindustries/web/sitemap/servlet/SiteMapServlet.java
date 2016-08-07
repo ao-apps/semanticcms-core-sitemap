@@ -40,7 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Creates a sitemap of one per-book.
+ * Creates a sitemap of one book.
  *
  * @see  SiteMapInitializer  The url-patterns are dynamically registered to have a sitemap.xml in each book.
  */
