@@ -10,5 +10,5 @@ For questions or support, please contact:
     Phone: (251)607-9556
 
 The latest released version is always available:
-    Binary-only: https://www.aoindustries.com/lib/ao-web-sitemap-servlet.jar
-    With Source: https://www.aoindustries.com/src/ao-web-sitemap-servlet.src.jar
+    Binary-only: https://www.aoindustries.com/lib/semanticcms-sitemap-servlet.jar
+    With Source: https://www.aoindustries.com/src/semanticcms-sitemap-servlet.src.jar
