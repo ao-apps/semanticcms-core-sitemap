@@ -24,11 +24,11 @@ package com.aoindustries.web.sitemap.servlet;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.http.ServletUtil;
-import com.aoindustries.web.page.servlet.BooksContextListener;
-import com.aoindustries.web.page.servlet.CaptureLevel;
-import com.aoindustries.web.page.servlet.CapturePage;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
+import com.semanticcms.core.servlet.BooksContextListener;
+import com.semanticcms.core.servlet.CaptureLevel;
+import com.semanticcms.core.servlet.CapturePage;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;

@@ -24,8 +24,8 @@ package com.aoindustries.web.sitemap.servlet;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.http.ServletUtil;
-import com.aoindustries.web.page.servlet.BooksContextListener;
 import com.semanticcms.core.model.Book;
+import com.semanticcms.core.servlet.BooksContextListener;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
