@@ -22,8 +22,8 @@
  */
 package com.aoindustries.web.sitemap.servlet;
 
-import com.aoindustries.web.page.Book;
 import com.aoindustries.web.page.servlet.BooksContextListener;
+import com.semanticcms.core.model.Book;
 import java.io.IOException;
 import java.util.Set;
 import javax.servlet.ServletContainerInitializer;

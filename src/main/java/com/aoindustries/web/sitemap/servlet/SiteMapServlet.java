@@ -24,11 +24,11 @@ package com.aoindustries.web.sitemap.servlet;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.http.ServletUtil;
-import com.aoindustries.web.page.Book;
-import com.aoindustries.web.page.PageRef;
 import com.aoindustries.web.page.servlet.BooksContextListener;
 import com.aoindustries.web.page.servlet.CaptureLevel;
 import com.aoindustries.web.page.servlet.CapturePage;
+import com.semanticcms.core.model.Book;
+import com.semanticcms.core.model.PageRef;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -113,7 +113,7 @@ public class SiteMapServlet extends HttpServlet {
 		out.println("</loc>");
 		out.println("    </url>");
 		// Capture the page to find the children
-		com.aoindustries.web.page.Page page = CapturePage.capturePage(
+		com.semanticcms.core.model.Page page = CapturePage.capturePage(
 			servletContext,
 			req,
 			resp,
