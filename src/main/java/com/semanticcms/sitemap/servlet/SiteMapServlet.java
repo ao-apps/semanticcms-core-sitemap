@@ -26,9 +26,9 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
-import com.semanticcms.core.servlet.BooksContextListener;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CapturePage;
+import com.semanticcms.core.servlet.SemanticCMS;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashSet;
@@ -66,7 +66,7 @@ public class SiteMapServlet extends HttpServlet {
 		}
 		String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
 		if(bookName.isEmpty()) bookName = "/";
-		Book book = BooksContextListener.getBooks(servletContext).get(bookName);
+		Book book = SemanticCMS.getInstance(servletContext).getBooks().get(bookName);
 		if(book == null) {
 			// Book not found
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);

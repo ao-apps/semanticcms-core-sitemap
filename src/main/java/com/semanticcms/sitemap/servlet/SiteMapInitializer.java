@@ -23,7 +23,7 @@
 package com.semanticcms.sitemap.servlet;
 
 import com.semanticcms.core.model.Book;
-import com.semanticcms.core.servlet.BooksContextListener;
+import com.semanticcms.core.servlet.SemanticCMS;
 import java.io.IOException;
 import java.util.Set;
 import javax.servlet.ServletContainerInitializer;
@@ -40,16 +40,12 @@ public class SiteMapInitializer implements ServletContainerInitializer {
 
 	@Override
 	public void onStartup(Set<Class<?>> set, ServletContext servletContext) throws ServletException {
-		try {
-			ServletRegistration.Dynamic registration = servletContext.addServlet(
-				SiteMapServlet.class.getName(),
-				SiteMapServlet.class
-			);
-			for(Book book : BooksContextListener.loadBooks(servletContext).getBooks().values()) {
-				registration.addMapping(book.getPathPrefix() + SiteMapServlet.SERVLET_PATH);
-			}
-		} catch(IOException e) {
-			throw new ServletException(e);
+		ServletRegistration.Dynamic registration = servletContext.addServlet(
+			SiteMapServlet.class.getName(),
+			SiteMapServlet.class
+		);
+		for(Book book : SemanticCMS.getInstance(servletContext).getBooks().values()) {
+			registration.addMapping(book.getPathPrefix() + SiteMapServlet.SERVLET_PATH);
 		}
 	}
 }

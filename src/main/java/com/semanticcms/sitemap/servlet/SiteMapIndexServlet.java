@@ -25,7 +25,7 @@ package com.semanticcms.sitemap.servlet;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.semanticcms.core.model.Book;
-import com.semanticcms.core.servlet.BooksContextListener;
+import com.semanticcms.core.servlet.SemanticCMS;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -56,7 +56,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 		PrintWriter out = resp.getWriter();
 		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
 		out.println("<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
-		for(Book book : BooksContextListener.getBooks(getServletContext()).values()) {
+		for(Book book : SemanticCMS.getInstance(getServletContext()).getBooks().values()) {
 			out.println("    <sitemap>");
 			out.print("        <loc>");
 			ServletUtil.getAbsoluteURL(
