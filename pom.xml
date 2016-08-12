@@ -213,7 +213,7 @@ along with semanticcms-sitemap-servlet.  If not, see <http://www.gnu.org/license
 		<dependency>
 			<groupId>com.aoindustries</groupId>
 			<artifactId>aocode-public</artifactId>
-			<version>1.3</version>
+			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.semanticcms</groupId>
