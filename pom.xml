@@ -39,15 +39,6 @@ along with semanticcms-sitemap-servlet.  If not, see <http://www.gnu.org/license
 	<url>https://semanticcms.com/docs/semanticcms-sitemap-servlet/</url>
 	<description>Automatic sitemaps for web page content in a Servlet environment.</description>
 
-	<developers>
-		<developer>
-			<name>AO Industries, Inc.</name>
-			<email>support@aoindustries.com</email>
-			<organization>AO Industries, Inc.</organization>
-			<organizationUrl>https://www.aoindustries.com/</organizationUrl>
-		</developer>
-	</developers>
-
 	<scm>
 		<connection>scm:git:git://github.com/aoindustries/semanticcms-sitemap-servlet.git</connection>
 		<developerConnection>scm:git:git@github.com:aoindustries/semanticcms-sitemap-servlet.git</developerConnection>
