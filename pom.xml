@@ -27,7 +27,7 @@ along with semanticcms-sitemap-servlet.  If not, see <http://www.gnu.org/license
 	<parent>
 		<groupId>com.semanticcms</groupId>
 		<artifactId>semanticcms</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 
 	<groupId>com.semanticcms</groupId>
