@@ -28,6 +28,12 @@ along with semanticcms-sitemap-servlet.  If not, see <http://www.gnu.org/license
 		<maven>3.0.4</maven>
 	</prerequisites>
 
+	<parent>
+		<groupId>com.semanticcms</groupId>
+		<artifactId>semanticcms</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
+
 	<groupId>com.semanticcms</groupId>
 	<artifactId>semanticcms-sitemap-servlet</artifactId>
 	<version>1.4-SNAPSHOT</version>
