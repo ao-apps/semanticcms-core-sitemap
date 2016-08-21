@@ -39,13 +39,6 @@ along with semanticcms-sitemap-servlet.  If not, see <http://www.gnu.org/license
 	<url>https://semanticcms.com/docs/semanticcms-sitemap-servlet/</url>
 	<description>Automatic sitemaps for web page content in a Servlet environment.</description>
 
-	<licenses>
-		<license>
-			<name>GNU General Lesser Public License (LGPL) version 3.0</name>
-			<url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
-		</license>
-	</licenses>
-
 	<developers>
 		<developer>
 			<name>AO Industries, Inc.</name>
