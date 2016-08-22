@@ -24,7 +24,6 @@ package com.semanticcms.sitemap.servlet;
 
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.servlet.SemanticCMS;
-import java.io.IOException;
 import java.util.Set;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
