@@ -32,7 +32,7 @@ along with semanticcms-sitemap-servlet.  If not, see <http://www.gnu.org/license
 
 	<groupId>com.semanticcms</groupId>
 	<artifactId>semanticcms-sitemap-servlet</artifactId>
-	<version>1.6-SNAPSHOT</version>
+	<version>1.6</version>
 	<packaging>jar</packaging>
 
 	<name>SemanticCMS Sitemap Servlet</name>
@@ -43,7 +43,7 @@ along with semanticcms-sitemap-servlet.  If not, see <http://www.gnu.org/license
 		<connection>scm:git:git://github.com/aoindustries/semanticcms-sitemap-servlet.git</connection>
 		<developerConnection>scm:git:git@github.com:aoindustries/semanticcms-sitemap-servlet.git</developerConnection>
 		<url>http://github.com/aoindustries/semanticcms-sitemap-servlet</url>
-		<tag>HEAD</tag>
+		<tag>semanticcms-sitemap-servlet-1.6</tag>
 	</scm>
 
 	<dependencies>
