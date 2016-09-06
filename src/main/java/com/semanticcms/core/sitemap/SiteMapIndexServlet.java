@@ -1,26 +1,26 @@
 /*
- * semanticcms-sitemap-servlet - Automatic sitemaps for web page content in a Servlet environment.
+ * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
  * Copyright (C) 2016  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
  *
- * This file is part of semanticcms-sitemap-servlet.
+ * This file is part of semanticcms-core-sitemap.
  *
- * semanticcms-sitemap-servlet is free software: you can redistribute it and/or modify
+ * semanticcms-core-sitemap is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * semanticcms-sitemap-servlet is distributed in the hope that it will be useful,
+ * semanticcms-core-sitemap is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with semanticcms-sitemap-servlet.  If not, see <http://www.gnu.org/licenses/>.
+ * along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.semanticcms.sitemap.servlet;
+package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.http.ServletUtil;
@@ -36,20 +36,20 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Creates a sitemap of one book.
- *
- * @see  SiteMapInitializer  The url-patterns are dynamically registered to have a sitemap.xml in each book.
+ * Creates a site map index of all per-book sitemaps.
  */
-public class SiteMapServlet extends HttpServlet {
+@WebServlet(SiteMapIndexServlet.SERVLET_PATH)
+public class SiteMapIndexServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String SERVLET_PATH = "/sitemap.xml";
+	public static final String SERVLET_PATH = "/sitemap-index.xml";
 
 	private static final String CONTENT_TYPE = "application/xml";
 
@@ -57,48 +57,48 @@ public class SiteMapServlet extends HttpServlet {
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		ServletContext servletContext = getServletContext();
-		// Find the book for this request
-		String servletPath = req.getServletPath();
-		if(!servletPath.endsWith(SERVLET_PATH)) {
-			// Incorrect mapping, treat as not found
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
-		String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
-		if(bookName.isEmpty()) bookName = "/";
-		Book book = SemanticCMS.getInstance(servletContext).getBooks().get(bookName);
-		if(book == null) {
-			// Book not found
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
 		resp.reset();
 		resp.setContentType(CONTENT_TYPE);
 		resp.setCharacterEncoding(ENCODING);
 		PrintWriter out = resp.getWriter();
 		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
-		out.println("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
-		printUrls(
-			servletContext,
-			req,
-			resp,
-			book,
-			book.getContentRoot(),
-			new HashSet<PageRef>(),
-			out
-		);
-		out.println("</urlset>");
+		out.println("<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
+		for(Book book : SemanticCMS.getInstance(getServletContext()).getBooks().values()) {
+			if(
+				hasSiteMapUrl(
+					getServletContext(),
+					req,
+					resp,
+					book,
+					book.getContentRoot(),
+					new HashSet<PageRef>()
+				)
+			) {
+				out.println("    <sitemap>");
+				out.print("        <loc>");
+				ServletUtil.getAbsoluteURL(
+					req,
+					resp.encodeURL(book.getPathPrefix() + SiteMapServlet.SERVLET_PATH),
+					textInXhtmlEncoder,
+					out
+				);
+				out.println("</loc>");
+				out.println("    </sitemap>");
+			}
+		}
+		out.println("</sitemapindex>");
 	}
 
-	private static void printUrls(
+	/**
+	 * Checks if the sitemap has at least one page.
+	 */
+	private static boolean hasSiteMapUrl(
 		ServletContext servletContext,
 		HttpServletRequest req,
 		HttpServletResponse resp,
 		Book book,
 		PageRef pageRef,
-		Set<PageRef> visited,
-		PrintWriter out
+		Set<PageRef> visited
 	) throws ServletException, IOException {
 		assert pageRef.getBook().equals(book);
 		assert !visited.contains(pageRef);
@@ -111,33 +111,25 @@ public class SiteMapServlet extends HttpServlet {
 			CaptureLevel.PAGE
 		);
 		if(PageUtils.findAllowRobots(servletContext, req, resp, page)) {
-			out.println("    <url>");
-			out.print("        <loc>");
-			ServletUtil.getAbsoluteURL(
-				req,
-				resp.encodeURL(pageRef.getServletPath()),
-				textInXhtmlEncoder,
-				out
-			);
-			out.println("</loc>");
-			out.println("    </url>");
+			return true;
 		}
-		// Add all child pages that are in the same book
+		// Check all child pages that are in the same book
 		for(PageRef childRef : page.getChildPages()) {
 			if(
 				book.equals(childRef.getBook())
 				&& !visited.contains(childRef)
-			) {
-				printUrls(
+				&& hasSiteMapUrl(
 					servletContext,
 					req,
 					resp,
 					book,
 					childRef,
-					visited,
-					out
-				);
+					visited
+				)
+			) {
+				return true;
 			}
 		}
+		return false;
 	}
 }

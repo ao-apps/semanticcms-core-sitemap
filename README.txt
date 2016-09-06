@@ -1,4 +1,4 @@
-Automatic sitemaps for web page content in a Servlet environment.
+Automatic sitemaps for SemanticCMS.
 
 For questions or support, please contact:
 
@@ -10,5 +10,5 @@ For questions or support, please contact:
     Phone: (251)607-9556
 
 The latest released version is always available:
-    Binary-only: https://www.aoindustries.com/lib/semanticcms-sitemap-servlet.jar
-    With Source: https://www.aoindustries.com/src/semanticcms-sitemap-servlet.src.jar
+    Binary-only: https://www.aoindustries.com/lib/semanticcms-core-sitemap.jar
+    With Source: https://www.aoindustries.com/src/semanticcms-core-sitemap.src.jar
