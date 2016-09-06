@@ -25,9 +25,16 @@ package com.semanticcms.sitemap.servlet;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.semanticcms.core.model.Book;
+import com.semanticcms.core.model.PageRef;
+import com.semanticcms.core.servlet.CaptureLevel;
+import com.semanticcms.core.servlet.CapturePage;
+import com.semanticcms.core.servlet.PageUtils;
 import com.semanticcms.core.servlet.SemanticCMS;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashSet;
+import java.util.Set;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -57,17 +64,72 @@ public class SiteMapIndexServlet extends HttpServlet {
 		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
 		out.println("<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
 		for(Book book : SemanticCMS.getInstance(getServletContext()).getBooks().values()) {
-			out.println("    <sitemap>");
-			out.print("        <loc>");
-			ServletUtil.getAbsoluteURL(
-				req,
-				resp.encodeURL(book.getPathPrefix() + SiteMapServlet.SERVLET_PATH),
-				textInXhtmlEncoder,
-				out
-			);
-			out.println("</loc>");
-			out.println("    </sitemap>");
+			if(
+				hasSiteMapUrl(
+					getServletContext(),
+					req,
+					resp,
+					book,
+					book.getContentRoot(),
+					new HashSet<PageRef>()
+				)
+			) {
+				out.println("    <sitemap>");
+				out.print("        <loc>");
+				ServletUtil.getAbsoluteURL(
+					req,
+					resp.encodeURL(book.getPathPrefix() + SiteMapServlet.SERVLET_PATH),
+					textInXhtmlEncoder,
+					out
+				);
+				out.println("</loc>");
+				out.println("    </sitemap>");
+			}
 		}
 		out.println("</sitemapindex>");
+	}
+
+	/**
+	 * Checks if the sitemap has at least one page.
+	 */
+	private static boolean hasSiteMapUrl(
+		ServletContext servletContext,
+		HttpServletRequest req,
+		HttpServletResponse resp,
+		Book book,
+		PageRef pageRef,
+		Set<PageRef> visited
+	) throws ServletException, IOException {
+		assert pageRef.getBook().equals(book);
+		assert !visited.contains(pageRef);
+		visited.add(pageRef);
+		com.semanticcms.core.model.Page page = CapturePage.capturePage(
+			servletContext,
+			req,
+			resp,
+			pageRef,
+			CaptureLevel.PAGE
+		);
+		if(PageUtils.findAllowRobots(servletContext, req, resp, page)) {
+			return true;
+		}
+		// Check all child pages that are in the same book
+		for(PageRef childRef : page.getChildPages()) {
+			if(
+				book.equals(childRef.getBook())
+				&& !visited.contains(childRef)
+				&& hasSiteMapUrl(
+					servletContext,
+					req,
+					resp,
+					book,
+					childRef,
+					visited
+				)
+			) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

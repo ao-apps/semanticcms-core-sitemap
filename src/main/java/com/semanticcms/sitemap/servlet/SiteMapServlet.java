@@ -28,6 +28,7 @@ import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CapturePage;
+import com.semanticcms.core.servlet.PageUtils;
 import com.semanticcms.core.servlet.SemanticCMS;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -102,17 +103,6 @@ public class SiteMapServlet extends HttpServlet {
 		assert pageRef.getBook().equals(book);
 		assert !visited.contains(pageRef);
 		visited.add(pageRef);
-		out.println("    <url>");
-		out.print("        <loc>");
-		ServletUtil.getAbsoluteURL(
-			req,
-			resp.encodeURL(pageRef.getServletPath()),
-			textInXhtmlEncoder,
-			out
-		);
-		out.println("</loc>");
-		out.println("    </url>");
-		// Capture the page to find the children
 		com.semanticcms.core.model.Page page = CapturePage.capturePage(
 			servletContext,
 			req,
@@ -120,6 +110,18 @@ public class SiteMapServlet extends HttpServlet {
 			pageRef,
 			CaptureLevel.PAGE
 		);
+		if(PageUtils.findAllowRobots(servletContext, req, resp, page)) {
+			out.println("    <url>");
+			out.print("        <loc>");
+			ServletUtil.getAbsoluteURL(
+				req,
+				resp.encodeURL(pageRef.getServletPath()),
+				textInXhtmlEncoder,
+				out
+			);
+			out.println("</loc>");
+			out.println("    </url>");
+		}
 		// Add all child pages that are in the same book
 		for(PageRef childRef : page.getChildPages()) {
 			if(
