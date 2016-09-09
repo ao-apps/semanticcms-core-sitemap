@@ -28,12 +28,14 @@ import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CapturePage;
-import com.semanticcms.core.servlet.PageUtils;
 import com.semanticcms.core.servlet.SemanticCMS;
+import com.semanticcms.core.servlet.View;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.SortedSet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -67,7 +69,8 @@ public class SiteMapServlet extends HttpServlet {
 		}
 		String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
 		if(bookName.isEmpty()) bookName = "/";
-		Book book = SemanticCMS.getInstance(servletContext).getBooks().get(bookName);
+		SemanticCMS semanticCMS = SemanticCMS.getInstance(getServletContext());
+		Book book = semanticCMS.getBooks().get(bookName);
 		if(book == null) {
 			// Book not found
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -83,6 +86,7 @@ public class SiteMapServlet extends HttpServlet {
 			servletContext,
 			req,
 			resp,
+			semanticCMS.getViews(),
 			book,
 			book.getContentRoot(),
 			new HashSet<PageRef>(),
@@ -95,6 +99,7 @@ public class SiteMapServlet extends HttpServlet {
 		ServletContext servletContext,
 		HttpServletRequest req,
 		HttpServletResponse resp,
+		SortedSet<View> views,
 		Book book,
 		PageRef pageRef,
 		Set<PageRef> visited,
@@ -110,17 +115,26 @@ public class SiteMapServlet extends HttpServlet {
 			pageRef,
 			CaptureLevel.PAGE
 		);
-		if(PageUtils.findAllowRobots(servletContext, req, resp, page)) {
-			out.println("    <url>");
-			out.print("        <loc>");
-			ServletUtil.getAbsoluteURL(
-				req,
-				resp.encodeURL(pageRef.getServletPath()),
-				textInXhtmlEncoder,
-				out
-			);
-			out.println("</loc>");
-			out.println("    </url>");
+		for(View view : views) {
+			if(
+				view.getAllowRobots(servletContext, req, resp, page)
+				&& view.isApplicable(servletContext, req, resp, page)
+			) {
+				out.println("    <url>");
+				out.print("        <loc>");
+				String servletPath = pageRef.getServletPath();
+				if(!view.isDefault()) {
+					servletPath += "?view=" + URLEncoder.encode(view.getName(), resp.getCharacterEncoding());
+				}
+				ServletUtil.getAbsoluteURL(
+					req,
+					resp.encodeURL(servletPath),
+					textInXhtmlEncoder,
+					out
+				);
+				out.println("</loc>");
+				out.println("    </url>");
+			}
 		}
 		// Add all child pages that are in the same book
 		for(PageRef childRef : page.getChildPages()) {
@@ -132,6 +146,7 @@ public class SiteMapServlet extends HttpServlet {
 					servletContext,
 					req,
 					resp,
+					views,
 					book,
 					childRef,
 					visited,
