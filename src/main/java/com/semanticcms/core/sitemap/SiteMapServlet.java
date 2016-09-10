@@ -113,7 +113,7 @@ public class SiteMapServlet extends HttpServlet {
 			req,
 			resp,
 			pageRef,
-			CaptureLevel.PAGE
+			CaptureLevel.META
 		);
 		for(View view : views) {
 			if(
