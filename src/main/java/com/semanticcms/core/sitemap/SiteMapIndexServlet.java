@@ -24,17 +24,28 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.http.ServletUtil;
+import com.aoindustries.util.concurrent.ExecutorService;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CapturePage;
 import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.core.servlet.View;
+import com.semanticcms.core.servlet.util.HttpServletSubRequest;
+import com.semanticcms.core.servlet.util.HttpServletSubResponse;
+import com.semanticcms.core.servlet.util.ThreadSafeHttpServletRequest;
+import com.semanticcms.core.servlet.util.ThreadSafeHttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -56,6 +67,19 @@ public class SiteMapIndexServlet extends HttpServlet {
 
 	private static final String ENCODING = "UTF-8";
 
+	private static void writeSitemap(HttpServletRequest req, HttpServletResponse resp, PrintWriter out, Book book) throws IOException {
+		out.println("    <sitemap>");
+		out.print("        <loc>");
+		ServletUtil.getAbsoluteURL(
+			req,
+			resp.encodeURL(book.getPathPrefix() + SiteMapServlet.SERVLET_PATH),
+			textInXhtmlEncoder,
+			out
+		);
+		out.println("</loc>");
+		out.println("    </sitemap>");
+	}
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.reset();
@@ -65,28 +89,88 @@ public class SiteMapIndexServlet extends HttpServlet {
 		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
 		out.println("<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
 		SemanticCMS semanticCMS = SemanticCMS.getInstance(getServletContext());
-		for(Book book : semanticCMS.getBooks().values()) {
-			if(
-				hasSiteMapUrl(
-					getServletContext(),
-					req,
-					resp,
-					semanticCMS.getViews(),
-					book,
-					book.getContentRoot(),
-					new HashSet<PageRef>()
-				)
-			) {
-				out.println("    <sitemap>");
-				out.print("        <loc>");
-				ServletUtil.getAbsoluteURL(
-					req,
-					resp.encodeURL(book.getPathPrefix() + SiteMapServlet.SERVLET_PATH),
-					textInXhtmlEncoder,
-					out
+		final SortedSet<View> views = semanticCMS.getViews();
+		Collection<Book> books = semanticCMS.getBooks().values();
+		if(
+			semanticCMS.getConcurrentSubrequestsEnabled()
+			&& books.size() > 1
+		) {
+			// Concurrent implementation
+			final HttpServletRequest threadSafeReq = new ThreadSafeHttpServletRequest(req);
+			final HttpServletResponse threadSafeResp = new ThreadSafeHttpServletResponse(resp);
+			ExecutorService executorService = semanticCMS.getExecutorService();
+			Map<Book,Future<Boolean>> futures = new HashMap<Book,Future<Boolean>>(books.size() *4/3+1);
+			for(final Book book : books) {
+				futures.put(book,
+					executorService.submitPerProcessor(new Callable<Boolean>() {
+							@Override
+							public Boolean call() throws ServletException, IOException {
+								return hasSiteMapUrl(getServletContext(),
+									new HttpServletSubRequest(threadSafeReq),
+									new HttpServletSubResponse(threadSafeReq, threadSafeResp),
+									views,
+									book,
+									book.getContentRoot(),
+									new HashSet<PageRef>()
+								);
+							}
+						}
+					)
 				);
-				out.println("</loc>");
-				out.println("    </sitemap>");
+			}
+			/* More direct, but uses req/resp before wrappers finished
+			try {
+				for(final Book book : books) {
+					if(futures.get(book).get()) {
+						writeSitemap(req, resp, out, book);
+					}
+				}
+			} catch(InterruptedException e) {
+				throw new ServletException(e);
+			} catch(ExecutionException e) {
+				Throwable cause = e.getCause();
+				if(cause instanceof ServletException) throw (ServletException)cause;
+				if(cause instanceof IOException) throw (IOException)cause;
+				if(cause instanceof RuntimeException) throw (RuntimeException)cause;
+				throw new ServletException(cause);
+			}
+			 */
+			Map<Book,Boolean> results = new HashMap<Book,Boolean>(books.size() *4/3+1);
+			try {
+				for(final Book book : books) {
+					results.put(book, futures.get(book).get());
+				}
+			} catch(InterruptedException e) {
+				throw new ServletException(e);
+			} catch(ExecutionException e) {
+				Throwable cause = e.getCause();
+				if(cause instanceof ServletException) throw (ServletException)cause;
+				if(cause instanceof IOException) throw (IOException)cause;
+				if(cause instanceof RuntimeException) throw (RuntimeException)cause;
+				throw new ServletException(cause);
+			}
+			for(final Book book : books) {
+				if(results.get(book)) {
+					writeSitemap(req, resp, out, book);
+				}
+			}
+			// TODO: CapturePage needs to put cache on request in a filter, so cache object on request before request split into multiple threads
+			//       And this cache object needs to be thread safe when concurrent subrequests enabled
+		} else {
+			// Sequential implementation
+			for(Book book : books) {
+				if(
+					hasSiteMapUrl(getServletContext(),
+						req, // Testing: new HttpServletSubRequest(req),
+						resp, // Testing: new HttpServletSubResponse(req, resp),
+						views,
+						book,
+						book.getContentRoot(),
+						new HashSet<PageRef>()
+					)
+				) {
+					writeSitemap(req, resp, out, book);
+				}
 			}
 		}
 		out.println("</sitemapindex>");
