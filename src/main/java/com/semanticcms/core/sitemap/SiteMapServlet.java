@@ -25,6 +25,7 @@ package com.semanticcms.core.sitemap;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.semanticcms.core.model.Book;
+import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CapturePage;
@@ -33,8 +34,6 @@ import com.semanticcms.core.servlet.View;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.SortedSet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -58,8 +57,8 @@ public class SiteMapServlet extends HttpServlet {
 	private static final String ENCODING = "UTF-8";
 
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		ServletContext servletContext = getServletContext();
+	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+		final ServletContext servletContext = getServletContext();
 		// Find the book for this request
 		String servletPath = req.getServletPath();
 		if(!servletPath.endsWith(SERVLET_PATH)) {
@@ -70,89 +69,63 @@ public class SiteMapServlet extends HttpServlet {
 		String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
 		if(bookName.isEmpty()) bookName = "/";
 		SemanticCMS semanticCMS = SemanticCMS.getInstance(getServletContext());
-		Book book = semanticCMS.getBooks().get(bookName);
+		final Book book = semanticCMS.getBooks().get(bookName);
 		if(book == null) {
 			// Book not found
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
+		final SortedSet<View> views = semanticCMS.getViews();
 		resp.reset();
 		resp.setContentType(CONTENT_TYPE);
 		resp.setCharacterEncoding(ENCODING);
-		PrintWriter out = resp.getWriter();
+		final PrintWriter out = resp.getWriter();
 		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
 		out.println("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
-		printUrls(
+		CapturePage.traversePagesDepthFirst(
 			servletContext,
 			req,
 			resp,
-			semanticCMS.getViews(),
-			book,
 			book.getContentRoot(),
-			new HashSet<PageRef>(),
-			out
+			CaptureLevel.META,
+			new CapturePage.PageHandler() {
+				@Override
+				public void handlePage(Page page) throws ServletException, IOException {
+					PageRef pageRef = page.getPageRef();
+					assert pageRef.getBook().equals(book);
+					// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
+					for(View view : views) {
+						if(
+							view.getAllowRobots(servletContext, req, resp, page)
+							&& view.isApplicable(servletContext, req, resp, page)
+						) {
+							out.println("    <url>");
+							out.print("        <loc>");
+							String servletPath = pageRef.getServletPath();
+							if(!view.isDefault()) {
+								servletPath += "?view=" + URLEncoder.encode(view.getName(), resp.getCharacterEncoding());
+							}
+							ServletUtil.getAbsoluteURL(
+								req,
+								resp.encodeURL(servletPath),
+								textInXhtmlEncoder,
+								out
+							);
+							out.println("</loc>");
+							out.println("    </url>");
+						}
+					}
+				}
+			},
+			new CapturePage.ChildPageFilter() {
+				@Override
+				public boolean includeChildPage(Page page, PageRef childRef) {
+					// Add all child pages that are in the same book
+					return book.equals(childRef.getBook());
+				}
+			},
+			null
 		);
 		out.println("</urlset>");
-	}
-
-	private static void printUrls(
-		ServletContext servletContext,
-		HttpServletRequest req,
-		HttpServletResponse resp,
-		SortedSet<View> views,
-		Book book,
-		PageRef pageRef,
-		Set<PageRef> visited,
-		PrintWriter out
-	) throws ServletException, IOException {
-		assert pageRef.getBook().equals(book);
-		assert !visited.contains(pageRef);
-		visited.add(pageRef);
-		com.semanticcms.core.model.Page page = CapturePage.capturePage(
-			servletContext,
-			req,
-			resp,
-			pageRef,
-			CaptureLevel.META
-		);
-		for(View view : views) {
-			if(
-				view.getAllowRobots(servletContext, req, resp, page)
-				&& view.isApplicable(servletContext, req, resp, page)
-			) {
-				out.println("    <url>");
-				out.print("        <loc>");
-				String servletPath = pageRef.getServletPath();
-				if(!view.isDefault()) {
-					servletPath += "?view=" + URLEncoder.encode(view.getName(), resp.getCharacterEncoding());
-				}
-				ServletUtil.getAbsoluteURL(
-					req,
-					resp.encodeURL(servletPath),
-					textInXhtmlEncoder,
-					out
-				);
-				out.println("</loc>");
-				out.println("    </url>");
-			}
-		}
-		// Add all child pages that are in the same book
-		for(PageRef childRef : page.getChildPages()) {
-			if(
-				book.equals(childRef.getBook())
-				&& !visited.contains(childRef)
-			) {
-				printUrls(
-					servletContext,
-					req,
-					resp,
-					views,
-					book,
-					childRef,
-					visited,
-					out
-				);
-			}
-		}
 	}
 }
