@@ -24,7 +24,7 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.servlet.http.ServletUtil;
-import com.aoindustries.util.concurrent.ExecutorService;
+import com.aoindustries.util.concurrent.Executors;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
@@ -37,15 +37,16 @@ import com.semanticcms.core.servlet.util.ThreadSafeHttpServletRequest;
 import com.semanticcms.core.servlet.util.ThreadSafeHttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -60,6 +61,12 @@ import javax.servlet.http.HttpServletResponse;
 public class SiteMapIndexServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+
+	private static final Logger logger = Logger.getLogger(SiteMapIndexServlet.class.getName());
+	static {
+		// TODO: Remove for production
+		//logger.setLevel(Level.ALL);
+	}
 
 	public static final String SERVLET_PATH = "/sitemap-index.xml";
 
@@ -91,69 +98,63 @@ public class SiteMapIndexServlet extends HttpServlet {
 		SemanticCMS semanticCMS = SemanticCMS.getInstance(getServletContext());
 		final SortedSet<View> views = semanticCMS.getViews();
 		Collection<Book> books = semanticCMS.getBooks().values();
+		int size = books.size();
 		if(
-			semanticCMS.getConcurrentSubrequestsEnabled()
-			&& books.size() > 1
+			size > 1
+			&& semanticCMS.getConcurrentSubrequests()
 		) {
 			// Concurrent implementation
 			final HttpServletRequest threadSafeReq = new ThreadSafeHttpServletRequest(req);
 			final HttpServletResponse threadSafeResp = new ThreadSafeHttpServletResponse(resp);
-			ExecutorService executorService = semanticCMS.getExecutorService();
-			Map<Book,Future<Boolean>> futures = new HashMap<Book,Future<Boolean>>(books.size() *4/3+1);
+			Executors executors = semanticCMS.getExecutors();
+			List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(size);
 			for(final Book book : books) {
-				futures.put(book,
-					executorService.submitPerProcessor(new Callable<Boolean>() {
-							@Override
-							public Boolean call() throws ServletException, IOException {
-								return hasSiteMapUrl(getServletContext(),
-									new HttpServletSubRequest(threadSafeReq),
-									new HttpServletSubResponse(threadSafeReq, threadSafeResp),
-									views,
-									book,
-									book.getContentRoot(),
-									new HashSet<PageRef>()
-								);
-							}
+				final HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
+				final HttpServletResponse subresponse= new HttpServletSubResponse(threadSafeReq, threadSafeResp);
+				tasks.add(
+					new Callable<Boolean>() {
+						@Override
+						public Boolean call() throws ServletException, IOException {
+							if(logger.isLoggable(Level.FINE)) logger.log(
+								Level.FINE,
+								"called, subrequest={0}, book={1}",
+								new Object[] {
+									subrequest,
+									book
+								}
+							);
+							return hasSiteMapUrl(
+								getServletContext(),
+								subrequest,
+								subresponse,
+								views,
+								book,
+								book.getContentRoot(),
+								new HashSet<PageRef>()
+							);
 						}
-					)
+					}
 				);
 			}
-			/* More direct, but uses req/resp before wrappers finished
+			List<Boolean> results;
 			try {
-				for(final Book book : books) {
-					if(futures.get(book).get()) {
-						writeSitemap(req, resp, out, book);
-					}
-				}
+				results = executors.getPerProcessor().callAll(tasks);
 			} catch(InterruptedException e) {
 				throw new ServletException(e);
 			} catch(ExecutionException e) {
 				Throwable cause = e.getCause();
+				if(cause instanceof RuntimeException) throw (RuntimeException)cause;
 				if(cause instanceof ServletException) throw (ServletException)cause;
 				if(cause instanceof IOException) throw (IOException)cause;
-				if(cause instanceof RuntimeException) throw (RuntimeException)cause;
 				throw new ServletException(cause);
 			}
-			 */
-			Map<Book,Boolean> results = new HashMap<Book,Boolean>(books.size() *4/3+1);
-			try {
-				for(final Book book : books) {
-					results.put(book, futures.get(book).get());
-				}
-			} catch(InterruptedException e) {
-				throw new ServletException(e);
-			} catch(ExecutionException e) {
-				Throwable cause = e.getCause();
-				if(cause instanceof ServletException) throw (ServletException)cause;
-				if(cause instanceof IOException) throw (IOException)cause;
-				if(cause instanceof RuntimeException) throw (RuntimeException)cause;
-				throw new ServletException(cause);
-			}
+			int i = 0;
 			for(final Book book : books) {
-				if(results.get(book)) {
+				if(results.get(i++)) {
 					writeSitemap(req, resp, out, book);
 				}
 			}
+			assert i == size;
 			// TODO: CapturePage needs to put cache on request in a filter, so cache object on request before request split into multiple threads
 			//       And this cache object needs to be thread safe when concurrent subrequests enabled
 		} else {
@@ -191,6 +192,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 		assert pageRef.getBook().equals(book);
 		assert !visited.contains(pageRef);
 		visited.add(pageRef);
+		// TODO: Enabling this logging makes it work reliably, must synchronize threads masking other race condition:
+		// if(logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "capturing: request={0}, pageRef={1}", request, pageRef);
 		com.semanticcms.core.model.Page page = CapturePage.capturePage(
 			servletContext,
 			req,
