@@ -104,13 +104,13 @@ public class SiteMapIndexServlet extends HttpServlet {
 			&& semanticCMS.getConcurrentSubrequests()
 		) {
 			// Concurrent implementation
-			final HttpServletRequest threadSafeReq = new ThreadSafeHttpServletRequest(req);
-			final HttpServletResponse threadSafeResp = new ThreadSafeHttpServletResponse(resp);
+			HttpServletRequest threadSafeReq = new ThreadSafeHttpServletRequest(req);
+			HttpServletResponse threadSafeResp = new ThreadSafeHttpServletResponse(resp);
 			Executors executors = semanticCMS.getExecutors();
 			List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(size);
 			for(final Book book : books) {
 				final HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-				final HttpServletResponse subresponse= new HttpServletSubResponse(threadSafeReq, threadSafeResp);
+				final HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeReq, threadSafeResp);
 				tasks.add(
 					new Callable<Boolean>() {
 						@Override
