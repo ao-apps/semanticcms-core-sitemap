@@ -103,7 +103,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 		int size = books.size();
 		if(
 			size > 1
-			&& semanticCMS.getConcurrentSubrequests()
+			&& semanticCMS.useConcurrentSubrequests(req)
 		) {
 			// Concurrent implementation
 			TempFileList tempFileList = TempFileContext.getTempFileList(req);
