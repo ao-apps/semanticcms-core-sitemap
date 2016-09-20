@@ -23,6 +23,8 @@
 package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoindustries.io.TempFileList;
+import com.aoindustries.servlet.filter.TempFileContext;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.aoindustries.util.concurrent.Executors;
 import com.semanticcms.core.model.Book;
@@ -104,13 +106,14 @@ public class SiteMapIndexServlet extends HttpServlet {
 			&& semanticCMS.getConcurrentSubrequests()
 		) {
 			// Concurrent implementation
+			TempFileList tempFileList = TempFileContext.getTempFileList(req);
 			HttpServletRequest threadSafeReq = new ThreadSafeHttpServletRequest(req);
 			HttpServletResponse threadSafeResp = new ThreadSafeHttpServletResponse(resp);
 			Executors executors = semanticCMS.getExecutors();
 			List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(size);
 			for(final Book book : books) {
 				final HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-				final HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeReq, threadSafeResp);
+				final HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileList);
 				tasks.add(
 					new Callable<Boolean>() {
 						@Override
