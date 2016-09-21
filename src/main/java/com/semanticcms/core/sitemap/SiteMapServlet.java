@@ -34,6 +34,9 @@ import com.semanticcms.core.servlet.View;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -117,11 +120,18 @@ public class SiteMapServlet extends HttpServlet {
 					}
 				}
 			},
-			new CapturePage.ChildPageFilter() {
+			new CapturePage.TraversalEdges() {
 				@Override
-				public boolean includeChildPage(Page page, PageRef childRef) {
+				public List<PageRef> getEdges(Page page) {
 					// Add all child pages that are in the same book
-					return book.equals(childRef.getBook());
+					Set<PageRef> childRefs = page.getChildPages();
+					List<PageRef> inBook = new ArrayList<PageRef>(childRefs.size());
+					for(PageRef childRef : childRefs) {
+						if(book.equals(childRef.getBook())) {
+							inBook.add(childRef);
+						}
+					}
+					return inBook;
 				}
 			},
 			null

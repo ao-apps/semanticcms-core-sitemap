@@ -26,7 +26,6 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.io.TempFileList;
 import com.aoindustries.servlet.filter.TempFileContext;
 import com.aoindustries.servlet.http.ServletUtil;
-import com.aoindustries.util.concurrent.Executors;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
@@ -106,42 +105,43 @@ public class SiteMapIndexServlet extends HttpServlet {
 			&& semanticCMS.useConcurrentSubrequests(req)
 		) {
 			// Concurrent implementation
-			TempFileList tempFileList = TempFileContext.getTempFileList(req);
-			HttpServletRequest threadSafeReq = new ThreadSafeHttpServletRequest(req);
-			HttpServletResponse threadSafeResp = new ThreadSafeHttpServletResponse(resp);
-			Executors executors = semanticCMS.getExecutors();
 			List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(size);
-			for(final Book book : books) {
-				final HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-				final HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileList);
-				tasks.add(
-					new Callable<Boolean>() {
-						@Override
-						public Boolean call() throws ServletException, IOException {
-							if(logger.isLoggable(Level.FINE)) logger.log(
-								Level.FINE,
-								"called, subrequest={0}, book={1}",
-								new Object[] {
+			{
+				HttpServletRequest threadSafeReq = new ThreadSafeHttpServletRequest(req);
+				HttpServletResponse threadSafeResp = new ThreadSafeHttpServletResponse(resp);
+				TempFileList tempFileList = TempFileContext.getTempFileList(req);
+				for(final Book book : books) {
+					final HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
+					final HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileList);
+					tasks.add(
+						new Callable<Boolean>() {
+							@Override
+							public Boolean call() throws ServletException, IOException {
+								if(logger.isLoggable(Level.FINE)) logger.log(
+									Level.FINE,
+									"called, subrequest={0}, book={1}",
+									new Object[] {
+										subrequest,
+										book
+									}
+								);
+								return hasSiteMapUrl(
+									getServletContext(),
 									subrequest,
-									book
-								}
-							);
-							return hasSiteMapUrl(
-								getServletContext(),
-								subrequest,
-								subresponse,
-								views,
-								book,
-								book.getContentRoot(),
-								new HashSet<PageRef>()
-							);
+									subresponse,
+									views,
+									book,
+									book.getContentRoot(),
+									new HashSet<PageRef>()
+								);
+							}
 						}
-					}
-				);
+					);
+				}
 			}
 			List<Boolean> results;
 			try {
-				results = executors.getPerProcessor().callAll(tasks);
+				results = semanticCMS.getExecutors().getPerProcessor().callAll(tasks);
 			} catch(InterruptedException e) {
 				throw new ServletException(e);
 			} catch(ExecutionException e) {
@@ -152,21 +152,19 @@ public class SiteMapIndexServlet extends HttpServlet {
 				throw new ServletException(cause);
 			}
 			int i = 0;
-			for(final Book book : books) {
+			for(Book book : books) {
 				if(results.get(i++)) {
 					writeSitemap(req, resp, out, book);
 				}
 			}
 			assert i == size;
-			// TODO: CapturePage needs to put cache on request in a filter, so cache object on request before request split into multiple threads
-			//       And this cache object needs to be thread safe when concurrent subrequests enabled
 		} else {
 			// Sequential implementation
 			for(Book book : books) {
 				if(
 					hasSiteMapUrl(getServletContext(),
-						req, // Testing: new HttpServletSubRequest(req),
-						resp, // Testing: new HttpServletSubResponse(req, resp),
+						req,
+						resp,
 						views,
 						book,
 						book.getContentRoot(),
@@ -195,7 +193,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 		assert pageRef.getBook().equals(book);
 		assert !visited.contains(pageRef);
 		visited.add(pageRef);
-		// TODO: Enabling this logging makes it work reliably, must synchronize threads masking other race condition:
+		// Enabling this logging makes it work reliably, must synchronize threads masking other race condition:
 		// if(logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "capturing: request={0}, pageRef={1}", request, pageRef);
 		com.semanticcms.core.model.Page page = CapturePage.capturePage(
 			servletContext,
