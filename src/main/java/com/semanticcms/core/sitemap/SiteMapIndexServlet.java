@@ -103,7 +103,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 		int size = books.size();
 		if(
 			size > 1
-			&& CountConcurrencyFilter.areConcurrentSubrequestsRecommended(req)
+			&& CountConcurrencyFilter.useConcurrentSubrequests(req)
 		) {
 			// Concurrent implementation
 			List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(size);
