@@ -27,6 +27,7 @@ import com.aoindustries.io.TempFileList;
 import com.aoindustries.servlet.filter.TempFileContext;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.semanticcms.core.model.Book;
+import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CapturePage;
@@ -35,13 +36,12 @@ import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.core.servlet.View;
 import com.semanticcms.core.servlet.util.HttpServletSubRequest;
 import com.semanticcms.core.servlet.util.HttpServletSubResponse;
-import com.semanticcms.core.servlet.util.ThreadSafeHttpServletRequest;
 import com.semanticcms.core.servlet.util.ThreadSafeHttpServletResponse;
+import com.semanticcms.core.servlet.util.UnmodifiableCopyHttpServletRequest;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
@@ -108,16 +108,16 @@ public class SiteMapIndexServlet extends HttpServlet {
 			// Concurrent implementation
 			List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(size);
 			{
-				HttpServletRequest threadSafeReq = new ThreadSafeHttpServletRequest(req);
-				HttpServletResponse threadSafeResp = new ThreadSafeHttpServletResponse(resp);
-				TempFileList tempFileList = TempFileContext.getTempFileList(req);
+				final HttpServletRequest threadSafeReq = new UnmodifiableCopyHttpServletRequest(req);
+				final HttpServletResponse threadSafeResp = new ThreadSafeHttpServletResponse(resp);
+				final TempFileList tempFileList = TempFileContext.getTempFileList(req);
 				for(final Book book : books) {
-					final HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-					final HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileList);
 					tasks.add(
 						new Callable<Boolean>() {
 							@Override
 							public Boolean call() throws ServletException, IOException {
+								HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
+								HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileList);
 								if(logger.isLoggable(Level.FINE)) logger.log(
 									Level.FINE,
 									"called, subrequest={0}, book={1}",
@@ -132,8 +132,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 									subresponse,
 									views,
 									book,
-									book.getContentRoot(),
-									new HashSet<PageRef>()
+									book.getContentRoot()
+									//new HashSet<PageRef>()
 								);
 							}
 						}
@@ -163,13 +163,13 @@ public class SiteMapIndexServlet extends HttpServlet {
 			// Sequential implementation
 			for(Book book : books) {
 				if(
-					hasSiteMapUrl(getServletContext(),
+					hasSiteMapUrl(
+						getServletContext(),
 						req,
 						resp,
 						views,
 						book,
-						book.getContentRoot(),
-						new HashSet<PageRef>()
+						book.getContentRoot()
 					)
 				) {
 					writeSitemap(req, resp, out, book);
@@ -181,54 +181,51 @@ public class SiteMapIndexServlet extends HttpServlet {
 
 	/**
 	 * Checks if the sitemap has at least one page.
+	 * This version implemented as a traversal.
 	 */
 	private static boolean hasSiteMapUrl(
-		ServletContext servletContext,
-		HttpServletRequest req,
-		HttpServletResponse resp,
-		SortedSet<View> views,
-		Book book,
-		PageRef pageRef,
-		Set<PageRef> visited
+		final ServletContext servletContext,
+		final HttpServletRequest req,
+		final HttpServletResponse resp,
+		final SortedSet<View> views,
+		final Book book,
+		PageRef pageRef
 	) throws ServletException, IOException {
-		assert pageRef.getBook().equals(book);
-		assert !visited.contains(pageRef);
-		visited.add(pageRef);
-		// Enabling this logging makes it work reliably, must synchronize threads masking other race condition:
-		// if(logger.isLoggable(Level.FINE)) logger.log(Level.FINE, "capturing: request={0}, pageRef={1}", request, pageRef);
-		com.semanticcms.core.model.Page page = CapturePage.capturePage(
+		Boolean result = CapturePage.traversePagesAnyOrder(
 			servletContext,
 			req,
 			resp,
 			pageRef,
-			CaptureLevel.META
+			CaptureLevel.META,
+			new CapturePage.PageHandler<Boolean>() {
+				@Override
+				public Boolean handlePage(Page page) throws ServletException, IOException {
+					// TODO: Chance for more concurrency here by view?
+					for(View view : views) {
+						if(
+							view.getAllowRobots(servletContext, req, resp, page)
+							&& view.isApplicable(servletContext, req, resp, page)
+						) {
+							return true;
+						}
+					}
+					return null;
+				}
+			},
+			new CapturePage.TraversalEdges() {
+				@Override
+				public Set<PageRef> getEdges(Page page) {
+					return page.getChildPages();
+				}
+			},
+			new CapturePage.EdgeFilter() {
+				@Override
+				public boolean applyEdge(PageRef childPage) {
+					return book.equals(childPage.getBook());
+				}
+			}
 		);
-		for(View view : views) {
-			if(
-				view.getAllowRobots(servletContext, req, resp, page)
-				&& view.isApplicable(servletContext, req, resp, page)
-			) {
-				return true;
-			}
-		}
-		// Check all child pages that are in the same book
-		for(PageRef childRef : page.getChildPages()) {
-			if(
-				book.equals(childRef.getBook())
-				&& !visited.contains(childRef)
-				&& hasSiteMapUrl(
-					servletContext,
-					req,
-					resp,
-					views,
-					book,
-					childRef,
-					visited
-				)
-			) {
-				return true;
-			}
-		}
-		return false;
+		assert result == null || result : "Should always be null or true";
+		return result != null;
 	}
 }

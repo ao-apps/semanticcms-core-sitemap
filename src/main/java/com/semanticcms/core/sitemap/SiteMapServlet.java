@@ -34,8 +34,6 @@ import com.semanticcms.core.servlet.View;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import javax.servlet.ServletContext;
@@ -91,9 +89,9 @@ public class SiteMapServlet extends HttpServlet {
 			resp,
 			book.getContentRoot(),
 			CaptureLevel.META,
-			new CapturePage.PageHandler() {
+			new CapturePage.PageHandler<Void>() {
 				@Override
-				public void handlePage(Page page) throws ServletException, IOException {
+				public Void handlePage(Page page) throws ServletException, IOException {
 					PageRef pageRef = page.getPageRef();
 					assert pageRef.getBook().equals(book);
 					// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
@@ -118,20 +116,19 @@ public class SiteMapServlet extends HttpServlet {
 							out.println("    </url>");
 						}
 					}
+					return null;
 				}
 			},
 			new CapturePage.TraversalEdges() {
 				@Override
-				public List<PageRef> getEdges(Page page) {
-					// Add all child pages that are in the same book
-					Set<PageRef> childRefs = page.getChildPages();
-					List<PageRef> inBook = new ArrayList<PageRef>(childRefs.size());
-					for(PageRef childRef : childRefs) {
-						if(book.equals(childRef.getBook())) {
-							inBook.add(childRef);
-						}
-					}
-					return inBook;
+				public Set<PageRef> getEdges(Page page) {
+					return page.getChildPages();
+				}
+			},
+			new CapturePage.EdgeFilter() {
+				@Override
+				public boolean applyEdge(PageRef childPage) {
+					return book.equals(childPage.getBook());
 				}
 			},
 			null
