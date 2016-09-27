@@ -36,8 +36,8 @@ import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.core.servlet.View;
 import com.semanticcms.core.servlet.util.HttpServletSubRequest;
 import com.semanticcms.core.servlet.util.HttpServletSubResponse;
-import com.semanticcms.core.servlet.util.ThreadSafeHttpServletResponse;
 import com.semanticcms.core.servlet.util.UnmodifiableCopyHttpServletRequest;
+import com.semanticcms.core.servlet.util.UnmodifiableCopyHttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -109,7 +109,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 			List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(size);
 			{
 				final HttpServletRequest threadSafeReq = new UnmodifiableCopyHttpServletRequest(req);
-				final HttpServletResponse threadSafeResp = new ThreadSafeHttpServletResponse(resp);
+				final HttpServletResponse threadSafeResp = new UnmodifiableCopyHttpServletResponse(resp);
 				final TempFileList tempFileList = TempFileContext.getTempFileList(req);
 				for(final Book book : books) {
 					tasks.add(
