@@ -144,6 +144,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 			try {
 				results = semanticCMS.getExecutors().getPerProcessor().callAll(tasks);
 			} catch(InterruptedException e) {
+				// Restore the interrupted status
+				Thread.currentThread().interrupt();
 				throw new ServletException(e);
 			} catch(ExecutionException e) {
 				Throwable cause = e.getCause();
