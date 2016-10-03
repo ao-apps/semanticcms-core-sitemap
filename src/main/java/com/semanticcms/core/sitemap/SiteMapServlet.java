@@ -89,9 +89,9 @@ public class SiteMapServlet extends HttpServlet {
 			resp,
 			book.getContentRoot(),
 			CaptureLevel.META,
-			new CapturePage.PageHandler<Void>() {
+			new CapturePage.PageDepthHandler<Void>() {
 				@Override
-				public Void handlePage(Page page) throws ServletException, IOException {
+				public Void handlePage(Page page, int depth) throws ServletException, IOException {
 					PageRef pageRef = page.getPageRef();
 					assert pageRef.getBook().equals(book);
 					// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
