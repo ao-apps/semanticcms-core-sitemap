@@ -65,10 +65,6 @@ public class SiteMapIndexServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger logger = Logger.getLogger(SiteMapIndexServlet.class.getName());
-	static {
-		// TODO: Remove for production
-		//logger.setLevel(Level.ALL);
-	}
 
 	public static final String SERVLET_PATH = "/sitemap-index.xml";
 
