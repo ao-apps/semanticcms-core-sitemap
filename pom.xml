@@ -27,7 +27,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 	<parent>
 		<groupId>com.semanticcms</groupId>
 		<artifactId>semanticcms-core</artifactId>
-		<version>1.4.1</version>
+		<version>1.4.2-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.semanticcms</groupId>
@@ -84,32 +84,32 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<dependency>
 			<groupId>com.aoindustries</groupId>
 			<artifactId>ao-concurrent</artifactId>
-			<version>1.0.0</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId>
 			<artifactId>ao-encoding</artifactId>
-			<version>1.4.0</version>
+			<version>1.4.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId>
 			<artifactId>ao-servlet-filter</artifactId>
-			<version>1.4.0</version>
+			<version>1.4.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId>
 			<artifactId>aocode-public</artifactId>
-			<version>1.7.0</version>
+			<version>1.8.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.semanticcms</groupId>
 			<artifactId>semanticcms-core-model</artifactId>
-			<version>1.7.1</version>
+			<version>1.7.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.semanticcms</groupId>
 			<artifactId>semanticcms-core-servlet</artifactId>
-			<version>1.8.0</version>
+			<version>1.8.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
