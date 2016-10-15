@@ -4,7 +4,7 @@ Automatic sitemaps for [SemanticCMS](https://semanticcms.com/).
 ## Project Links
 * [Project Home](https://semanticcms.com/core/sitemap/)
 * [API Docs](https://semanticcms.com/core/sitemap/apidocs/)
-* [Maven Central Repository](http://search.maven.org/#search|gav|1|g:%22com.semanticcms%22%20AND%20a:%22semanticcms-core-sitemap%22)
+* [Maven Central Repository](https://search.maven.org/#search|gav|1|g:%22com.semanticcms%22%20AND%20a:%22semanticcms-core-sitemap%22)
 * [GitHub](https://github.com/aoindustries/semanticcms-core-sitemap)
 
 ## Contact Us
