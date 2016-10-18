@@ -27,6 +27,7 @@ import com.aoindustries.io.TempFileList;
 import com.aoindustries.servlet.filter.TempFileContext;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.semanticcms.core.model.Book;
+import com.semanticcms.core.model.ChildRef;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
@@ -212,8 +213,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 			},
 			new CapturePage.TraversalEdges() {
 				@Override
-				public Set<PageRef> getEdges(Page page) {
-					return page.getChildPages();
+				public Set<ChildRef> getEdges(Page page) {
+					return page.getChildRefs();
 				}
 			},
 			new CapturePage.EdgeFilter() {
