@@ -22,8 +22,7 @@
  */
 package com.semanticcms.core.sitemap;
 
-import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
-import com.aoindustries.servlet.http.ServletUtil;
+import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.ChildRef;
 import com.semanticcms.core.model.Page;
@@ -34,7 +33,6 @@ import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.core.servlet.View;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URLEncoder;
 import java.util.Set;
 import java.util.SortedSet;
 import javax.servlet.ServletContext;
@@ -93,8 +91,7 @@ public class SiteMapServlet extends HttpServlet {
 			new CapturePage.PageDepthHandler<Void>() {
 				@Override
 				public Void handlePage(Page page, int depth) throws ServletException, IOException {
-					PageRef pageRef = page.getPageRef();
-					assert pageRef.getBook().equals(book);
+					assert page.getPageRef().getBook().equals(book);
 					// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
 					for(View view : views) {
 						if(
@@ -103,16 +100,7 @@ public class SiteMapServlet extends HttpServlet {
 						) {
 							out.println("    <url>");
 							out.print("        <loc>");
-							String servletPath = pageRef.getServletPath();
-							if(!view.isDefault()) {
-								servletPath += "?view=" + URLEncoder.encode(view.getName(), resp.getCharacterEncoding());
-							}
-							ServletUtil.getAbsoluteURL(
-								req,
-								resp.encodeURL(servletPath),
-								textInXhtmlEncoder,
-								out
-							);
+							encodeTextInXhtml(view.getCanonicalUrl(servletContext, req, resp, page), out);
 							out.println("</loc>");
 							out.println("    </url>");
 						}
