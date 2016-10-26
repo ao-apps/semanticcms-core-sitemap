@@ -40,6 +40,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.joda.time.ReadableInstant;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Creates a sitemap of one book.
@@ -76,6 +79,7 @@ public class SiteMapServlet extends HttpServlet {
 			return;
 		}
 		final SortedSet<View> views = semanticCMS.getViews();
+		final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();
 		resp.reset();
 		resp.setContentType(CONTENT_TYPE);
 		resp.setCharacterEncoding(ENCODING);
@@ -102,6 +106,12 @@ public class SiteMapServlet extends HttpServlet {
 							out.print("        <loc>");
 							encodeTextInXhtml(view.getCanonicalUrl(servletContext, req, resp, page), out);
 							out.println("</loc>");
+							ReadableInstant lastmod = view.getLastModified(servletContext, req, resp, page);
+							if(lastmod != null) {
+								out.print("        <lastmod>");
+								encodeTextInXhtml(iso8601.print(lastmod), out);
+								out.println("</lastmod>");
+							}
 							out.println("    </url>");
 						}
 					}
