@@ -34,7 +34,10 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Adds the sitemap index to /robots.txt
  */
-@WebServlet(SiteMapRobotsTxtServlet.SERVLET_PATH)
+@WebServlet(
+	urlPatterns = SiteMapRobotsTxtServlet.SERVLET_PATH,
+	loadOnStartup = 1
+)
 public class SiteMapRobotsTxtServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
@@ -45,9 +48,26 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
 
 	private static final String ENCODING = "UTF-8";
 
+	/**
+	 * TODO: Consider a Maven-filter-provided build time annotation instead of using init time.
+	 *       This would give consistent results between nodes in a cluster, as long as the same
+	 *       build of software deployed to each.
+	 */
+	private long initTime;
+
+	@Override
+	public void init() {
+		initTime = System.currentTimeMillis();
+	}
+
+	@Override
+	protected long getLastModified(HttpServletRequest req) {
+		return initTime;
+	}
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.reset();
+		resp.resetBuffer();
 		resp.setContentType(CONTENT_TYPE);
 		resp.setCharacterEncoding(ENCODING);
 		PrintWriter out = resp.getWriter();
