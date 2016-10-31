@@ -58,7 +58,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<changelog:release
 			projectName="@{project.name}"
 			version="1.9.0"
-			dateCreated="2016-10-20T18:27:00-0500"
+			datePublished="2016-10-20T18:27:00-0500"
 			groupId="@{project.groupId}"
 			artifactId="@{project.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -73,7 +73,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<changelog:release
 			projectName="@{project.name}"
 			version="1.8.0"
-			dateCreated="2016-10-04T20:45:00-0500"
+			datePublished="2016-10-04T20:45:00-0500"
 			groupId="@{project.groupId}"
 			artifactId="@{project.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -87,7 +87,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<changelog:release
 			projectName="@{project.name}"
 			version="1.7"
-			dateCreated="2016-09-11T15:36:00-0500"
+			datePublished="2016-09-11T15:36:00-0500"
 			groupId="@{project.groupId}"
 			artifactId="@{project.artifactId}"
 			scmUrl="@{project.scm.url}"
@@ -103,7 +103,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<changelog:release
 			projectName="@{project.name}"
 			version="1.6"
-			dateCreated="2016-09-03T10:51:00-0500"
+			datePublished="2016-09-03T10:51:00-0500"
 			groupId="@{project.groupId}"
 			artifactId="semanticcms-sitemap-servlet"
 			scmUrl="@{project.scm.url}"
@@ -116,7 +116,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<changelog:release
 			projectName="@{project.name}"
 			version="1.5"
-			dateCreated="2016-08-28T21:19:00-0500"
+			datePublished="2016-08-28T21:19:00-0500"
 			groupId="@{project.groupId}"
 			artifactId="semanticcms-sitemap-servlet"
 			scmUrl="@{project.scm.url}"
@@ -129,7 +129,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<changelog:release
 			projectName="@{project.name}"
 			version="1.4"
-			dateCreated="2016-08-21T18:31:00-0500"
+			datePublished="2016-08-21T18:31:00-0500"
 			groupId="@{project.groupId}"
 			artifactId="semanticcms-sitemap-servlet"
 			scmUrl="@{project.scm.url}"
@@ -143,7 +143,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<changelog:release
 			projectName="@{project.name}"
 			version="1.3"
-			dateCreated="2016-08-19T16:36:00-0500"
+			datePublished="2016-08-19T16:36:00-0500"
 			groupId="@{project.groupId}"
 			artifactId="semanticcms-sitemap-servlet"
 			scmUrl="@{project.scm.url}"
@@ -157,7 +157,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<changelog:release
 			projectName="@{project.name}"
 			version="1.2"
-			dateCreated="2016-08-10T12:10:00-0500"
+			datePublished="2016-08-10T12:10:00-0500"
 			groupId="@{project.groupId}"
 			artifactId="semanticcms-sitemap-servlet"
 			scmUrl="@{project.scm.url}"
@@ -170,7 +170,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<changelog:release
 			projectName="@{project.name}"
 			version="1.1"
-			dateCreated="2016-08-07T23:41:00-0500"
+			datePublished="2016-08-07T23:41:00-0500"
 			groupId="com.aoindustries"
 			artifactId="ao-web-sitemap-servlet"
 			scmUrl="@{project.scm.url}"
@@ -183,7 +183,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<changelog:release
 			projectName="@{project.name}"
 			version="1.0"
-			dateCreated="2016-08-07T10:58:00-0500"
+			datePublished="2016-08-07T10:58:00-0500"
 			groupId="com.aoindustries"
 			artifactId="ao-web-sitemap-servlet"
 			scmUrl="@{project.scm.url}"
