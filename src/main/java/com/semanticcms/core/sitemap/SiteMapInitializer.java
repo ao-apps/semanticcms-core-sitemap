@@ -29,12 +29,10 @@ import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
-import javax.servlet.annotation.HandlesTypes;
 
 /**
  * Dynamically adds the SiteMapServlet to /sitemap.xml on each book.
  */
-@HandlesTypes(SiteMapServlet.class)
 public class SiteMapInitializer implements ServletContainerInitializer {
 
 	@Override
