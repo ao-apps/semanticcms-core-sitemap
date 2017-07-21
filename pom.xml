@@ -68,6 +68,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 							<artifactId>maven-javadoc-plugin</artifactId>
 							<configuration>
 								<links>
+									<link>${javac.link.javaApi}</link>
 									<link>${javac.link.javaeeApi.6}</link>
 									<link>http://www.joda.org/joda-time/apidocs/</link>
 									<link>https://aoindustries.com/ao-concurrent/apidocs/</link>
