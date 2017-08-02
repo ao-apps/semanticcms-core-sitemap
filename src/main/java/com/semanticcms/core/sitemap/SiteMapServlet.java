@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016  AO Industries, Inc.
+ * Copyright (C) 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -23,10 +23,10 @@
 package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
-import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.ChildRef;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
+import com.semanticcms.core.repository.Book;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CapturePage;
 import com.semanticcms.core.servlet.SemanticCMS;
@@ -68,7 +68,16 @@ public class SiteMapServlet extends HttpServlet {
 		}
 		String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
 		if(bookName.isEmpty()) bookName = "/";
-		return semanticCMS.getBooks().get(bookName);
+		Book book = semanticCMS.getPublishedBooks().get(bookName);
+		if(book == null) {
+			// Book not published
+			return null;
+		}
+		if(!book.isAccessible()) {
+			// Book not accessible
+			return null;
+		}
+		return book;
 	}
 
 	/**
@@ -86,6 +95,11 @@ public class SiteMapServlet extends HttpServlet {
 		final SortedSet<View> views,
 		final Book book
 	) throws ServletException, IOException {
+		assert
+			book.equals(SemanticCMS.getInstance(servletContext).getPublishedBooks().get(book.getBookRef().getName()))
+			: "Book not published: " + book
+		;
+		assert book.isAccessible();
 		// The most recent is kept here, but set to null the first time a missing
 		// per page/view last modified time is found
 		final ReadableInstant[] result = new ReadableInstant[1];
@@ -131,7 +145,7 @@ public class SiteMapServlet extends HttpServlet {
 			new CapturePage.EdgeFilter() {
 				@Override
 				public boolean applyEdge(PageRef childPage) {
-					return book.equals(childPage.getBook());
+					return book.getBookRef().equals(childPage.getBookRef());
 				}
 			}
 		);
@@ -209,7 +223,7 @@ public class SiteMapServlet extends HttpServlet {
 			new CapturePage.PageDepthHandler<Void>() {
 				@Override
 				public Void handlePage(Page page, int depth) throws ServletException, IOException {
-					assert page.getPageRef().getBook().equals(book);
+					assert page.getPageRef().getBookRef().equals(book.getBookRef());
 					// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
 					for(View view : views) {
 						if(
@@ -241,7 +255,7 @@ public class SiteMapServlet extends HttpServlet {
 			new CapturePage.EdgeFilter() {
 				@Override
 				public boolean applyEdge(PageRef childPage) {
-					return book.equals(childPage.getBook());
+					return book.getBookRef().equals(childPage.getBookRef());
 				}
 			},
 			null

@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016  AO Industries, Inc.
+ * Copyright (C) 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -28,10 +28,10 @@ import com.aoindustries.io.TempFileList;
 import com.aoindustries.servlet.filter.TempFileContext;
 import com.aoindustries.servlet.http.ServletUtil;
 import com.aoindustries.util.Tuple2;
-import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.ChildRef;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
+import com.semanticcms.core.repository.Book;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CapturePage;
 import com.semanticcms.core.servlet.CountConcurrencyFilter;
@@ -91,7 +91,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 		out.print("        <loc>");
 		ServletUtil.getAbsoluteURL(
 			req,
-			resp.encodeURL(book.getPathPrefix() + SiteMapServlet.SERVLET_PATH),
+			resp.encodeURL(book.getBookRef().getPrefix() + SiteMapServlet.SERVLET_PATH),
 			textInXhtmlEncoder,
 			out
 		);
@@ -132,7 +132,13 @@ public class SiteMapIndexServlet extends HttpServlet {
 	) throws ServletException, IOException {
 		SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
 		final SortedSet<View> views = semanticCMS.getViews();
-		Collection<Book> books = semanticCMS.getBooks().values();
+		List<Book> books;
+		{
+			// Filter published and accessible only
+			Collection<Book> values = semanticCMS.getPublishedBooks().values();
+			books = new ArrayList<Book>(values.size());
+			for(Book book : values) if(book.isAccessible()) books.add(book);
+		}
 		int numBooks = books.size();
 		if(
 			numBooks > 1
@@ -412,7 +418,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 			new CapturePage.EdgeFilter() {
 				@Override
 				public boolean applyEdge(PageRef childPage) {
-					return book.equals(childPage.getBook());
+					return book.getBookRef().equals(childPage.getBookRef());
 				}
 			}
 		);

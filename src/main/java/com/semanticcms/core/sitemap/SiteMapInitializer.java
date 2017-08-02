@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016  AO Industries, Inc.
+ * Copyright (C) 2016, 2017  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,7 +22,7 @@
  */
 package com.semanticcms.core.sitemap;
 
-import com.semanticcms.core.model.Book;
+import com.semanticcms.core.repository.Book;
 import com.semanticcms.core.servlet.SemanticCMS;
 import java.util.Set;
 import javax.servlet.ServletContainerInitializer;
@@ -41,8 +41,12 @@ public class SiteMapInitializer implements ServletContainerInitializer {
 			SiteMapServlet.class.getName(),
 			SiteMapServlet.class
 		);
-		for(Book book : SemanticCMS.getInstance(servletContext).getBooks().values()) {
-			registration.addMapping(book.getPathPrefix() + SiteMapServlet.SERVLET_PATH);
+		// Only published books
+		for(Book book : SemanticCMS.getInstance(servletContext).getPublishedBooks().values()) {
+			// And only accessible books
+			if(book.isAccessible()) {
+				registration.addMapping(book.getBookRef().getPrefix() + SiteMapServlet.SERVLET_PATH);
+			}
 		}
 	}
 }
