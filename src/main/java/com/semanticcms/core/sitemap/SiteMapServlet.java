@@ -23,11 +23,14 @@
 package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
+import com.aoindustries.net.Path;
+import com.aoindustries.util.WrappedException;
+import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.model.ChildRef;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
-import com.semanticcms.core.pages.Book;
-import com.semanticcms.core.servlet.CaptureLevel;
+import com.semanticcms.core.pages.CaptureLevel;
+import com.semanticcms.core.servlet.Book;
 import com.semanticcms.core.servlet.CapturePage;
 import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.core.servlet.View;
@@ -66,9 +69,20 @@ public class SiteMapServlet extends HttpServlet {
 			// Incorrect mapping, treat as not found
 			return null;
 		}
-		String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
-		if(bookName.isEmpty()) bookName = "/";
-		Book book = semanticCMS.getPublishedBooks().get(bookName);
+		Path bookPath;
+		{
+			String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
+			if(bookName.isEmpty()) {
+				bookPath = Path.ROOT;
+			} else {
+				try {
+					bookPath = Path.valueOf(bookName);
+				} catch(ValidationException e) {
+					throw new WrappedException(e);
+				}
+			}
+		}
+		Book book = semanticCMS.getPublishedBooks().get(bookPath);
 		if(book == null) {
 			// Book not published
 			return null;
@@ -96,7 +110,7 @@ public class SiteMapServlet extends HttpServlet {
 		final Book book
 	) throws ServletException, IOException {
 		assert
-			book.equals(SemanticCMS.getInstance(servletContext).getPublishedBooks().get(book.getBookRef().getName()))
+			book.equals(SemanticCMS.getInstance(servletContext).getPublishedBooks().get(book.getBookRef().getPath()))
 			: "Book not published: " + book
 		;
 		assert book.isAccessible();

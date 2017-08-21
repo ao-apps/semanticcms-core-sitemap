@@ -22,7 +22,7 @@
  */
 package com.semanticcms.core.sitemap;
 
-import com.semanticcms.core.pages.Book;
+import com.semanticcms.core.servlet.Book;
 import com.semanticcms.core.servlet.SemanticCMS;
 import java.util.Set;
 import javax.servlet.ServletContainerInitializer;
