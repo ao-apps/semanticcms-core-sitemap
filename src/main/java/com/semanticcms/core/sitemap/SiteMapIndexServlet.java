@@ -28,19 +28,20 @@ import com.aoindustries.servlet.http.ServletUtil;
 import com.aoindustries.tempfiles.TempFileContext;
 import com.aoindustries.tempfiles.servlet.ServletTempFileContext;
 import com.aoindustries.util.Tuple2;
+import com.semanticcms.core.controller.Book;
+import com.semanticcms.core.controller.CapturePage;
+import com.semanticcms.core.controller.CountConcurrencyFilter;
+import com.semanticcms.core.controller.SemanticCMS;
+import com.semanticcms.core.controller.subrequest.HttpServletSubRequest;
+import com.semanticcms.core.controller.subrequest.HttpServletSubResponse;
+import com.semanticcms.core.controller.subrequest.UnmodifiableCopyHttpServletRequest;
+import com.semanticcms.core.controller.subrequest.UnmodifiableCopyHttpServletResponse;
 import com.semanticcms.core.model.ChildRef;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.pages.CaptureLevel;
-import com.semanticcms.core.servlet.Book;
-import com.semanticcms.core.servlet.CapturePage;
-import com.semanticcms.core.servlet.CountConcurrencyFilter;
-import com.semanticcms.core.servlet.SemanticCMS;
-import com.semanticcms.core.servlet.View;
-import com.semanticcms.core.servlet.util.HttpServletSubRequest;
-import com.semanticcms.core.servlet.util.HttpServletSubResponse;
-import com.semanticcms.core.servlet.util.UnmodifiableCopyHttpServletRequest;
-import com.semanticcms.core.servlet.util.UnmodifiableCopyHttpServletResponse;
+import com.semanticcms.core.renderer.html.HtmlRenderer;
+import com.semanticcms.core.renderer.html.View;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -131,7 +132,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 		HttpServletResponse resp
 	) throws ServletException, IOException {
 		SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
-		final SortedSet<View> views = semanticCMS.getViews();
+		HtmlRenderer htmlRenderer = HtmlRenderer.getInstance(servletContext);
+		final SortedSet<View> views = htmlRenderer.getViews();
 		List<Book> books;
 		{
 			// Filter published and accessible only

@@ -22,8 +22,8 @@
  */
 package com.semanticcms.core.sitemap;
 
-import com.semanticcms.core.servlet.Book;
-import com.semanticcms.core.servlet.SemanticCMS;
+import com.semanticcms.core.controller.Book;
+import com.semanticcms.core.controller.SemanticCMS;
 import java.util.Set;
 import javax.servlet.ServletContainerInitializer;
 import javax.servlet.ServletContext;

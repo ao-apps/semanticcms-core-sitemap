@@ -26,14 +26,15 @@ import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import com.aoindustries.net.Path;
 import com.aoindustries.util.WrappedException;
 import com.aoindustries.validation.ValidationException;
+import com.semanticcms.core.controller.Book;
+import com.semanticcms.core.controller.CapturePage;
+import com.semanticcms.core.controller.SemanticCMS;
 import com.semanticcms.core.model.ChildRef;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.pages.CaptureLevel;
-import com.semanticcms.core.servlet.Book;
-import com.semanticcms.core.servlet.CapturePage;
-import com.semanticcms.core.servlet.SemanticCMS;
-import com.semanticcms.core.servlet.View;
+import com.semanticcms.core.renderer.html.HtmlRenderer;
+import com.semanticcms.core.renderer.html.View;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Set;
@@ -186,8 +187,10 @@ public class SiteMapServlet extends HttpServlet {
 	@Override
 	protected long getLastModified(HttpServletRequest req) {
 		final ServletContext servletContext = getServletContext();
-		SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
-		final Book book = getBook(semanticCMS, req);
+		final Book book = getBook(
+			SemanticCMS.getInstance(servletContext),
+			req
+		);
 		if(book == null) {
 			log("Book not found: " + req.getServletPath());
 			return -1;
@@ -197,7 +200,7 @@ public class SiteMapServlet extends HttpServlet {
 					getServletContext(),
 					req,
 					(HttpServletResponse)req.getAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE),
-					semanticCMS.getViews(),
+					HtmlRenderer.getInstance(servletContext).getViews(),
 					book
 				);
 				return lastModified == null ? -1 : lastModified.getMillis();
@@ -214,13 +217,15 @@ public class SiteMapServlet extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 		final ServletContext servletContext = getServletContext();
-		SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
-		final Book book = getBook(semanticCMS, req);
+		final Book book = getBook(
+			SemanticCMS.getInstance(servletContext),
+			req
+		);
 		if(book == null) {
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
-		final SortedSet<View> views = semanticCMS.getViews();
+		final SortedSet<View> views = HtmlRenderer.getInstance(servletContext).getViews();
 		final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();
 		resp.resetBuffer();
 		resp.setContentType(CONTENT_TYPE);
