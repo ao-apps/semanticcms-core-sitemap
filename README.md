@@ -1,4 +1,4 @@
-# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://aoindustries.com/) [SemanticCMS](https://semanticcms.com/) / [Core](https://semanticcms.com/core/) / [Sitemap](https://semanticcms.com/core/sitemap/)
+# [<img src="ao-logo.png" alt="AO Logo" width="35" height="40">](https://github.com/aoindustries) [SemanticCMS](https://github.com/aoindustries/semanticcms) / [Core](https://github.com/aoindustries/semanticcms-core) / [Sitemap](https://github.com/aoindustries/semanticcms-core-sitemap)
 <p>
 	<a href="https://aoindustries.com/life-cycle#project-current-stable">
 		<img src="https://semanticcms.com/ao-badges/project-current-stable.svg" alt="project: current stable" />
@@ -24,7 +24,7 @@
 	</a>
 </p>
 
-Automatic sitemaps for [SemanticCMS](https://semanticcms.com/).
+Automatic sitemaps for [SemanticCMS](https://github.com/aoindustries/semanticcms).
 
 ## Project Links
 * [Project Home](https://semanticcms.com/core/sitemap/)
