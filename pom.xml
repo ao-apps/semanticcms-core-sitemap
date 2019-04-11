@@ -30,7 +30,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 	</parent>
 
 	<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-sitemap</artifactId><version>1.9.3-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>bundle</packaging>
 
 	<properties>
 		<javadoc.breadcrumbs><![CDATA[<a target="_top" href="https://semanticcms.com/">SemanticCMS</a>
