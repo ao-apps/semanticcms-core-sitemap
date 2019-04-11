@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2018  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -24,9 +24,9 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
-import com.aoindustries.io.TempFileList;
-import com.aoindustries.servlet.filter.TempFileContext;
 import com.aoindustries.servlet.http.ServletUtil;
+import com.aoindustries.tempfiles.TempFileContext;
+import com.aoindustries.tempfiles.servlet.ServletTempFileContext;
 import com.aoindustries.util.Tuple2;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.ChildRef;
@@ -141,7 +141,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 			// Concurrent implementation
 			final HttpServletRequest threadSafeReq = new UnmodifiableCopyHttpServletRequest(req);
 			final HttpServletResponse threadSafeResp = new UnmodifiableCopyHttpServletResponse(resp);
-			final TempFileList tempFileList = TempFileContext.getTempFileList(req);
+			final TempFileContext tempFileContext = ServletTempFileContext.getTempFileContext(req);
 			List<Book> booksWithSiteMapUrl;
 			{
 				List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(numBooks);
@@ -152,7 +152,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 								@Override
 								public Boolean call() throws ServletException, IOException {
 									HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-									HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileList);
+									HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
 									if(logger.isLoggable(Level.FINE)) logger.log(
 										Level.FINE,
 										"called, subrequest={0}, book={1}",
@@ -179,8 +179,6 @@ public class SiteMapIndexServlet extends HttpServlet {
 				try {
 					results = semanticCMS.getExecutors().getPerProcessor().callAll(tasks);
 				} catch(InterruptedException e) {
-					// Restore the interrupted status
-					Thread.currentThread().interrupt();
 					throw new ServletException(e);
 				} catch(ExecutionException e) {
 					Throwable cause = e.getCause();
@@ -211,7 +209,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 									@Override
 									public ReadableInstant call() throws ServletException, IOException {
 										HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-										HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileList);
+										HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
 										if(logger.isLoggable(Level.FINE)) logger.log(
 											Level.FINE,
 											"called, subrequest={0}, book={1}",
@@ -236,8 +234,6 @@ public class SiteMapIndexServlet extends HttpServlet {
 					try {
 						lastModifieds = semanticCMS.getExecutors().getPerProcessor().callAll(lastModifiedTasks);
 					} catch(InterruptedException e) {
-						// Restore the interrupted status
-						Thread.currentThread().interrupt();
 						throw new ServletException(e);
 					} catch(ExecutionException e) {
 						Throwable cause = e.getCause();
