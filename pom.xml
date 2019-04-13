@@ -90,7 +90,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>joda-time</groupId><artifactId>joda-time</artifactId><version>2.10</version>
+			<groupId>joda-time</groupId><artifactId>joda-time</artifactId><version>2.10.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>ao-concurrent</artifactId><version>1.0.4-validation-SNAPSHOT</version>
