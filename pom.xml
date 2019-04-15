@@ -49,7 +49,6 @@ along with semanticcms-sitemap-servlet.  If not, see <http://www.gnu.org/license
 
 	<distributionManagement>
 		<relocation>
-			<groupId>com.semanticcms</groupId>
 			<artifactId>semanticcms-core-sitemap</artifactId>
 			<message>Renamed project from semanticcms-sitemap-servlet to semanticcms-core-sitemap.</message>
 		</relocation>
