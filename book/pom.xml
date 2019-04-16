@@ -37,7 +37,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<documented.groupId>com.semanticcms</documented.groupId><documented.artifactId>semanticcms-core-sitemap</documented.artifactId>
 		<documented.javaVersion>1.7</documented.javaVersion>
 		<documented.javac.link.javaApi>${javac.link.javaApi.jdk7}</documented.javac.link.javaApi>
-		<documented.name>SemanticCMS 1 Core Sitemap</documented.name>
+		<documented.name>SemanticCMS Core Sitemap</documented.name>
 		<documented.shortTitle>Sitemap</documented.shortTitle>
 		<documented.url>https://semanticcms.com/core/sitemap/</documented.url>
 		<documented.description>Automatic sitemaps for SemanticCMS.</documented.description>

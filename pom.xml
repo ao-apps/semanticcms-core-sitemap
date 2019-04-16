@@ -40,7 +40,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		<description.html><![CDATA[Automatic sitemaps for <a target="_top" href="https://semanticcms.com/">SemanticCMS</a>.]]></description.html>
 	</properties>
 
-	<name>SemanticCMS 1 Core Sitemap</name>
+	<name>SemanticCMS Core Sitemap</name>
 	<url>https://semanticcms.com/core/sitemap/</url>
 	<description>Automatic sitemaps for SemanticCMS.</description>
 	<inceptionYear>2016</inceptionYear>
