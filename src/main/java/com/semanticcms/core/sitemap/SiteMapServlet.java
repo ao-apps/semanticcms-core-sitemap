@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -204,10 +204,7 @@ public class SiteMapServlet extends HttpServlet {
 					book
 				);
 				return lastModified == null ? -1 : lastModified.getMillis();
-			} catch(ServletException e) {
-				log("getLastModified failed", e);
-				return -1;
-			} catch(IOException e) {
+			} catch(ServletException | IOException e) {
 				log("getLastModified failed", e);
 				return -1;
 			}

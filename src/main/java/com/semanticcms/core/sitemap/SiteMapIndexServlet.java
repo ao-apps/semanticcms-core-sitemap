@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2018  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2018, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -138,7 +138,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 		{
 			// Filter published and accessible only
 			Collection<Book> values = semanticCMS.getPublishedBooks().values();
-			books = new ArrayList<Book>(values.size());
+			books = new ArrayList<>(values.size());
 			for(Book book : values) if(book.isAccessible()) books.add(book);
 		}
 		int numBooks = books.size();
@@ -152,7 +152,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 			final TempFileContext tempFileContext = ServletTempFileContext.getTempFileContext(req);
 			List<Book> booksWithSiteMapUrl;
 			{
-				List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(numBooks);
+				List<Callable<Boolean>> tasks = new ArrayList<>(numBooks);
 				{
 					for(final Book book : books) {
 						tasks.add(
@@ -196,7 +196,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 					throw new ServletException(cause);
 				}
 				// Now find the last modified with concurrency
-				booksWithSiteMapUrl = new ArrayList<Book>(numBooks);
+				booksWithSiteMapUrl = new ArrayList<>(numBooks);
 				{
 					int i = 0;
 					for(Book book : books) {
@@ -209,7 +209,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 			if(booksWithSiteMapUrlSize > 0) {
 				if(booksWithSiteMapUrlSize > 1) {
 					// Concurrent implementation
-					List<Callable<ReadableInstant>> lastModifiedTasks = new ArrayList<Callable<ReadableInstant>>(booksWithSiteMapUrlSize);
+					List<Callable<ReadableInstant>> lastModifiedTasks = new ArrayList<>(booksWithSiteMapUrlSize);
 					{
 						for(final Book book : booksWithSiteMapUrl) {
 							lastModifiedTasks.add(
@@ -250,10 +250,10 @@ public class SiteMapIndexServlet extends HttpServlet {
 						if(cause instanceof IOException) throw (IOException)cause;
 						throw new ServletException(cause);
 					}
-					List<Tuple2<Book,ReadableInstant>> sitemapBooks = new ArrayList<Tuple2<Book,ReadableInstant>>(booksWithSiteMapUrlSize);
+					List<Tuple2<Book,ReadableInstant>> sitemapBooks = new ArrayList<>(booksWithSiteMapUrlSize);
 					for(int i = 0; i < booksWithSiteMapUrlSize; i++) {
 						sitemapBooks.add(
-							new Tuple2<Book,ReadableInstant>(
+							new Tuple2<>(
 								booksWithSiteMapUrl.get(i),
 								lastModifieds.get(i)
 							)
@@ -264,7 +264,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 					// Single implementation
 					Book book = booksWithSiteMapUrl.get(0);
 					return Collections.singletonList(
-						new Tuple2<Book,ReadableInstant>(
+						new Tuple2<>(
 							book,
 							SiteMapServlet.getLastModified(
 								servletContext,
@@ -281,7 +281,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 			}
 		} else {
 			// Sequential implementation
-			List<Tuple2<Book,ReadableInstant>> sitemapBooks = new ArrayList<Tuple2<Book,ReadableInstant>>(numBooks);
+			List<Tuple2<Book,ReadableInstant>> sitemapBooks = new ArrayList<>(numBooks);
 			for(Book book : books) {
 				if(
 					hasSiteMapUrl(
@@ -294,7 +294,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 					)
 				) {
 					sitemapBooks.add(
-						new Tuple2<Book,ReadableInstant>(
+						new Tuple2<>(
 							book,
 							SiteMapServlet.getLastModified(
 								servletContext,
@@ -341,10 +341,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 				}
 			}
 			return mostRecent == null ? -1 : mostRecent.getMillis();
-		} catch(ServletException e) {
-			log("getLastModified failed", e);
-			return -1;
-		} catch(IOException e) {
+		} catch(ServletException | IOException e) {
 			log("getLastModified failed", e);
 			return -1;
 		}
