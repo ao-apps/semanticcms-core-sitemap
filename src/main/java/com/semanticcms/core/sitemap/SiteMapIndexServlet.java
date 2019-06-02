@@ -65,6 +65,10 @@ import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Creates a site map index of all per-book sitemaps.
+ * <p>
+ * TODO: Sort by most-recently modified first.  Order doesn't matter for SEO,
+ *       but this can be useful for human review.
+ * </p>
  */
 @WebServlet(SiteMapIndexServlet.SERVLET_PATH)
 public class SiteMapIndexServlet extends HttpServlet {

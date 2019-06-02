@@ -48,6 +48,10 @@ import org.joda.time.format.ISODateTimeFormat;
  * Creates a sitemap of one book.
  *
  * @see  SiteMapInitializer  The url-patterns are dynamically registered to have a sitemap.xml in each book.
+ * <p>
+ * TODO: Sort by most-recently modified first.  Order doesn't matter for SEO,
+ *       but this can be useful for human review.
+ * </p>
  */
 public class SiteMapServlet extends HttpServlet {
 
