@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2019  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
