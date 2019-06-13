@@ -37,7 +37,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T18:51:32-0500"
-		dateModified="2019-06-04T01:26:20-0500"
+		dateModified="2019-06-13T00:56:35-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.semanticcms:semanticcms-core-sitemap:pom.version}" />
@@ -59,6 +59,16 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 							<li>This project uses transitive managed dependencies.</li>
 							<li>This project's managed dependencies may also be imported by other projects.</li>
 						</ol>
+					</li>
+					<li>
+						<p>
+							Sitemaps are now ordered with the most recently modified urls listed first.
+							Sitemaps with unknown modified times are listed last.
+						</p>
+						<p>
+							The order does not matter for search engine optimization (SEO), but
+							this can be useful for human review.
+						</p>
 					</li>
 				</ul>
 			</changelog:release>
