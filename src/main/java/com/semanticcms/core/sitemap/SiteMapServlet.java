@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeSet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -52,10 +53,6 @@ import org.joda.time.format.ISODateTimeFormat;
  * Creates a sitemap of one book.
  *
  * @see  SiteMapInitializer  The url-patterns are dynamically registered to have a sitemap.xml in each book.
- * <p>
- * TODO: Sort by most-recently modified first.  Order doesn't matter for SEO,
- *       but this can be useful for human review.
- * </p>
  */
 public class SiteMapServlet extends HttpServlet {
 
@@ -190,11 +187,8 @@ public class SiteMapServlet extends HttpServlet {
 
 	@Override
 	protected long getLastModified(HttpServletRequest req) {
-		final ServletContext servletContext = getServletContext();
-		final Book book = getBook(
-			SemanticCMS.getInstance(servletContext),
-			req
-		);
+		ServletContext servletContext = getServletContext();
+		Book book = getBook(SemanticCMS.getInstance(servletContext), req);
 		if(book == null) {
 			log("Book not found: " + req.getServletPath());
 			return -1;
@@ -218,31 +212,23 @@ public class SiteMapServlet extends HttpServlet {
 	@Override
 	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
 		final ServletContext servletContext = getServletContext();
-		final Book book = getBook(
-			SemanticCMS.getInstance(servletContext),
-			req
-		);
+		final Book book = getBook(SemanticCMS.getInstance(servletContext), req);
 		if(book == null) {
 			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 			return;
 		}
 		final SortedSet<View> views = HtmlRenderer.getInstance(servletContext).getViews();
-		final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();
-		resp.resetBuffer();
-		resp.setContentType(CONTENT_TYPE);
-		resp.setCharacterEncoding(ENCODING);
-		final PrintWriter out = resp.getWriter();
-		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
-		out.println("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
-		CapturePage.traversePagesDepthFirst(
+
+		final SortedSet<SiteMapUrl> urls = new TreeSet<>();
+		CapturePage.traversePagesAnyOrder(
 			servletContext,
 			req,
 			resp,
 			book.getContentRoot(),
 			CaptureLevel.META,
-			new CapturePage.PageDepthHandler<Void>() {
+			new CapturePage.PageHandler<Void>() {
 				@Override
-				public Void handlePage(Page page, int depth) throws ServletException, IOException {
+				public Void handlePage(Page page) throws ServletException, IOException {
 					assert page.getPageRef().getBookRef().equals(book.getBookRef());
 					// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
 					for(View view : views) {
@@ -250,17 +236,12 @@ public class SiteMapServlet extends HttpServlet {
 							view.getAllowRobots(servletContext, req, resp, page)
 							&& view.isApplicable(servletContext, req, resp, page)
 						) {
-							out.println("    <url>");
-							out.print("        <loc>");
-							encodeTextInXhtml(view.getCanonicalUrl(servletContext, req, resp, page), out);
-							out.println("</loc>");
-							ReadableInstant lastmod = view.getLastModified(servletContext, req, resp, page);
-							if(lastmod != null) {
-								out.print("        <lastmod>");
-								encodeTextInXhtml(iso8601.print(lastmod), out);
-								out.println("</lastmod>");
-							}
-							out.println("    </url>");
+							urls.add(
+								new SiteMapUrl(
+									view.getCanonicalUrl(servletContext, req, resp, page),
+									view.getLastModified(servletContext, req, resp, page)
+								)
+							);
 						}
 					}
 					return null;
@@ -277,9 +258,31 @@ public class SiteMapServlet extends HttpServlet {
 				public boolean applyEdge(PageRef childPage) {
 					return book.getBookRef().equals(childPage.getBookRef());
 				}
-			},
-			null
+			}
 		);
+
+		final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();
+
+		resp.resetBuffer();
+		resp.setContentType(CONTENT_TYPE);
+		resp.setCharacterEncoding(ENCODING);
+		PrintWriter out = resp.getWriter();
+
+		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
+		out.println("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
+		for(SiteMapUrl url : urls) {
+			out.println("    <url>");
+			out.print("        <loc>");
+			encodeTextInXhtml(url.getLoc(), out);
+			out.println("</loc>");
+			ReadableInstant lastmod = url.getLastmod();
+			if(lastmod != null) {
+				out.print("        <lastmod>");
+				encodeTextInXhtml(iso8601.print(lastmod), out);
+				out.println("</lastmod>");
+			}
+			out.println("    </url>");
+		}
 		out.println("</urlset>");
 	}
 }
