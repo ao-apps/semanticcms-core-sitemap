@@ -92,7 +92,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			</dependency>
 			<!-- Direct -->
 			<dependency>
-				<groupId>com.aoindustries</groupId><artifactId>ao-concurrent</artifactId><version>1.1.2-SNAPSHOT</version>
+				<groupId>com.aoindustries</groupId><artifactId>ao-concurrent</artifactId><version>1.1.2-POST-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-encoding</artifactId><version>1.7.1-POST-SNAPSHOT</version>
