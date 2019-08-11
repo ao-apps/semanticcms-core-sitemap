@@ -37,6 +37,8 @@ import com.semanticcms.core.renderer.html.HtmlRenderer;
 import com.semanticcms.core.renderer.html.View;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -62,7 +64,7 @@ public class SiteMapServlet extends HttpServlet {
 
 	private static final String CONTENT_TYPE = "application/xml";
 
-	private static final String ENCODING = "UTF-8";
+	private static final Charset ENCODING = StandardCharsets.UTF_8;
 
 	private static Book getBook(SemanticCMS semanticCMS, HttpServletRequest req) {
 		// Find the book for this request
@@ -265,7 +267,7 @@ public class SiteMapServlet extends HttpServlet {
 
 		resp.resetBuffer();
 		resp.setContentType(CONTENT_TYPE);
-		resp.setCharacterEncoding(ENCODING);
+		resp.setCharacterEncoding(ENCODING.name());
 		PrintWriter out = resp.getWriter();
 
 		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
@@ -273,6 +275,8 @@ public class SiteMapServlet extends HttpServlet {
 		for(SiteMapUrl url : urls) {
 			out.println("    <url>");
 			out.print("        <loc>");
+			// TODO: encodeURI / decodeURI? RFC 3987?
+			//       https://www.google.com/sitemaps/faq.html#faq_xml_encoding
 			encodeTextInXhtml(url.getLoc(), out);
 			out.println("</loc>");
 			ReadableInstant lastmod = url.getLastmod();
