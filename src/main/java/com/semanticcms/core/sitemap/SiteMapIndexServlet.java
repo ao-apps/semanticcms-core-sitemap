@@ -24,7 +24,8 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
-import com.aoindustries.servlet.http.ServletUtil;
+import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.servlet.http.HttpServletUtil;
 import com.aoindustries.tempfiles.TempFileContext;
 import com.aoindustries.tempfiles.servlet.ServletTempFileContext;
 import com.semanticcms.core.controller.Book;
@@ -43,6 +44,8 @@ import com.semanticcms.core.renderer.html.HtmlRenderer;
 import com.semanticcms.core.renderer.html.View;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -77,7 +80,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 
 	private static final String CONTENT_TYPE = "application/xml";
 
-	private static final String ENCODING = "UTF-8";
+	private static final Charset ENCODING = StandardCharsets.UTF_8;
 
 	/**
 	 * The sitemap locations are resolved at the beginning of the request and
@@ -357,7 +360,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 
 		resp.resetBuffer();
 		resp.setContentType(CONTENT_TYPE);
-		resp.setCharacterEncoding(ENCODING);
+		resp.setCharacterEncoding(ENCODING.name());
 		PrintWriter out = resp.getWriter();
 
 		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
@@ -365,9 +368,14 @@ public class SiteMapIndexServlet extends HttpServlet {
 		for(SiteMapUrl loc : locs) {
 			out.println("    <sitemap>");
 			out.print("        <loc>");
-			ServletUtil.getAbsoluteURL(
+			HttpServletUtil.getAbsoluteURL(
 				req,
-				resp.encodeURL(loc.getLoc() + SiteMapServlet.SERVLET_PATH),
+				resp.encodeURL(
+					ServletUtil.encodeURI(
+						loc.getLoc() + SiteMapServlet.SERVLET_PATH,
+						resp
+					)
+				),
 				textInXhtmlEncoder,
 				out
 			);
