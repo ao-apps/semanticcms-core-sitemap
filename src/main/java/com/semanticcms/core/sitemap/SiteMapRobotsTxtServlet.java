@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016  AO Industries, Inc.
+ * Copyright (C) 2016, 2019  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,9 +22,12 @@
  */
 package com.semanticcms.core.sitemap;
 
-import com.aoindustries.servlet.http.ServletUtil;
+import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.servlet.http.HttpServletUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -46,7 +49,7 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
 
 	private static final String CONTENT_TYPE = "text/plain";
 
-	private static final String ENCODING = "UTF-8";
+	private static final Charset ENCODING = StandardCharsets.UTF_8;
 
 	/**
 	 * TODO: Consider a Maven-filter-provided build time annotation instead of using init time.
@@ -69,14 +72,19 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		resp.resetBuffer();
 		resp.setContentType(CONTENT_TYPE);
-		resp.setCharacterEncoding(ENCODING);
+		resp.setCharacterEncoding(ENCODING.name());
 		PrintWriter out = resp.getWriter();
 		out.println("User-agent: *");
 		out.println("Allow: /");
 		out.print("Sitemap: ");
-		ServletUtil.getAbsoluteURL(
+		HttpServletUtil.getAbsoluteURL(
 			req,
-			resp.encodeURL(SiteMapIndexServlet.SERVLET_PATH),
+			resp.encodeURL(
+				ServletUtil.encodeURI(
+					SiteMapIndexServlet.SERVLET_PATH,
+					resp
+				)
+			),
 			out
 		);
 		out.println();
