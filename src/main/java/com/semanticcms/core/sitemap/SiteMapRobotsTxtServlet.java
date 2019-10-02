@@ -22,7 +22,7 @@
  */
 package com.semanticcms.core.sitemap;
 
-import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.http.HttpServletUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -79,7 +79,7 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
 		out.print("Sitemap: ");
 		HttpServletUtil.getAbsoluteURL(
 			req,
-			resp.encodeURL(ServletUtil.encodeURI(SiteMapIndexServlet.SERVLET_PATH, resp)),
+			resp.encodeURL(URIEncoder.encodeURI(SiteMapIndexServlet.SERVLET_PATH)),
 			out
 		);
 		out.println();

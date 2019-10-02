@@ -24,7 +24,7 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
-import com.aoindustries.servlet.ServletUtil;
+import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.http.HttpServletUtil;
 import com.aoindustries.tempfiles.TempFileContext;
 import com.aoindustries.tempfiles.servlet.ServletTempFileContext;
@@ -371,9 +371,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 			HttpServletUtil.getAbsoluteURL(
 				req,
 				resp.encodeURL(
-					ServletUtil.encodeURI(
-						loc.getLoc() + SiteMapServlet.SERVLET_PATH,
-						resp
+					URIEncoder.encodeURI(
+						loc.getLoc() + SiteMapServlet.SERVLET_PATH
 					)
 				),
 				textInXhtmlEncoder,
