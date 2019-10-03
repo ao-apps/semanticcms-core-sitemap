@@ -360,15 +360,17 @@ public class SiteMapIndexServlet extends HttpServlet {
 		for(SiteMapUrl loc : locs) {
 			out.println("    <sitemap>");
 			out.print("        <loc>");
-			HttpServletUtil.getAbsoluteURL(
-				req,
+			URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
 				resp.encodeURL(
-					URIEncoder.encodeURI(
-						loc.getLoc() + SiteMapServlet.SERVLET_PATH
+					HttpServletUtil.getAbsoluteURL(
+						req,
+						URIEncoder.encodeURI(
+							loc.getLoc() + SiteMapServlet.SERVLET_PATH
+						)
 					)
 				),
-				textInXhtmlEncoder,
-				out
+				out,
+				textInXhtmlEncoder
 			);
 			out.println("</loc>");
 			ReadableInstant lastmod = loc.getLastmod();

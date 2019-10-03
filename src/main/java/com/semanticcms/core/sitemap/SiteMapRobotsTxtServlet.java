@@ -77,11 +77,13 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
 		out.println("User-agent: *");
 		out.println("Allow: /");
 		out.print("Sitemap: ");
-		HttpServletUtil.getAbsoluteURL(
-			req,
+		URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
 			resp.encodeURL(
-				URIEncoder.encodeURI(
-					SiteMapIndexServlet.SERVLET_PATH
+				HttpServletUtil.getAbsoluteURL(
+					req,
+					URIEncoder.encodeURI(
+						SiteMapIndexServlet.SERVLET_PATH
+					)
 				)
 			),
 			out
