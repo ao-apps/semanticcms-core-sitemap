@@ -377,8 +377,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 						)
 					)
 				),
-				out,
-				textInXhtmlEncoder
+				textInXhtmlEncoder,
+				out
 			);
 			out.println("</loc>");
 			ReadableInstant lastmod = loc.getLastmod();
