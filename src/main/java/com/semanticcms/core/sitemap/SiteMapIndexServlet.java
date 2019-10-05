@@ -25,6 +25,7 @@ package com.semanticcms.core.sitemap;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoindustries.net.URIEncoder;
+import com.aoindustries.servlet.http.Canonical;
 import com.aoindustries.servlet.http.HttpServletUtil;
 import com.aoindustries.tempfiles.TempFileContext;
 import com.aoindustries.tempfiles.servlet.ServletTempFileContext;
@@ -369,7 +370,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 			out.println("    <sitemap>");
 			out.print("        <loc>");
 			URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-				resp.encodeURL(
+				Canonical.encodeCanonicalURL(
+					resp,
 					HttpServletUtil.getAbsoluteURL(
 						req,
 						URIEncoder.encodeURI(

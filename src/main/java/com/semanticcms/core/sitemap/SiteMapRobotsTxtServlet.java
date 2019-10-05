@@ -23,6 +23,7 @@
 package com.semanticcms.core.sitemap;
 
 import com.aoindustries.net.URIEncoder;
+import com.aoindustries.servlet.http.Canonical;
 import com.aoindustries.servlet.http.HttpServletUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -78,7 +79,8 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
 		out.println("Allow: /");
 		out.print("Sitemap: ");
 		URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-			resp.encodeURL(
+			Canonical.encodeCanonicalURL(
+				resp,
 				HttpServletUtil.getAbsoluteURL(
 					req,
 					URIEncoder.encodeURI(
