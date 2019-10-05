@@ -23,6 +23,8 @@
 package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
+import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoindustries.net.URIEncoder;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.ChildRef;
 import com.semanticcms.core.model.Page;
@@ -248,9 +250,12 @@ public class SiteMapServlet extends HttpServlet {
 		for(SiteMapUrl url : urls) {
 			out.println("    <url>");
 			out.print("        <loc>");
-			// TODO: encodeURI / decodeURI? RFC 3987?
-			//       https://www.google.com/sitemaps/faq.html#faq_xml_encoding
-			encodeTextInXhtml(url.getLoc(), out);
+			// RFC 3986 US-ASCII, although RFC 3987 might be possible as per https://www.google.com/sitemaps/faq.html#faq_xml_encoding
+			URIEncoder.encodeURI(
+				url.getLoc(),
+				textInXhtmlEncoder,
+				out
+			);
 			out.println("</loc>");
 			ReadableInstant lastmod = url.getLastmod();
 			if(lastmod != null) {
