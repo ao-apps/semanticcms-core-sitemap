@@ -36,7 +36,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T18:51:32-0500"
-		dateModified="2019-10-11T20:42:24-0500"
+		dateModified="2019-10-23T00:06:00-0500"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.semanticcms:semanticcms-core-sitemap:pom.version}" />
@@ -54,6 +54,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			>
 				<ul>
 					<li>Added <core:link book="/core/pages" page="/" /> support.</li>
+					<li>Moved Servlet subrequest utilities to new <ao:a href="https://aoindustries.com/ao-servlet-subrequest/">AO Servlet Subrequest</ao:a> project.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
