@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2018, 2019  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2018, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -24,6 +24,7 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoindustries.io.ContentType;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.http.Canonical;
 import com.aoindustries.servlet.http.HttpServletUtil;
@@ -34,7 +35,6 @@ import com.aoindustries.servlet.subrequest.UnmodifiableCopyHttpServletResponse;
 import com.aoindustries.tempfiles.TempFileContext;
 import com.aoindustries.tempfiles.servlet.ServletTempFileContext;
 import com.semanticcms.core.model.Book;
-import com.semanticcms.core.model.ChildRef;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
@@ -49,7 +49,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
@@ -78,7 +77,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 
 	public static final String SERVLET_PATH = "/sitemap-index.xml";
 
-	private static final String CONTENT_TYPE = "application/xml";
+	private static final String CONTENT_TYPE = ContentType.XML;
 
 	private static final Charset ENCODING = StandardCharsets.UTF_8;
 
@@ -107,33 +106,20 @@ public class SiteMapIndexServlet extends HttpServlet {
 			resp,
 			pageRef,
 			CaptureLevel.META,
-			new CapturePage.PageHandler<Boolean>() {
-				@Override
-				public Boolean handlePage(Page page) throws ServletException, IOException {
-					// TODO: Chance for more concurrency here by view?
-					for(View view : views) {
-						if(
-							view.getAllowRobots(servletContext, req, resp, page)
-							&& view.isApplicable(servletContext, req, resp, page)
-						) {
-							return true;
-						}
+			(Page page) -> {
+				// TODO: Chance for more concurrency here by view?
+				for(View view : views) {
+					if(
+						view.getAllowRobots(servletContext, req, resp, page)
+						&& view.isApplicable(servletContext, req, resp, page)
+					) {
+						return true;
 					}
-					return null;
 				}
+				return null;
 			},
-			new CapturePage.TraversalEdges() {
-				@Override
-				public Set<ChildRef> getEdges(Page page) {
-					return page.getChildRefs();
-				}
-			},
-			new CapturePage.EdgeFilter() {
-				@Override
-				public boolean applyEdge(PageRef childPage) {
-					return book.equals(childPage.getBook());
-				}
-			}
+			Page::getChildRefs,
+			(PageRef childPage) -> book.equals(childPage.getBook())
 		);
 		assert result == null || result : "Should always be null or true";
 		return result != null;
@@ -165,28 +151,25 @@ public class SiteMapIndexServlet extends HttpServlet {
 						{
 							for(final Book book : books) {
 								tasks.add(
-									new Callable<Boolean>() {
-										@Override
-										public Boolean call() throws ServletException, IOException {
-											HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-											HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
-											if(logger.isLoggable(Level.FINE)) logger.log(
-												Level.FINE,
-												"called, subrequest={0}, book={1}",
-												new Object[] {
-													subrequest,
-													book
-												}
-											);
-											return hasSiteMapUrl(
-												servletContext,
+									() -> {
+										HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
+										HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
+										if(logger.isLoggable(Level.FINE)) logger.log(
+											Level.FINE,
+											"called, subrequest={0}, book={1}",
+											new Object[] {
 												subrequest,
-												subresponse,
-												views,
-												book,
-												book.getContentRoot()
-											);
-										}
+												book
+											}
+										);
+										return hasSiteMapUrl(
+											servletContext,
+											subrequest,
+											subresponse,
+											views,
+											book,
+											book.getContentRoot()
+										);
 									}
 								);
 							}
@@ -221,27 +204,24 @@ public class SiteMapIndexServlet extends HttpServlet {
 							{
 								for(final Book book : booksWithSiteMapUrl) {
 									lastModifiedTasks.add(
-										new Callable<ReadableInstant>() {
-											@Override
-											public ReadableInstant call() throws ServletException, IOException {
-												HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-												HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
-												if(logger.isLoggable(Level.FINE)) logger.log(
-													Level.FINE,
-													"called, subrequest={0}, book={1}",
-													new Object[] {
-														subrequest,
-														book
-													}
-												);
-												return SiteMapServlet.getLastModified(
-													servletContext,
+										() -> {
+											HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
+											HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
+											if(logger.isLoggable(Level.FINE)) logger.log(
+												Level.FINE,
+												"called, subrequest={0}, book={1}",
+												new Object[] {
 													subrequest,
-													subresponse,
-													views,
 													book
-												);
-											}
+												}
+											);
+											return SiteMapServlet.getLastModified(
+												servletContext,
+												subrequest,
+												subresponse,
+												views,
+												book
+											);
 										}
 									);
 								}
