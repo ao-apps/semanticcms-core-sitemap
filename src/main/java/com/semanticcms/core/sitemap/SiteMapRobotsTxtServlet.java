@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2019  AO Industries, Inc.
+ * Copyright (C) 2016, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,6 +22,7 @@
  */
 package com.semanticcms.core.sitemap;
 
+import com.aoindustries.io.ContentType;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.servlet.http.Canonical;
 import com.aoindustries.servlet.http.HttpServletUtil;
@@ -48,7 +49,7 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
 
 	public static final String SERVLET_PATH = "/robots.txt";
 
-	private static final String CONTENT_TYPE = "text/plain";
+	private static final String CONTENT_TYPE = ContentType.TEXT;
 
 	private static final Charset ENCODING = StandardCharsets.UTF_8;
 

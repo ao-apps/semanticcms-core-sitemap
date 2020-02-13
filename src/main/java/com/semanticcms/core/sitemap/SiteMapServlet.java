@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2019  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -24,6 +24,7 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoindustries.io.ContentType;
 import com.aoindustries.net.Path;
 import com.aoindustries.net.URIEncoder;
 import com.aoindustries.util.WrappedException;
@@ -31,7 +32,6 @@ import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.SemanticCMS;
-import com.semanticcms.core.model.ChildRef;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.pages.CaptureLevel;
@@ -41,7 +41,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.servlet.ServletContext;
@@ -64,7 +63,7 @@ public class SiteMapServlet extends HttpServlet {
 
 	public static final String SERVLET_PATH = "/sitemap.xml";
 
-	private static final String CONTENT_TYPE = "application/xml";
+	private static final String CONTENT_TYPE = ContentType.XML;
 
 	private static final Charset ENCODING = StandardCharsets.UTF_8;
 
@@ -129,45 +128,32 @@ public class SiteMapServlet extends HttpServlet {
 			resp,
 			book.getContentRoot(),
 			CaptureLevel.META,
-			new CapturePage.PageHandler<Boolean>() {
-				@Override
-				public Boolean handlePage(Page page) throws ServletException, IOException {
-					// TODO: Chance for more concurrency here by view?
-					for(View view : views) {
-						if(
-							view.getAllowRobots(servletContext, req, resp, page)
-							&& view.isApplicable(servletContext, req, resp, page)
-						) {
-							ReadableInstant lastModified = view.getLastModified(servletContext, req, resp, page);
-							if(lastModified == null) {
-								// Stop searching, return null for this book
-								result[0] = null;
-								return false;
-							} else {
-								if(
-									result[0] == null
-									|| lastModified.compareTo(result[0]) > 0
-								) {
-									result[0] = lastModified;
-								}
+			(Page page) -> {
+				// TODO: Chance for more concurrency here by view?
+				for(View view : views) {
+					if(
+						view.getAllowRobots(servletContext, req, resp, page)
+						&& view.isApplicable(servletContext, req, resp, page)
+					) {
+						ReadableInstant lastModified = view.getLastModified(servletContext, req, resp, page);
+						if(lastModified == null) {
+							// Stop searching, return null for this book
+							result[0] = null;
+							return false;
+						} else {
+							if(
+								result[0] == null
+								|| lastModified.compareTo(result[0]) > 0
+							) {
+								result[0] = lastModified;
 							}
 						}
 					}
-					return null;
 				}
+				return null;
 			},
-			new CapturePage.TraversalEdges() {
-				@Override
-				public Set<ChildRef> getEdges(Page page) {
-					return page.getChildRefs();
-				}
-			},
-			new CapturePage.EdgeFilter() {
-				@Override
-				public boolean applyEdge(PageRef childPage) {
-					return book.getBookRef().equals(childPage.getBookRef());
-				}
-			}
+			Page::getChildRefs,
+			(PageRef childPage) -> book.getBookRef().equals(childPage.getBookRef())
 		);
 		return result[0];
 	}
@@ -230,39 +216,26 @@ public class SiteMapServlet extends HttpServlet {
 			resp,
 			book.getContentRoot(),
 			CaptureLevel.META,
-			new CapturePage.PageHandler<Void>() {
-				@Override
-				public Void handlePage(Page page) throws ServletException, IOException {
-					assert page.getPageRef().getBookRef().equals(book.getBookRef());
-					// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
-					for(View view : views) {
-						if(
-							view.getAllowRobots(servletContext, req, resp, page)
-							&& view.isApplicable(servletContext, req, resp, page)
-						) {
-							urls.add(
-								new SiteMapUrl(
-									view.getCanonicalUrl(servletContext, req, resp, page),
-									view.getLastModified(servletContext, req, resp, page)
-								)
-							);
-						}
+			(Page page) -> {
+				assert page.getPageRef().getBookRef().equals(book.getBookRef());
+				// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
+				for(View view : views) {
+					if(
+						view.getAllowRobots(servletContext, req, resp, page)
+						&& view.isApplicable(servletContext, req, resp, page)
+					) {
+						urls.add(
+							new SiteMapUrl(
+								view.getCanonicalUrl(servletContext, req, resp, page),
+								view.getLastModified(servletContext, req, resp, page)
+							)
+						);
 					}
-					return null;
 				}
+				return null;
 			},
-			new CapturePage.TraversalEdges() {
-				@Override
-				public Set<ChildRef> getEdges(Page page) {
-					return page.getChildRefs();
-				}
-			},
-			new CapturePage.EdgeFilter() {
-				@Override
-				public boolean applyEdge(PageRef childPage) {
-					return book.getBookRef().equals(childPage.getBookRef());
-				}
-			}
+			Page::getChildRefs,
+			(PageRef childPage) -> book.getBookRef().equals(childPage.getBookRef())
 		);
 
 		final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();
