@@ -36,7 +36,7 @@ import com.aoindustries.tempfiles.TempFileContext;
 import com.aoindustries.tempfiles.servlet.ServletTempFileContext;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
-import com.semanticcms.core.controller.CountConcurrencyListener;
+import com.semanticcms.core.controller.ConcurrencyController;
 import com.semanticcms.core.controller.SemanticCMS;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
@@ -147,7 +147,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 				int numBooks = books.size();
 				if(
 					numBooks > 1
-					&& CountConcurrencyListener.useConcurrentSubrequests(req)
+					&& ConcurrencyController.useConcurrentSubrequests(req)
 				) {
 					// Concurrent implementation
 					final HttpServletRequest threadSafeReq = new UnmodifiableCopyHttpServletRequest(req);
