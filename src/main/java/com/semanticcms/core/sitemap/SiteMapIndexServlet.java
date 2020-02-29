@@ -144,7 +144,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 					// Concurrent implementation
 					final HttpServletRequest threadSafeReq = new UnmodifiableCopyHttpServletRequest(req);
 					final HttpServletResponse threadSafeResp = new UnmodifiableCopyHttpServletResponse(resp);
-					final TempFileContext tempFileContext = ServletTempFileContext.getTempFileContext(req);
+					final TempFileContext tempFileContext = ServletTempFileContext.getInstance(req);
 					List<Book> booksWithSiteMapUrl;
 					{
 						List<Callable<Boolean>> tasks = new ArrayList<>(numBooks);
