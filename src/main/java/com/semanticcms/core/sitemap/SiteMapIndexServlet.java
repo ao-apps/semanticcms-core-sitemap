@@ -33,7 +33,7 @@ import com.aoindustries.servlet.subrequest.HttpServletSubResponse;
 import com.aoindustries.servlet.subrequest.UnmodifiableCopyHttpServletRequest;
 import com.aoindustries.servlet.subrequest.UnmodifiableCopyHttpServletResponse;
 import com.aoindustries.tempfiles.TempFileContext;
-import com.aoindustries.tempfiles.servlet.ServletTempFileContext;
+import com.aoindustries.tempfiles.servlet.TempFileContextEE;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.ConcurrencyCoordinator;
@@ -152,7 +152,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 					// Concurrent implementation
 					final HttpServletRequest threadSafeReq = new UnmodifiableCopyHttpServletRequest(req);
 					final HttpServletResponse threadSafeResp = new UnmodifiableCopyHttpServletResponse(resp);
-					final TempFileContext tempFileContext = ServletTempFileContext.getInstance(req);
+					final TempFileContext tempFileContext = TempFileContextEE.get(req);
 					List<Book> booksWithSiteMapUrl;
 					{
 						List<Callable<Boolean>> tasks = new ArrayList<>(numBooks);
