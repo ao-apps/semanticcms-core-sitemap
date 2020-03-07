@@ -37,7 +37,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T18:51:32-0500"
-		dateModified="2020-02-26T20:09:57-0600"
+		dateModified="2020-03-07T06:01:29-0600"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.semanticcms:semanticcms-core-sitemap:pom.version}" />
@@ -49,12 +49,16 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			<changelog:release
 				projectName="@{documented.name}"
 				version="#{version}"
-				groupId="@{documented.groupId}"
+				groupId="@{project.groupId}"
 				artifactId="@{documented.artifactId}"
-				scmUrl="@{documented.scm.url}"
+				scmUrl="@{project.scm.url}"
 			>
 				<ul>
 					<li>Minimum Java version changed from 1.7 to 1.8.</li>
+					<li>
+						Reduced use of property substitutions in <code>pom.xml</code>.
+						This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
+					</li>
 					<li>Moved Servlet subrequest utilities to new <ao:a href="https://aoindustries.com/ao-servlet-subrequest/">AO Servlet Subrequest</ao:a> project.</li>
 					<li>Optimized ServletContext attribute initialization and concurrency.</li>
 				</ul>
@@ -65,9 +69,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.12.0"
 			datePublished="2019-10-11T20:42:24-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Updated dependencies.</li>
@@ -79,9 +83,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.11.0"
 			datePublished="2019-06-22T01:58:22-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Using managed dependencies:
@@ -107,9 +111,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.10.0"
 			datePublished="2019-04-20T18:12:12-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Minimum Java version changed from 1.6 to 1.7.</li>
@@ -121,9 +125,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.9.2"
 			datePublished="2017-07-20T12:00:05-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Updated dependencies.</li>
@@ -134,9 +138,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.9.1"
 			datePublished="2016-11-15T21:15:41-0600"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>New <ao:a href="https://aoindustries.com/ao-oss-parent/">AO OSS Parent</ao:a> POM to simplify <code>pom.xml</code> files.</li>
@@ -150,9 +154,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.9.0"
 			datePublished="2016-10-20T18:27:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Improved Javadoc formatting.</li>
@@ -165,9 +169,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.8.0"
 			datePublished="2016-10-04T20:45:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Improved Javadoc formatting.</li>
@@ -179,9 +183,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.7"
 			datePublished="2016-09-11T15:36:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="@{documented.artifactId}"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Use dependencyManagement instead of dependency for junit.</li>
@@ -195,9 +199,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.6"
 			datePublished="2016-09-03T10:51:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="semanticcms-sitemap-servlet"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Improved Maven configuration for Java EE 6 dependencies.</li>
@@ -208,9 +212,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.5"
 			datePublished="2016-08-28T21:19:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="semanticcms-sitemap-servlet"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Using latest releases of dependencies.</li>
@@ -221,9 +225,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.4"
 			datePublished="2016-08-21T18:31:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="semanticcms-sitemap-servlet"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Created parent pom for all SemanticCMS components.</li>
@@ -235,9 +239,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.3"
 			datePublished="2016-08-19T16:36:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="semanticcms-sitemap-servlet"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Application-scope variables combined into single "semanticCMS" variable.</li>
@@ -249,9 +253,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			projectName="@{documented.name}"
 			version="1.2"
 			datePublished="2016-08-10T12:10:00-0500"
-			groupId="@{documented.groupId}"
+			groupId="@{project.groupId}"
 			artifactId="semanticcms-sitemap-servlet"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Renamed project from ao-web-sitemap-servlet to semanticcms-sitemap-servlet.</li>
@@ -264,7 +268,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			datePublished="2016-08-07T23:41:00-0500"
 			groupId="com.aoindustries"
 			artifactId="ao-web-sitemap-servlet"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Reverted to Java 1.6 for Android and Java EE 6 compatibility.</li>
@@ -277,7 +281,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			datePublished="2016-08-07T10:58:00-0500"
 			groupId="com.aoindustries"
 			artifactId="ao-web-sitemap-servlet"
-			scmUrl="@{documented.scm.url}"
+			scmUrl="@{project.scm.url}"
 		>
 			<ul>
 				<li>Project moved to GitHub and Maven.</li>
