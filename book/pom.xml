@@ -35,8 +35,6 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 	<properties>
 		<!-- These values are copied from the project being documented -->
 		<documented.artifactId>semanticcms-core-sitemap</documented.artifactId>
-		<documented.javaVersion>1.8</documented.javaVersion>
-		<documented.javac.link.javaApi>${javac.link.javaApi.jdk8}</documented.javac.link.javaApi>
 		<documented.name>SemanticCMS Core Sitemap²</documented.name>
 		<documented.shortTitle>Sitemap</documented.shortTitle>
 		<documented.description>Automatic sitemaps for SemanticCMS.</documented.description>
