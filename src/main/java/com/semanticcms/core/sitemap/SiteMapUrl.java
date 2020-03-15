@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2019  AO Industries, Inc.
+ * Copyright (C) 2019, 2020  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,7 +22,7 @@
  */
 package com.semanticcms.core.sitemap;
 
-import com.aoindustries.util.StringUtility;
+import com.aoindustries.lang.Strings;
 import org.joda.time.ReadableInstant;
 
 /**
@@ -69,6 +69,6 @@ class SiteMapUrl implements Comparable<SiteMapUrl> {
 				return 1;
 			}
 		}
-		return StringUtility.compareToIgnoreCaseCarefulEquals(loc, o.loc);
+		return Strings.compareToIgnoreCaseCarefulEquals(loc, o.loc);
 	}
 }
