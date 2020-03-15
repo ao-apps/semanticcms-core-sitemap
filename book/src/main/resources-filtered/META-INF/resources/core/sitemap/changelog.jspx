@@ -37,7 +37,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T18:51:32-0500"
-		dateModified="2020-03-07T06:01:29-0600"
+		dateModified="2020-03-15T00:27:10-05:00"
 	>
 		<!-- The current snapshot, unreleased version -->
 		<c:set var="version" value="@{com.semanticcms:semanticcms-core-sitemap:pom.version}" />
@@ -61,6 +61,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 					</li>
 					<li>Moved Servlet subrequest utilities to new <ao:a href="https://aoindustries.com/ao-servlet-subrequest/">AO Servlet Subrequest</ao:a> project.</li>
 					<li>Optimized ServletContext attribute initialization and concurrency.</li>
+					<li>Updated dependencies.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
