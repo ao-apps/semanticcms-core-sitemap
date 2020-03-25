@@ -24,10 +24,10 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoindustries.exception.WrappedException;
 import com.aoindustries.io.ContentType;
 import com.aoindustries.net.Path;
 import com.aoindustries.net.URIEncoder;
-import com.aoindustries.util.WrappedException;
 import com.aoindustries.validation.ValidationException;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
