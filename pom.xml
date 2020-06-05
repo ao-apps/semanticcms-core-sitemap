@@ -110,6 +110,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
 											<outputDirectory>${project.build.directory}/offlineLinks/com.aoindustries/ao-tempfiles-servlet</outputDirectory>
 										</artifactItem>
+										<!-- ao-javadoc-offline: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
 										<artifactItem>
 											<groupId>joda-time</groupId><artifactId>joda-time</artifactId>
 											<classifier>javadoc</classifier><includes>element-list, package-list</includes>
@@ -144,15 +145,6 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 						<groupId>org.apache.maven.plugins</groupId><artifactId>maven-javadoc-plugin</artifactId>
 						<configuration>
 							<offlineLinks>
-								<offlineLink>
-									<url>${javadoc.link.javase}</url>
-									<location>${project.build.directory}/offlineLinks/com/aoindustries/javadoc/offline/javase/${javase.release}</location>
-								</offlineLink>
-								<!-- Java EE -->
-								<offlineLink>
-									<url>${javadoc.link.javaee}</url>
-									<location>${project.build.directory}/offlineLinks/com/aoindustries/javadoc/offline/javaee/${javaee.version}</location>
-								</offlineLink>
 								<!-- Direct -->
 								<offlineLink>
 									<url>https://aoindustries.com/ao-concurrent/apidocs/</url>
@@ -186,6 +178,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 									<url>https://aoindustries.com/ao-tempfiles/servlet/apidocs/</url>
 									<location>${project.build.directory}/offlineLinks/com.aoindustries/ao-tempfiles-servlet</location>
 								</offlineLink>
+								<!-- Java EE: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
 								<offlineLink>
 									<url>https://www.joda.org/joda-time/apidocs/</url>
 									<location>${project.build.directory}/offlineLinks/joda-time/joda-time</location>
@@ -206,6 +199,16 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 									<url>https://semanticcms.com/core/renderer/html/apidocs/</url>
 									<location>${project.build.directory}/offlineLinks/com.semanticcms/semanticcms-core-renderer-html</location>
 								</offlineLink>
+								<!-- Java SE -->
+								<offlineLink>
+									<url>${javadoc.link.javase}</url>
+									<location>${project.build.directory}/offlineLinks/com/aoindustries/javadoc/offline/javase/${javase.release}</location>
+								</offlineLink>
+								<!-- Java EE -->
+								<offlineLink>
+									<url>${javadoc.link.javaee}</url>
+									<location>${project.build.directory}/offlineLinks/com/aoindustries/javadoc/offline/javaee/${javaee.version}</location>
+								</offlineLink>
 							</offlineLinks>
 						</configuration>
 					</plugin>
@@ -216,12 +219,6 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 
 	<dependencyManagement>
 		<dependencies>
-			<!-- Java EE -->
-			<dependency>
-				<groupId>com.aoindustries</groupId><artifactId>javaee-web-api-bom</artifactId><version>6.0.1${POST-SNAPSHOT}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
 			<!-- Direct -->
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-concurrent</artifactId><version>2.0.1${POST-SNAPSHOT}</version>
@@ -247,6 +244,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			<dependency>
 				<groupId>com.aoindustries</groupId><artifactId>ao-tempfiles-servlet</artifactId><version>1.1.0${POST-SNAPSHOT}</version>
 			</dependency>
+			<!-- javaee-web-api-bom: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
 			<dependency>
 				<groupId>joda-time</groupId><artifactId>joda-time</artifactId><version>2.10.6</version>
 			</dependency>
@@ -262,15 +260,16 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			<dependency>
 				<groupId>com.semanticcms</groupId><artifactId>semanticcms-core-renderer-html</artifactId><version>2.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
 			</dependency>
+			<!-- BOM -->
+			<dependency>
+				<groupId>com.aoindustries</groupId><artifactId>javaee-web-api-bom</artifactId><version>6.0.1${POST-SNAPSHOT}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
 	<dependencies>
-		<!-- Java EE -->
-		<dependency>
-			<groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
-		</dependency>
 		<!-- Direct -->
 		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>ao-concurrent</artifactId>
@@ -295,6 +294,9 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		</dependency>
 		<dependency>
 			<groupId>com.aoindustries</groupId><artifactId>ao-tempfiles-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId><artifactId>joda-time</artifactId>
