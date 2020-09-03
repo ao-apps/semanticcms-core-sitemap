@@ -142,7 +142,9 @@ public class SiteMapIndexServlet extends HttpServlet {
 					// Filter published and accessible only
 					Collection<Book> values = semanticCMS.getPublishedBooks().values();
 					books = new ArrayList<>(values.size());
-					for(Book book : values) if(book.isAccessible()) books.add(book);
+					for(Book book : values) {
+						if(book.isAccessible()) books.add(book);
+					}
 				}
 				int numBooks = books.size();
 				if(
