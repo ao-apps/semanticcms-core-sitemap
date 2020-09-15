@@ -34,6 +34,7 @@ import com.aoindustries.servlet.subrequest.UnmodifiableCopyHttpServletRequest;
 import com.aoindustries.servlet.subrequest.UnmodifiableCopyHttpServletResponse;
 import com.aoindustries.tempfiles.TempFileContext;
 import com.aoindustries.tempfiles.servlet.TempFileContextEE;
+import com.aoindustries.util.concurrent.ExecutionExceptions;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.ConcurrencyCoordinator;
@@ -190,11 +191,9 @@ public class SiteMapIndexServlet extends HttpServlet {
 						} catch(InterruptedException e) {
 							throw new ServletException(e);
 						} catch(ExecutionException e) {
-							Throwable cause = e.getCause();
-							if(cause instanceof RuntimeException) throw (RuntimeException)cause;
-							if(cause instanceof ServletException) throw (ServletException)cause;
-							if(cause instanceof IOException) throw (IOException)cause;
-							throw new ServletException(cause);
+							// Maintain expected exception types while not losing stack trace
+							ExecutionExceptions.wrapAndThrow(e, IOException.class, IOException::new);
+							throw new ServletException(e);
 						}
 						// Now find the last modified with concurrency
 						booksWithSiteMapUrl = new ArrayList<>(numBooks);
@@ -242,11 +241,9 @@ public class SiteMapIndexServlet extends HttpServlet {
 							} catch(InterruptedException e) {
 								throw new ServletException(e);
 							} catch(ExecutionException e) {
-								Throwable cause = e.getCause();
-								if(cause instanceof RuntimeException) throw (RuntimeException)cause;
-								if(cause instanceof ServletException) throw (ServletException)cause;
-								if(cause instanceof IOException) throw (IOException)cause;
-								throw new ServletException(cause);
+								// Maintain expected exception types while not losing stack trace
+								ExecutionExceptions.wrapAndThrow(e, IOException.class, IOException::new);
+								throw new ServletException(e);
 							}
 							for(int i = 0; i < booksWithSiteMapUrlSize; i++) {
 								locs.add(
