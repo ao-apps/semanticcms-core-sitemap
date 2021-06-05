@@ -37,7 +37,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T18:51:32-05:00"
-		dateModified="2021-05-31T08:58:51-05:00"
+		dateModified="2021-06-03T22:53:21-05:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -86,7 +86,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		>
 			<ul>
 				<li>Updated dependencies.</li>
-				<li>Using <ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com/aoindustries/servlet/http/Canonical.html">Canonical URLs</ao:a> in sitemaps.</li>
+				<li>Using <ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a> in sitemaps.</li>
 			</ul>
 		</changelog:release>
 

@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,13 +22,13 @@
  */
 package com.semanticcms.core.sitemap;
 
-import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
-import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
-import com.aoindustries.exception.WrappedException;
-import com.aoindustries.io.ContentType;
-import com.aoindustries.net.Path;
-import com.aoindustries.net.URIEncoder;
-import com.aoindustries.validation.ValidationException;
+import static com.aoapps.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
+import static com.aoapps.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoapps.lang.exception.WrappedException;
+import com.aoapps.lang.io.ContentType;
+import com.aoapps.lang.validation.ValidationException;
+import com.aoapps.net.Path;
+import com.aoapps.net.URIEncoder;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.SemanticCMS;

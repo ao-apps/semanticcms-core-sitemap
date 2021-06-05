@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2018, 2019, 2020  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2018, 2019, 2020, 2021  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -22,19 +22,19 @@
  */
 package com.semanticcms.core.sitemap;
 
-import static com.aoindustries.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
-import static com.aoindustries.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
-import com.aoindustries.io.ContentType;
-import com.aoindustries.net.URIEncoder;
-import com.aoindustries.servlet.http.Canonical;
-import com.aoindustries.servlet.http.HttpServletUtil;
-import com.aoindustries.servlet.subrequest.HttpServletSubRequest;
-import com.aoindustries.servlet.subrequest.HttpServletSubResponse;
-import com.aoindustries.servlet.subrequest.UnmodifiableCopyHttpServletRequest;
-import com.aoindustries.servlet.subrequest.UnmodifiableCopyHttpServletResponse;
-import com.aoindustries.tempfiles.TempFileContext;
-import com.aoindustries.tempfiles.servlet.TempFileContextEE;
-import com.aoindustries.util.concurrent.ExecutionExceptions;
+import static com.aoapps.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
+import static com.aoapps.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoapps.lang.concurrent.ExecutionExceptions;
+import com.aoapps.lang.io.ContentType;
+import com.aoapps.net.URIEncoder;
+import com.aoapps.servlet.http.Canonical;
+import com.aoapps.servlet.http.HttpServletUtil;
+import com.aoapps.servlet.subrequest.HttpServletSubRequest;
+import com.aoapps.servlet.subrequest.HttpServletSubResponse;
+import com.aoapps.servlet.subrequest.UnmodifiableCopyHttpServletRequest;
+import com.aoapps.servlet.subrequest.UnmodifiableCopyHttpServletResponse;
+import com.aoapps.tempfiles.TempFileContext;
+import com.aoapps.tempfiles.servlet.TempFileContextEE;
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.ConcurrencyCoordinator;
