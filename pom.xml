@@ -38,6 +38,10 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 / <a target="${javadoc.target}" href="https://semanticcms.com/core/">Core</a>
 / <a target="${javadoc.target}" href="${project.url}">Sitemap</a>]]></javadoc.breadcrumbs>
 		<description.html><![CDATA[Automatic sitemaps for <a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>.]]></description.html>
+		<!-- SonarCloud.io -->
+		<sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
+		<sonar.organization>aoindustries</sonar.organization>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 
 	<name>SemanticCMS Core Sitemap²</name>
