@@ -37,7 +37,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 		shortTitle="Changelog"
 		tocLevels="1"
 		datePublished="2016-10-30T18:51:32-05:00"
-		dateModified="2021-07-19T00:01:05-05:00"
+		dateModified="2021-09-28T23:57:19-05:00"
 	>
 		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
 			<changelog:release
@@ -50,6 +50,7 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 			>
 				<ul>
 					<li>Added <core:link book="/core/pages" page="/" /> support.</li>
+					<li>Updated dependencies.</li>
 				</ul>
 			</changelog:release>
 		</c:if>
