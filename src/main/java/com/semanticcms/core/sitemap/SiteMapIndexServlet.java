@@ -27,6 +27,8 @@ import static com.aoapps.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
 import com.aoapps.lang.concurrent.ExecutionExceptions;
 import com.aoapps.lang.io.ContentType;
 import com.aoapps.net.URIEncoder;
+import com.aoapps.servlet.attribute.AttributeEE;
+import com.aoapps.servlet.attribute.ScopeEE;
 import com.aoapps.servlet.http.Canonical;
 import com.aoapps.servlet.http.HttpServletUtil;
 import com.aoapps.servlet.subrequest.HttpServletSubRequest;
@@ -87,7 +89,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 	 * used by both {@link #getLastModified(javax.servlet.http.HttpServletRequest)}
 	 * and {@link #doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
 	 */
-	private static final String LOCS_ATTRIBUTE = SiteMapIndexServlet.class.getName() + ".locs";
+	private static final ScopeEE.Request.Attribute<SortedSet<SiteMapUrl>> LOCS_ATTRIBUTE =
+		ScopeEE.REQUEST.attribute(SiteMapIndexServlet.class.getName() + ".locs");
 
 	/**
 	 * Checks if the sitemap has at least one page.
@@ -128,7 +131,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Object old = req.getAttribute(LOCS_ATTRIBUTE);
+		AttributeEE.Request<SortedSet<SiteMapUrl>> locsAttribute = LOCS_ATTRIBUTE.context(req);
+		SortedSet<SiteMapUrl> old = locsAttribute.get();
 		try {
 			final ServletContext servletContext = getServletContext();
 			SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
@@ -291,17 +295,16 @@ public class SiteMapIndexServlet extends HttpServlet {
 					}
 				}
 			}
-			req.setAttribute(LOCS_ATTRIBUTE, locs);
+			locsAttribute.set(locs);
 			super.service(req, resp);
 		} finally {
-			req.setAttribute(LOCS_ATTRIBUTE, old);
+			locsAttribute.set(old);
 		}
 	}
 
 	private static SortedSet<SiteMapUrl> getLocs(HttpServletRequest req) {
-		@SuppressWarnings("unchecked")
-		SortedSet<SiteMapUrl> locs = (SortedSet<SiteMapUrl>)req.getAttribute(LOCS_ATTRIBUTE);
-		if(locs == null) throw new IllegalStateException("Request attribute not set: " + LOCS_ATTRIBUTE);
+		SortedSet<SiteMapUrl> locs = LOCS_ATTRIBUTE.context(req).get();
+		if(locs == null) throw new IllegalStateException("Request attribute not set: " + LOCS_ATTRIBUTE.getName());
 		return locs;
 	}
 

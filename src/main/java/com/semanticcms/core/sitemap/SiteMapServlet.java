@@ -24,8 +24,10 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoapps.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoapps.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+import com.aoapps.lang.attribute.Attribute;
 import com.aoapps.lang.io.ContentType;
 import com.aoapps.net.URIEncoder;
+import com.aoapps.servlet.attribute.ScopeEE;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.Page;
 import com.semanticcms.core.model.PageRef;
@@ -133,16 +135,13 @@ public class SiteMapServlet extends HttpServlet {
 	 * The response is not given to getLastModified, but we need it for captures to get
 	 * the last modified.
 	 */
-	private static final String RESPONSE_IN_REQUEST_ATTRIBUTE = SiteMapServlet.class.getName() + ".responseInRequest";
+	private static final ScopeEE.Request.Attribute<HttpServletResponse> RESPONSE_IN_REQUEST_ATTRIBUTE =
+		ScopeEE.REQUEST.attribute(SiteMapServlet.class.getName() + ".responseInRequest");
 
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		Object old = req.getAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE);
-		try {
-			req.setAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE, resp);
+		try (Attribute.OldValue old = RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).init(resp)) {
 			super.service(req, resp);
-		} finally {
-			req.setAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE, old);
 		}
 	}
 
@@ -159,7 +158,7 @@ public class SiteMapServlet extends HttpServlet {
 				ReadableInstant lastModified = getLastModified(
 					getServletContext(),
 					req,
-					(HttpServletResponse)req.getAttribute(RESPONSE_IN_REQUEST_ATTRIBUTE),
+					RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).get(),
 					semanticCMS.getViews(),
 					book
 				);
