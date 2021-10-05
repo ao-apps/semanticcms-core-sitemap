@@ -71,20 +71,20 @@ along with semanticcms-core-sitemap.  If not, see <http://www.gnu.org/licenses /
 	</developers>
 
 	<scm>
-		<connection>scm:git:git://github.com/aoindustries/semanticcms-core-sitemap.git</connection>
-		<developerConnection>scm:git:git@github.com:aoindustries/semanticcms-core-sitemap.git</developerConnection>
-		<url>https://github.com/aoindustries/semanticcms-core-sitemap</url>
+		<connection>scm:git:git://github.com/ao-apps/semanticcms-core-sitemap.git</connection>
+		<developerConnection>scm:git:git@github.com:ao-apps/semanticcms-core-sitemap.git</developerConnection>
+		<url>https://github.com/ao-apps/semanticcms-core-sitemap</url>
 		<tag>HEAD</tag>
 	</scm>
 
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/aoindustries/semanticcms-core-sitemap/issues</url>
+		<url>https://github.com/ao-apps/semanticcms-core-sitemap/issues</url>
 	</issueManagement>
 
 	<ciManagement>
 		<system>GitHub Actions</system>
-		<url>https://github.com/aoindustries/semanticcms-core-sitemap/actions</url>
+		<url>https://github.com/ao-apps/semanticcms-core-sitemap/actions</url>
 	</ciManagement>
 
 	<repositories>
