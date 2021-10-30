@@ -193,6 +193,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 						try {
 							results = semanticCMS.getExecutors().getPerProcessor().callAll(tasks);
 						} catch(InterruptedException e) {
+							// Restore the interrupted status
+							Thread.currentThread().interrupt();
 							throw new ServletException(e);
 						} catch(ExecutionException e) {
 							// Maintain expected exception types while not losing stack trace
@@ -243,6 +245,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 							try {
 								lastModifieds = semanticCMS.getExecutors().getPerProcessor().callAll(lastModifiedTasks);
 							} catch(InterruptedException e) {
+								// Restore the interrupted status
+								Thread.currentThread().interrupt();
 								throw new ServletException(e);
 							} catch(ExecutionException e) {
 								// Maintain expected exception types while not losing stack trace
