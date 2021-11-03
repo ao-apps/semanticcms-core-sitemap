@@ -101,7 +101,7 @@ public class SiteMapServlet extends HttpServlet {
 			resp,
 			book.getContentRoot(),
 			CaptureLevel.META,
-			(Page page) -> {
+			page -> {
 				// TODO: Chance for more concurrency here by view?
 				for(View view : views) {
 					if(
@@ -126,7 +126,7 @@ public class SiteMapServlet extends HttpServlet {
 				return null;
 			},
 			Page::getChildRefs,
-			(PageRef childPage) -> book.equals(childPage.getBook())
+			childPage -> book.equals(childPage.getBook())
 		);
 		return result[0];
 	}
@@ -188,7 +188,7 @@ public class SiteMapServlet extends HttpServlet {
 			resp,
 			book.getContentRoot(),
 			CaptureLevel.META,
-			(Page page) -> {
+			page -> {
 				assert page.getPageRef().getBook().equals(book);
 				// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
 				for(View view : views) {
@@ -207,7 +207,7 @@ public class SiteMapServlet extends HttpServlet {
 				return null;
 			},
 			Page::getChildRefs,
-			(PageRef childPage) -> book.equals(childPage.getBook())
+			childPage -> book.equals(childPage.getBook())
 		);
 
 		final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();
