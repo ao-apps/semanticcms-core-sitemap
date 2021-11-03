@@ -35,7 +35,6 @@ import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.CapturePage;
 import com.semanticcms.core.controller.SemanticCMS;
 import com.semanticcms.core.model.Page;
-import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.pages.CaptureLevel;
 import com.semanticcms.core.renderer.html.HtmlRenderer;
 import com.semanticcms.core.renderer.html.View;
@@ -130,7 +129,7 @@ public class SiteMapServlet extends HttpServlet {
 			resp,
 			book.getContentRoot(),
 			CaptureLevel.META,
-			(Page page) -> {
+			page -> {
 				// TODO: Chance for more concurrency here by view?
 				for(View view : views) {
 					if(
@@ -155,7 +154,7 @@ public class SiteMapServlet extends HttpServlet {
 				return null;
 			},
 			Page::getChildRefs,
-			(PageRef childPage) -> book.getBookRef().equals(childPage.getBookRef())
+			childPage -> book.getBookRef().equals(childPage.getBookRef())
 		);
 		return result[0];
 	}
@@ -215,7 +214,7 @@ public class SiteMapServlet extends HttpServlet {
 			resp,
 			book.getContentRoot(),
 			CaptureLevel.META,
-			(Page page) -> {
+			page -> {
 				assert page.getPageRef().getBookRef().equals(book.getBookRef());
 				// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
 				for(View view : views) {
@@ -234,7 +233,7 @@ public class SiteMapServlet extends HttpServlet {
 				return null;
 			},
 			Page::getChildRefs,
-			(PageRef childPage) -> book.getBookRef().equals(childPage.getBookRef())
+			childPage -> book.getBookRef().equals(childPage.getBookRef())
 		);
 
 		final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();

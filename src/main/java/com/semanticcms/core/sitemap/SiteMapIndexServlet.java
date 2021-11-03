@@ -111,7 +111,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 			resp,
 			pageRef,
 			CaptureLevel.META,
-			(Page page) -> {
+			page -> {
 				// TODO: Chance for more concurrency here by view?
 				for(View view : views) {
 					if(
@@ -124,7 +124,7 @@ public class SiteMapIndexServlet extends HttpServlet {
 				return null;
 			},
 			Page::getChildRefs,
-			(PageRef childPage) -> book.getBookRef().equals(childPage.getBookRef())
+			childPage -> book.getBookRef().equals(childPage.getBookRef())
 		);
 		assert result == null || result : "Should always be null or true";
 		return result != null;
