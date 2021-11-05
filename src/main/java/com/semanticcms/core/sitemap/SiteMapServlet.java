@@ -30,7 +30,6 @@ import com.aoapps.net.URIEncoder;
 import com.aoapps.servlet.attribute.ScopeEE;
 import com.semanticcms.core.model.Book;
 import com.semanticcms.core.model.Page;
-import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.servlet.CaptureLevel;
 import com.semanticcms.core.servlet.CapturePage;
 import com.semanticcms.core.servlet.SemanticCMS;
