@@ -112,6 +112,18 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
 		</repository>
 	</repositories>
 
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.github.spotbugs</groupId><artifactId>spotbugs-maven-plugin</artifactId>
+				<configuration>
+					<!-- TODO: Clean-up SpotBugs -->
+					<failOnError>false</failOnError>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<profiles>
 		<profile>
 			<id>offlineLinks</id><activation><file><exists>src/main/java</exists></file></activation>
