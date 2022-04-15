@@ -134,6 +134,13 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
 					</ignoredDependencies>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId><artifactId>maven-checkstyle-plugin</artifactId>
+				<configuration>
+					<!-- TODO: Clean-up Checkstyle -->
+					<failOnViolation>false</failOnViolation>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
