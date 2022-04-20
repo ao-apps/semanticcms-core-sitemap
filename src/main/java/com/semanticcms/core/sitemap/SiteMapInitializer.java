@@ -36,18 +36,18 @@ import javax.servlet.ServletRegistration;
  */
 public class SiteMapInitializer implements ServletContainerInitializer {
 
-	@Override
-	public void onStartup(Set<Class<?>> set, ServletContext servletContext) throws ServletException {
-		ServletRegistration.Dynamic registration = servletContext.addServlet(
-			SiteMapServlet.class.getName(),
-			SiteMapServlet.class
-		);
-		// Only published books
-		for(Book book : SemanticCMS.getInstance(servletContext).getPublishedBooks().values()) {
-			// And only accessible books
-			if(book.isAccessible()) {
-				registration.addMapping(book.getBookRef().getPrefix() + SiteMapServlet.SERVLET_PATH);
-			}
-		}
-	}
+  @Override
+  public void onStartup(Set<Class<?>> set, ServletContext servletContext) throws ServletException {
+    ServletRegistration.Dynamic registration = servletContext.addServlet(
+      SiteMapServlet.class.getName(),
+      SiteMapServlet.class
+    );
+    // Only published books
+    for (Book book : SemanticCMS.getInstance(servletContext).getPublishedBooks().values()) {
+      // And only accessible books
+      if (book.isAccessible()) {
+        registration.addMapping(book.getBookRef().getPrefix() + SiteMapServlet.SERVLET_PATH);
+      }
+    }
+  }
 }

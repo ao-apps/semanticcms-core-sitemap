@@ -22,325 +22,325 @@ You should have received a copy of the GNU Lesser General Public License
 along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/>.
 -->
 <jsp:root
-	xmlns:ao="https://oss.aoapps.com/taglib/"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:changelog="https://semanticcms.com/changelog/taglib/"
-	xmlns:core="https://semanticcms.com/core/taglib/"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	version="2.1"
+  xmlns:ao="https://oss.aoapps.com/taglib/"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:changelog="https://semanticcms.com/changelog/taglib/"
+  xmlns:core="https://semanticcms.com/core/taglib/"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  version="2.1"
 >
-	<jsp:directive.page language="java" pageEncoding="UTF-8" />
-	<jsp:directive.page session="false" />
-	<core:page
-		title="@{documented.name} Changelog"
-		shortTitle="Changelog"
-		tocLevels="1"
-		datePublished="2016-10-30T18:51:32-05:00"
-		dateModified="2022-02-16T19:48:26-06:00"
-	>
-		<c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
-			<changelog:release
-				projectName="@{documented.name}"
-				version="@{project.version}"
-				groupId="@{project.groupId}"
-				artifactId="@{documented.artifactId}"
-				repository="@{nexusUrl}content/repositories/snapshots/"
-				scmUrl="@{project.scm.url}"
-			>
-				<ul>
-					<li>Added <core:link book="/core/pages" page="/" /> support.</li>
-				</ul>
-			</changelog:release>
-		</c:if>
+  <jsp:directive.page language="java" pageEncoding="UTF-8" />
+  <jsp:directive.page session="false" />
+  <core:page
+    title="@{documented.name} Changelog"
+    shortTitle="Changelog"
+    tocLevels="1"
+    datePublished="2016-10-30T18:51:32-05:00"
+    dateModified="2022-02-16T19:48:26-06:00"
+  >
+    <c:if test="${fn:endsWith('@{project.version}', '-SNAPSHOT') and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')}">
+      <changelog:release
+        projectName="@{documented.name}"
+        version="@{project.version}"
+        groupId="@{project.groupId}"
+        artifactId="@{documented.artifactId}"
+        repository="@{nexusUrl}content/repositories/snapshots/"
+        scmUrl="@{project.scm.url}"
+      >
+        <ul>
+          <li>Added <core:link book="/core/pages" page="/" /> support.</li>
+        </ul>
+      </changelog:release>
+    </c:if>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.14.2"
-			datePublished="2022-02-16T19:48:26-06:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Now properly restoring Thread interrupted state on <code>InterruptedException</code>.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.14.2"
+      datePublished="2022-02-16T19:48:26-06:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Now properly restoring Thread interrupted state on <code>InterruptedException</code>.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.14.1"
-			datePublished="2021-10-18T23:42:04-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Updated dependencies.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.14.1"
+      datePublished="2021-10-18T23:42:04-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Updated dependencies.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.14.0"
-			datePublished="2021-07-19T00:01:05-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Updated to <ao:a rel="nofollow" href="https://www.oracle.com/java/technologies/javaee/javaeetechnologies.html#javaee7">Java™ EE 7 Web Profile</ao:a> (Servlet 3.1, JSP 2.3, EL 3.0, and JSTL 1.2).</li>
-				<li>Minimum Java version changed from 1.8 to 11.</li>
-				<li>
-					Now supports Java 9+ modules.  Due to still having filename-based automatic module dependencies,
-					*-SNAPSHOT versions include <code>module-info.class</code> while releases include the
-					<code>Automatic-Module-Name</code> manifest entry.  To minimize the difference between these
-					modes, <code>module-info.java</code> does not perform any transitive requires.
-				</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.14.0"
+      datePublished="2021-07-19T00:01:05-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Updated to <ao:a rel="nofollow" href="https://www.oracle.com/java/technologies/javaee/javaeetechnologies.html#javaee7">Java™ EE 7 Web Profile</ao:a> (Servlet 3.1, JSP 2.3, EL 3.0, and JSTL 1.2).</li>
+        <li>Minimum Java version changed from 1.8 to 11.</li>
+        <li>
+          Now supports Java 9+ modules.  Due to still having filename-based automatic module dependencies,
+          *-SNAPSHOT versions include <code>module-info.class</code> while releases include the
+          <code>Automatic-Module-Name</code> manifest entry.  To minimize the difference between these
+          modes, <code>module-info.java</code> does not perform any transitive requires.
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.13.0"
-			datePublished="2020-03-29T03:25:40-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Minimum Java version changed from 1.7 to 1.8.</li>
-				<li>
-					Reduced use of property substitutions in <code>pom.xml</code>.
-					This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
-				</li>
-				<li>Moved Servlet subrequest utilities to new <ao:a href="https://oss.aoapps.com/servlet-subrequest/">AO Servlet Subrequest</ao:a> project.</li>
-				<li>Optimized ServletContext attribute initialization and concurrency.</li>
-				<li>Updated dependencies.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.13.0"
+      datePublished="2020-03-29T03:25:40-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Minimum Java version changed from 1.7 to 1.8.</li>
+        <li>
+          Reduced use of property substitutions in <code>pom.xml</code>.
+          This is to help 3rd-party parsers that fail to perform full Maven-compatible substitutions.
+        </li>
+        <li>Moved Servlet subrequest utilities to new <ao:a href="https://oss.aoapps.com/servlet-subrequest/">AO Servlet Subrequest</ao:a> project.</li>
+        <li>Optimized ServletContext attribute initialization and concurrency.</li>
+        <li>Updated dependencies.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.12.0"
-			datePublished="2019-10-11T20:42:24-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Updated dependencies.</li>
-				<li>Using <ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com.aoapps.servlet.util/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a> in sitemaps.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.12.0"
+      datePublished="2019-10-11T20:42:24-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Updated dependencies.</li>
+        <li>Using <ao:a href="https://oss.aoapps.com/servlet-util/apidocs/com.aoapps.servlet.util/com/aoapps/servlet/http/Canonical.html">Canonical URLs</ao:a> in sitemaps.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.11.0"
-			datePublished="2019-06-22T01:58:22-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Using managed dependencies:
-					<ol>
-						<li>This project uses managed dependencies.</li>
-						<li>This project's managed dependencies may also be imported by other projects.</li>
-					</ol>
-				</li>
-				<li>
-					<p>
-						Sitemaps are now ordered with the most recently modified urls listed first.
-						Sitemaps with unknown modified times are listed last.
-					</p>
-					<p>
-						The order does not matter for search engine optimization (SEO), but
-						this can be useful for human review.
-					</p>
-				</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.11.0"
+      datePublished="2019-06-22T01:58:22-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Using managed dependencies:
+          <ol>
+            <li>This project uses managed dependencies.</li>
+            <li>This project's managed dependencies may also be imported by other projects.</li>
+          </ol>
+        </li>
+        <li>
+          <p>
+            Sitemaps are now ordered with the most recently modified urls listed first.
+            Sitemaps with unknown modified times are listed last.
+          </p>
+          <p>
+            The order does not matter for search engine optimization (SEO), but
+            this can be useful for human review.
+          </p>
+        </li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.10.0"
-			datePublished="2019-04-20T18:12:12-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Minimum Java version changed from 1.6 to 1.7.</li>
-				<li>Removed some incorrect uses of <code>Thread.currentThread().interrupt()</code>.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.10.0"
+      datePublished="2019-04-20T18:12:12-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Minimum Java version changed from 1.6 to 1.7.</li>
+        <li>Removed some incorrect uses of <code>Thread.currentThread().interrupt()</code>.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.9.2"
-			datePublished="2017-07-20T12:00:05-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Updated dependencies.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.9.2"
+      datePublished="2017-07-20T12:00:05-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Updated dependencies.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.9.1"
-			datePublished="2016-11-15T21:15:41-06:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>New <ao:a href="https://oss.aoapps.com/parent/">AO OSS Parent</ao:a> POM to simplify <code>pom.xml</code> files.</li>
-				<li>Added support for dateCreated, datePublished, dateModified, and dateReviewed.</li>
-				<li>Project documentation moved to per-project book in <core:link book="/" page="/" /> format.</li>
-				<li>Added changelog as top-level project link.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.9.1"
+      datePublished="2016-11-15T21:15:41-06:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>New <ao:a href="https://oss.aoapps.com/parent/">AO OSS Parent</ao:a> POM to simplify <code>pom.xml</code> files.</li>
+        <li>Added support for dateCreated, datePublished, dateModified, and dateReviewed.</li>
+        <li>Project documentation moved to per-project book in <core:link book="/" page="/" /> format.</li>
+        <li>Added changelog as top-level project link.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.9.0"
-			datePublished="2016-10-20T18:27:00-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Improved Javadoc formatting.</li>
-				<li>Improved README formatting.</li>
-				<li>View now determines the canonical URL for itself and a given page.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.9.0"
+      datePublished="2016-10-20T18:27:00-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Improved Javadoc formatting.</li>
+        <li>Improved README formatting.</li>
+        <li>View now determines the canonical URL for itself and a given page.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.8.0"
-			datePublished="2016-10-04T20:45:00-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Improved Javadoc formatting.</li>
-				<li>Using concurrent subrequests to leverage multiple CPU cores to increase responsiveness of sitemap generation.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.8.0"
+      datePublished="2016-10-04T20:45:00-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Improved Javadoc formatting.</li>
+        <li>Using concurrent subrequests to leverage multiple CPU cores to increase responsiveness of sitemap generation.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.7"
-			datePublished="2016-09-11T15:36:00-05:00"
-			groupId="@{project.groupId}"
-			artifactId="@{documented.artifactId}"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Use dependencyManagement instead of dependency for junit.</li>
-				<li>Now supporting per-page allowRobots setting.</li>
-				<li>Moved sitemaps to core.</li>
-				<li>Sitemaps now include views that both allow robots and are applicable to each page.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.7"
+      datePublished="2016-09-11T15:36:00-05:00"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Use dependencyManagement instead of dependency for junit.</li>
+        <li>Now supporting per-page allowRobots setting.</li>
+        <li>Moved sitemaps to core.</li>
+        <li>Sitemaps now include views that both allow robots and are applicable to each page.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.6"
-			datePublished="2016-09-03T10:51:00-05:00"
-			groupId="@{project.groupId}"
-			artifactId="semanticcms-sitemap-servlet"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Improved Maven configuration for Java EE 6 dependencies.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.6"
+      datePublished="2016-09-03T10:51:00-05:00"
+      groupId="@{project.groupId}"
+      artifactId="semanticcms-sitemap-servlet"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Improved Maven configuration for Java EE 6 dependencies.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.5"
-			datePublished="2016-08-28T21:19:00-05:00"
-			groupId="@{project.groupId}"
-			artifactId="semanticcms-sitemap-servlet"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Using latest releases of dependencies.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.5"
+      datePublished="2016-08-28T21:19:00-05:00"
+      groupId="@{project.groupId}"
+      artifactId="semanticcms-sitemap-servlet"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Using latest releases of dependencies.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.4"
-			datePublished="2016-08-21T18:31:00-05:00"
-			groupId="@{project.groupId}"
-			artifactId="semanticcms-sitemap-servlet"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Created parent pom for all SemanticCMS components.</li>
-				<li>Requires latest version of aocode-public.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.4"
+      datePublished="2016-08-21T18:31:00-05:00"
+      groupId="@{project.groupId}"
+      artifactId="semanticcms-sitemap-servlet"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Created parent pom for all SemanticCMS components.</li>
+        <li>Requires latest version of aocode-public.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.3"
-			datePublished="2016-08-19T16:36:00-05:00"
-			groupId="@{project.groupId}"
-			artifactId="semanticcms-sitemap-servlet"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Application-scope variables combined into single "semanticCMS" variable.</li>
-				<li>Using latest releases of dependencies.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.3"
+      datePublished="2016-08-19T16:36:00-05:00"
+      groupId="@{project.groupId}"
+      artifactId="semanticcms-sitemap-servlet"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Application-scope variables combined into single "semanticCMS" variable.</li>
+        <li>Using latest releases of dependencies.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.2"
-			datePublished="2016-08-10T12:10:00-05:00"
-			groupId="@{project.groupId}"
-			artifactId="semanticcms-sitemap-servlet"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Renamed project from ao-web-sitemap-servlet to semanticcms-sitemap-servlet.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.2"
+      datePublished="2016-08-10T12:10:00-05:00"
+      groupId="@{project.groupId}"
+      artifactId="semanticcms-sitemap-servlet"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Renamed project from ao-web-sitemap-servlet to semanticcms-sitemap-servlet.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.1"
-			datePublished="2016-08-07T23:41:00-05:00"
-			groupId="com.aoindustries"
-			artifactId="ao-web-sitemap-servlet"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Reverted to Java 1.6 for Android and Java EE 6 compatibility.</li>
-			</ul>
-		</changelog:release>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.1"
+      datePublished="2016-08-07T23:41:00-05:00"
+      groupId="com.aoindustries"
+      artifactId="ao-web-sitemap-servlet"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Reverted to Java 1.6 for Android and Java EE 6 compatibility.</li>
+      </ul>
+    </changelog:release>
 
-		<changelog:release
-			projectName="@{documented.name}"
-			version="1.0"
-			datePublished="2016-08-07T10:58:00-05:00"
-			groupId="com.aoindustries"
-			artifactId="ao-web-sitemap-servlet"
-			scmUrl="@{project.scm.url}"
-		>
-			<ul>
-				<li>Project moved to GitHub and Maven.</li>
-			</ul>
-		</changelog:release>
-	</core:page>
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.0"
+      datePublished="2016-08-07T10:58:00-05:00"
+      groupId="com.aoindustries"
+      artifactId="ao-web-sitemap-servlet"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>Project moved to GitHub and Maven.</li>
+      </ul>
+    </changelog:release>
+  </core:page>
 </jsp:root>

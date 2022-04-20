@@ -31,45 +31,47 @@ import org.joda.time.ReadableInstant;
  */
 class SiteMapUrl implements Comparable<SiteMapUrl> {
 
-	private final String loc;
-	private final ReadableInstant lastmod;
+  private final String loc;
+  private final ReadableInstant lastmod;
 
-	SiteMapUrl(String loc, ReadableInstant lastmod) {
-		this.loc = loc;
-		this.lastmod = lastmod;
-	}
+  SiteMapUrl(String loc, ReadableInstant lastmod) {
+    this.loc = loc;
+    this.lastmod = lastmod;
+  }
 
-	String getLoc() {
-		return loc;
-	}
+  String getLoc() {
+    return loc;
+  }
 
-	ReadableInstant getLastmod() {
-		return lastmod;
-	}
+  ReadableInstant getLastmod() {
+    return lastmod;
+  }
 
-	/**
-	 * Ordered by most recent first (with unknown modified times last), then
-	 * by loc;
-	 * <p>
-	 * Note: The ordering of nulls last is required by {@link SiteMapIndexServlet#getLastModified(javax.servlet.http.HttpServletRequest)}.
-	 * </p>
-	 */
-	@Override
-	public int compareTo(SiteMapUrl o) {
-		if(lastmod != null) {
-			if(o.lastmod != null) {
-				int diff = lastmod.compareTo(o.lastmod);
-				if(diff != 0) return -diff;
-			} else {
-				// nulls last
-				return -1;
-			}
-		} else {
-			if(o.lastmod != null) {
-				// nulls last
-				return 1;
-			}
-		}
-		return Strings.compareToIgnoreCaseCarefulEquals(loc, o.loc);
-	}
+  /**
+   * Ordered by most recent first (with unknown modified times last), then
+   * by loc;
+   * <p>
+   * Note: The ordering of nulls last is required by {@link SiteMapIndexServlet#getLastModified(javax.servlet.http.HttpServletRequest)}.
+   * </p>
+   */
+  @Override
+  public int compareTo(SiteMapUrl o) {
+    if (lastmod != null) {
+      if (o.lastmod != null) {
+        int diff = lastmod.compareTo(o.lastmod);
+        if (diff != 0) {
+          return -diff;
+        }
+      } else {
+        // nulls last
+        return -1;
+      }
+    } else {
+      if (o.lastmod != null) {
+        // nulls last
+        return 1;
+      }
+    }
+    return Strings.compareToIgnoreCaseCarefulEquals(loc, o.loc);
+  }
 }
