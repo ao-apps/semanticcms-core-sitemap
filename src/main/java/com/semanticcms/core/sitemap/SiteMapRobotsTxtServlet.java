@@ -41,57 +41,57 @@ import javax.servlet.http.HttpServletResponse;
  * Adds the sitemap index to /robots.txt
  */
 @WebServlet(
-	urlPatterns = SiteMapRobotsTxtServlet.SERVLET_PATH,
-	loadOnStartup = 1
+  urlPatterns = SiteMapRobotsTxtServlet.SERVLET_PATH,
+  loadOnStartup = 1
 )
 public class SiteMapRobotsTxtServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public static final String SERVLET_PATH = "/robots.txt";
+  public static final String SERVLET_PATH = "/robots.txt";
 
-	private static final String CONTENT_TYPE = ContentType.TEXT;
+  private static final String CONTENT_TYPE = ContentType.TEXT;
 
-	private static final Charset ENCODING = StandardCharsets.UTF_8;
+  private static final Charset ENCODING = StandardCharsets.UTF_8;
 
-	/**
-	 * TODO: Consider a Maven-filter-provided build time annotation instead of using init time.
-	 *       This would give consistent results between nodes in a cluster, as long as the same
-	 *       build of software deployed to each.
-	 */
-	private long initTime;
+  /**
+   * TODO: Consider a Maven-filter-provided build time annotation instead of using init time.
+   *       This would give consistent results between nodes in a cluster, as long as the same
+   *       build of software deployed to each.
+   */
+  private long initTime;
 
-	@Override
-	public void init() {
-		initTime = System.currentTimeMillis();
-	}
+  @Override
+  public void init() {
+    initTime = System.currentTimeMillis();
+  }
 
-	@Override
-	protected long getLastModified(HttpServletRequest req) {
-		return initTime;
-	}
+  @Override
+  protected long getLastModified(HttpServletRequest req) {
+    return initTime;
+  }
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.resetBuffer();
-		resp.setContentType(CONTENT_TYPE);
-		resp.setCharacterEncoding(ENCODING.name());
-		PrintWriter out = resp.getWriter();
-		out.println("User-agent: *");
-		out.println("Allow: /");
-		out.print("Sitemap: ");
-		URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-			Canonical.encodeCanonicalURL(
-				resp,
-				HttpServletUtil.getAbsoluteURL(
-					req,
-					URIEncoder.encodeURI(
-						SiteMapIndexServlet.SERVLET_PATH
-					)
-				)
-			),
-			out
-		);
-		out.println();
-	}
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    resp.resetBuffer();
+    resp.setContentType(CONTENT_TYPE);
+    resp.setCharacterEncoding(ENCODING.name());
+    PrintWriter out = resp.getWriter();
+    out.println("User-agent: *");
+    out.println("Allow: /");
+    out.print("Sitemap: ");
+    URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
+      Canonical.encodeCanonicalURL(
+        resp,
+        HttpServletUtil.getAbsoluteURL(
+          req,
+          URIEncoder.encodeURI(
+            SiteMapIndexServlet.SERVLET_PATH
+          )
+        )
+      ),
+      out
+    );
+    out.println();
+  }
 }

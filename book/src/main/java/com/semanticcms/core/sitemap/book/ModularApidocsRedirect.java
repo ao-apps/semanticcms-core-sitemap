@@ -36,14 +36,14 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/core/sitemap/apidocs/com/*")
 public class ModularApidocsRedirect extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		HttpServletUtil.sendRedirect(
-			HttpServletResponse.SC_MOVED_PERMANENTLY, req, resp,
-			"/core/sitemap/apidocs/com.semanticcms.core.sitemap/com" + Objects.toString(req.getPathInfo(), ""),
-			URIParametersUtils.of(req.getQueryString()), true, false
-		);
-	}
+  @Override
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    HttpServletUtil.sendRedirect(
+      HttpServletResponse.SC_MOVED_PERMANENTLY, req, resp,
+      "/core/sitemap/apidocs/com.semanticcms.core.sitemap/com" + Objects.toString(req.getPathInfo(), ""),
+      URIParametersUtils.of(req.getQueryString()), true, false
+    );
+  }
 }

@@ -57,186 +57,188 @@ import org.joda.time.format.ISODateTimeFormat;
  */
 public class SiteMapServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public static final String SERVLET_PATH = "/sitemap.xml";
+  public static final String SERVLET_PATH = "/sitemap.xml";
 
-	private static final String CONTENT_TYPE = ContentType.XML;
+  private static final String CONTENT_TYPE = ContentType.XML;
 
-	private static final Charset ENCODING = StandardCharsets.UTF_8;
+  private static final Charset ENCODING = StandardCharsets.UTF_8;
 
-	private static Book getBook(SemanticCMS semanticCMS, HttpServletRequest req) {
-		// Find the book for this request
-		String servletPath = req.getServletPath();
-		if(!servletPath.endsWith(SERVLET_PATH)) {
-			// Incorrect mapping, treat as not found
-			return null;
-		}
-		String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
-		if(bookName.isEmpty()) bookName = "/";
-		return semanticCMS.getBooks().get(bookName);
-	}
+  private static Book getBook(SemanticCMS semanticCMS, HttpServletRequest req) {
+    // Find the book for this request
+    String servletPath = req.getServletPath();
+    if (!servletPath.endsWith(SERVLET_PATH)) {
+      // Incorrect mapping, treat as not found
+      return null;
+    }
+    String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
+    if (bookName.isEmpty()) {
+      bookName = "/";
+    }
+    return semanticCMS.getBooks().get(bookName);
+  }
 
-	/**
-	 * Gets the most recent of the last modified of all views applicable to the given
-	 * book and accessible to the search engines.  If any view returns {@code null}
-	 * from {@link View#getLastModified(javax.servlet.ServletContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, com.semanticcms.core.model.Page)},
-	 * the sitemap overall will not have any last modified time.
-	 *
-	 * @return  the most recently last modified or {@code null} if unknown
-	 */
-	static ReadableInstant getLastModified(
-		final ServletContext servletContext,
-		final HttpServletRequest req,
-		final HttpServletResponse resp,
-		final SortedSet<View> views,
-		final Book book
-	) throws ServletException, IOException {
-		// The most recent is kept here, but set to null the first time a missing
-		// per page/view last modified time is found
-		final ReadableInstant[] result = new ReadableInstant[1];
-		CapturePage.traversePagesAnyOrder(
-			servletContext,
-			req,
-			resp,
-			book.getContentRoot(),
-			CaptureLevel.META,
-			page -> {
-				// TODO: Chance for more concurrency here by view?
-				for(View view : views) {
-					if(
-						view.getAllowRobots(servletContext, req, resp, page)
-						&& view.isApplicable(servletContext, req, resp, page)
-					) {
-						ReadableInstant lastModified = view.getLastModified(servletContext, req, resp, page);
-						if(lastModified == null) {
-							// Stop searching, return null for this book
-							result[0] = null;
-							return false;
-						} else {
-							if(
-								result[0] == null
-								|| lastModified.compareTo(result[0]) > 0
-							) {
-								result[0] = lastModified;
-							}
-						}
-					}
-				}
-				return null;
-			},
-			Page::getChildRefs,
-			childPage -> book.equals(childPage.getBook())
-		);
-		return result[0];
-	}
+  /**
+   * Gets the most recent of the last modified of all views applicable to the given
+   * book and accessible to the search engines.  If any view returns {@code null}
+   * from {@link View#getLastModified(javax.servlet.ServletContext, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse, com.semanticcms.core.model.Page)},
+   * the sitemap overall will not have any last modified time.
+   *
+   * @return  the most recently last modified or {@code null} if unknown
+   */
+  static ReadableInstant getLastModified(
+    final ServletContext servletContext,
+    final HttpServletRequest req,
+    final HttpServletResponse resp,
+    final SortedSet<View> views,
+    final Book book
+  ) throws ServletException, IOException {
+    // The most recent is kept here, but set to null the first time a missing
+    // per page/view last modified time is found
+    final ReadableInstant[] result = new ReadableInstant[1];
+    CapturePage.traversePagesAnyOrder(
+      servletContext,
+      req,
+      resp,
+      book.getContentRoot(),
+      CaptureLevel.META,
+      page -> {
+        // TODO: Chance for more concurrency here by view?
+        for (View view : views) {
+          if (
+            view.getAllowRobots(servletContext, req, resp, page)
+            && view.isApplicable(servletContext, req, resp, page)
+          ) {
+            ReadableInstant lastModified = view.getLastModified(servletContext, req, resp, page);
+            if (lastModified == null) {
+              // Stop searching, return null for this book
+              result[0] = null;
+              return false;
+            } else {
+              if (
+                result[0] == null
+                || lastModified.compareTo(result[0]) > 0
+              ) {
+                result[0] = lastModified;
+              }
+            }
+          }
+        }
+        return null;
+      },
+      Page::getChildRefs,
+      childPage -> book.equals(childPage.getBook())
+    );
+    return result[0];
+  }
 
-	/**
-	 * The response is not given to getLastModified, but we need it for captures to get
-	 * the last modified.
-	 */
-	private static final ScopeEE.Request.Attribute<HttpServletResponse> RESPONSE_IN_REQUEST_ATTRIBUTE =
-		ScopeEE.REQUEST.attribute(SiteMapServlet.class.getName() + ".responseInRequest");
+  /**
+   * The response is not given to getLastModified, but we need it for captures to get
+   * the last modified.
+   */
+  private static final ScopeEE.Request.Attribute<HttpServletResponse> RESPONSE_IN_REQUEST_ATTRIBUTE =
+    ScopeEE.REQUEST.attribute(SiteMapServlet.class.getName() + ".responseInRequest");
 
-	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		try (Attribute.OldValue old = RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).init(resp)) {
-			super.service(req, resp);
-		}
-	}
+  @Override
+  protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    try (Attribute.OldValue old = RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).init(resp)) {
+      super.service(req, resp);
+    }
+  }
 
-	@Override
-	protected long getLastModified(HttpServletRequest req) {
-		ServletContext servletContext = getServletContext();
-		SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
-		Book book = getBook(semanticCMS, req);
-		if(book == null) {
-			log("Book not found: " + req.getServletPath());
-			return -1;
-		} else {
-			try {
-				ReadableInstant lastModified = getLastModified(
-					getServletContext(),
-					req,
-					RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).get(),
-					semanticCMS.getViews(),
-					book
-				);
-				return lastModified == null ? -1 : lastModified.getMillis();
-			} catch(ServletException | IOException e) {
-				log("getLastModified failed", e);
-				return -1;
-			}
-		}
-	}
+  @Override
+  protected long getLastModified(HttpServletRequest req) {
+    ServletContext servletContext = getServletContext();
+    SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
+    Book book = getBook(semanticCMS, req);
+    if (book == null) {
+      log("Book not found: " + req.getServletPath());
+      return -1;
+    } else {
+      try {
+        ReadableInstant lastModified = getLastModified(
+          getServletContext(),
+          req,
+          RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).get(),
+          semanticCMS.getViews(),
+          book
+        );
+        return lastModified == null ? -1 : lastModified.getMillis();
+      } catch (ServletException | IOException e) {
+        log("getLastModified failed", e);
+        return -1;
+      }
+    }
+  }
 
-	@Override
-	protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
-		final ServletContext servletContext = getServletContext();
-		SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
-		final Book book = getBook(semanticCMS, req);
-		if(book == null) {
-			resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-			return;
-		}
-		final SortedSet<View> views = semanticCMS.getViews();
+  @Override
+  protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    final ServletContext servletContext = getServletContext();
+    SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
+    final Book book = getBook(semanticCMS, req);
+    if (book == null) {
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+      return;
+    }
+    final SortedSet<View> views = semanticCMS.getViews();
 
-		final SortedSet<SiteMapUrl> urls = new TreeSet<>();
-		CapturePage.traversePagesAnyOrder(
-			servletContext,
-			req,
-			resp,
-			book.getContentRoot(),
-			CaptureLevel.META,
-			page -> {
-				assert page.getPageRef().getBook().equals(book);
-				// TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
-				for(View view : views) {
-					if(
-						view.getAllowRobots(servletContext, req, resp, page)
-						&& view.isApplicable(servletContext, req, resp, page)
-					) {
-						urls.add(
-							new SiteMapUrl(
-								view.getCanonicalUrl(servletContext, req, resp, page),
-								view.getLastModified(servletContext, req, resp, page)
-							)
-						);
-					}
-				}
-				return null;
-			},
-			Page::getChildRefs,
-			childPage -> book.equals(childPage.getBook())
-		);
+    final SortedSet<SiteMapUrl> urls = new TreeSet<>();
+    CapturePage.traversePagesAnyOrder(
+      servletContext,
+      req,
+      resp,
+      book.getContentRoot(),
+      CaptureLevel.META,
+      page -> {
+        assert page.getPageRef().getBook().equals(book);
+        // TODO: Concurrency: Any benefit to processing each view concurrently?  allowRobots and isApplicable can be expensive but should also benefit from capture caching
+        for (View view : views) {
+          if (
+            view.getAllowRobots(servletContext, req, resp, page)
+            && view.isApplicable(servletContext, req, resp, page)
+          ) {
+            urls.add(
+              new SiteMapUrl(
+                view.getCanonicalUrl(servletContext, req, resp, page),
+                view.getLastModified(servletContext, req, resp, page)
+              )
+            );
+          }
+        }
+        return null;
+      },
+      Page::getChildRefs,
+      childPage -> book.equals(childPage.getBook())
+    );
 
-		final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();
+    final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();
 
-		resp.resetBuffer();
-		resp.setContentType(CONTENT_TYPE);
-		resp.setCharacterEncoding(ENCODING.name());
-		PrintWriter out = resp.getWriter();
+    resp.resetBuffer();
+    resp.setContentType(CONTENT_TYPE);
+    resp.setCharacterEncoding(ENCODING.name());
+    PrintWriter out = resp.getWriter();
 
-		out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
-		out.println("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
-		for(SiteMapUrl url : urls) {
-			out.println("    <url>");
-			out.print("        <loc>");
-			// RFC 3986 US-ASCII, although RFC 3987 might be possible as per https://www.google.com/sitemaps/faq.html#faq_xml_encoding
-			URIEncoder.encodeURI(
-				url.getLoc(),
-				textInXhtmlEncoder,
-				out
-			);
-			out.println("</loc>");
-			ReadableInstant lastmod = url.getLastmod();
-			if(lastmod != null) {
-				out.print("        <lastmod>");
-				encodeTextInXhtml(iso8601.print(lastmod), out);
-				out.println("</lastmod>");
-			}
-			out.println("    </url>");
-		}
-		out.println("</urlset>");
-	}
+    out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
+    out.println("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
+    for (SiteMapUrl url : urls) {
+      out.println("    <url>");
+      out.print("        <loc>");
+      // RFC 3986 US-ASCII, although RFC 3987 might be possible as per https://www.google.com/sitemaps/faq.html#faq_xml_encoding
+      URIEncoder.encodeURI(
+        url.getLoc(),
+        textInXhtmlEncoder,
+        out
+      );
+      out.println("</loc>");
+      ReadableInstant lastmod = url.getLastmod();
+      if (lastmod != null) {
+        out.print("        <lastmod>");
+        encodeTextInXhtml(iso8601.print(lastmod), out);
+        out.println("</lastmod>");
+      }
+      out.println("    </url>");
+    }
+    out.println("</urlset>");
+  }
 }
