@@ -39,8 +39,8 @@ public class SiteMapInitializer implements ServletContainerInitializer {
   @Override
   public void onStartup(Set<Class<?>> set, ServletContext servletContext) throws ServletException {
     ServletRegistration.Dynamic registration = servletContext.addServlet(
-      SiteMapServlet.class.getName(),
-      SiteMapServlet.class
+        SiteMapServlet.class.getName(),
+        SiteMapServlet.class
     );
     // Only published books
     for (Book book : SemanticCMS.getInstance(servletContext).getPublishedBooks().values()) {

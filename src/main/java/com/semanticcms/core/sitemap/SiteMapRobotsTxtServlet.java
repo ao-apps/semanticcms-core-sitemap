@@ -41,8 +41,8 @@ import javax.servlet.http.HttpServletResponse;
  * Adds the sitemap index to /robots.txt
  */
 @WebServlet(
-  urlPatterns = SiteMapRobotsTxtServlet.SERVLET_PATH,
-  loadOnStartup = 1
+    urlPatterns = SiteMapRobotsTxtServlet.SERVLET_PATH,
+    loadOnStartup = 1
 )
 public class SiteMapRobotsTxtServlet extends HttpServlet {
 
@@ -81,16 +81,16 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
     out.println("Allow: /");
     out.print("Sitemap: ");
     URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-      Canonical.encodeCanonicalURL(
-        resp,
-        HttpServletUtil.getAbsoluteURL(
-          req,
-          URIEncoder.encodeURI(
-            SiteMapIndexServlet.SERVLET_PATH
-          )
-        )
-      ),
-      out
+        Canonical.encodeCanonicalURL(
+            resp,
+            HttpServletUtil.getAbsoluteURL(
+                req,
+                URIEncoder.encodeURI(
+                    SiteMapIndexServlet.SERVLET_PATH
+                )
+            )
+        ),
+        out
     );
     out.println();
   }
