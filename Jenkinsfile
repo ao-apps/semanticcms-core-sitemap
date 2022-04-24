@@ -664,7 +664,7 @@ pipeline {
               [$class: 'CloneOption',
                 // See https://issues.jenkins.io/browse/JENKINS-45586
                 shallow: true,
-                depth: 2, // We expect a build on every commit
+                depth: 20,
                 honorRefspec: true
               ],
               [$class: 'SparseCheckoutPaths',
@@ -673,7 +673,7 @@ pipeline {
               [$class: 'SubmoduleOption',
                 disableSubmodules: disableSubmodules,
                 shallow: true,
-                depth: 2 // We expect a build on every commit
+                depth: 20
               ]
             ]
           ]
@@ -704,7 +704,7 @@ pipeline {
             [$class: 'CloneOption',
               // See https://issues.jenkins.io/browse/JENKINS-45586
               shallow: true,
-              depth: 2, // We expect a build on every commit
+              depth: 20,
               honorRefspec: true
             ],
             [$class: 'SparseCheckoutPaths',
@@ -713,7 +713,7 @@ pipeline {
             [$class: 'SubmoduleOption',
               disableSubmodules: disableSubmodules,
               shallow: true,
-              depth: 2 // We expect a build on every commit
+              depth: 20
             ]
           ]
         ]
