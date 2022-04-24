@@ -91,40 +91,40 @@ public class SiteMapIndexServlet extends HttpServlet {
    * and {@link #doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)}.
    */
   private static final ScopeEE.Request.Attribute<SortedSet<SiteMapUrl>> LOCS_ATTRIBUTE =
-    ScopeEE.REQUEST.attribute(SiteMapIndexServlet.class.getName() + ".locs");
+      ScopeEE.REQUEST.attribute(SiteMapIndexServlet.class.getName() + ".locs");
 
   /**
    * Checks if the sitemap has at least one page.
    * This version implemented as a traversal.
    */
   private static boolean hasSiteMapUrl(
-    final ServletContext servletContext,
-    final HttpServletRequest req,
-    final HttpServletResponse resp,
-    final SortedSet<View> views,
-    final Book book,
-    PageRef pageRef
+      final ServletContext servletContext,
+      final HttpServletRequest req,
+      final HttpServletResponse resp,
+      final SortedSet<View> views,
+      final Book book,
+      PageRef pageRef
   ) throws ServletException, IOException {
     Boolean result = CapturePage.traversePagesAnyOrder(
-      servletContext,
-      req,
-      resp,
-      pageRef,
-      CaptureLevel.META,
-      page -> {
-        // TODO: Chance for more concurrency here by view?
-        for (View view : views) {
-          if (
-            view.getAllowRobots(servletContext, req, resp, page)
-            && view.isApplicable(servletContext, req, resp, page)
-          ) {
-            return true;
+        servletContext,
+        req,
+        resp,
+        pageRef,
+        CaptureLevel.META,
+        page -> {
+          // TODO: Chance for more concurrency here by view?
+          for (View view : views) {
+            if (
+                view.getAllowRobots(servletContext, req, resp, page)
+                    && view.isApplicable(servletContext, req, resp, page)
+            ) {
+              return true;
+            }
           }
-        }
-        return null;
-      },
-      Page::getChildRefs,
-      childPage -> book.equals(childPage.getBook())
+          return null;
+        },
+        Page::getChildRefs,
+        childPage -> book.equals(childPage.getBook())
     );
     assert result == null || result : "Should always be null or true";
     return result != null;
@@ -144,8 +144,8 @@ public class SiteMapIndexServlet extends HttpServlet {
         Collection<Book> books = semanticCMS.getBooks().values();
         int numBooks = books.size();
         if (
-          numBooks > 1
-          && ConcurrencyCoordinator.useConcurrentSubrequests(req)
+            numBooks > 1
+                && ConcurrencyCoordinator.useConcurrentSubrequests(req)
         ) {
           // Concurrent implementation
           final HttpServletRequest threadSafeReq = new UnmodifiableCopyHttpServletRequest(req);
@@ -157,28 +157,28 @@ public class SiteMapIndexServlet extends HttpServlet {
             {
               for (final Book book : books) {
                 tasks.add(
-                  () -> {
-                    HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-                    HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
-                    if (logger.isLoggable(Level.FINE)) {
-                      logger.log(
-                        Level.FINE,
-                        "called, subrequest={0}, book={1}",
-                        new Object[] {
+                    () -> {
+                      HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
+                      HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
+                      if (logger.isLoggable(Level.FINE)) {
+                        logger.log(
+                            Level.FINE,
+                            "called, subrequest={0}, book={1}",
+                            new Object[]{
+                                subrequest,
+                                book
+                            }
+                        );
+                      }
+                      return hasSiteMapUrl(
+                          servletContext,
                           subrequest,
-                          book
-                        }
+                          subresponse,
+                          views,
+                          book,
+                          book.getContentRoot()
                       );
                     }
-                    return hasSiteMapUrl(
-                      servletContext,
-                      subrequest,
-                      subresponse,
-                      views,
-                      book,
-                      book.getContentRoot()
-                    );
-                  }
                 );
               }
             }
@@ -214,27 +214,27 @@ public class SiteMapIndexServlet extends HttpServlet {
               {
                 for (final Book book : booksWithSiteMapUrl) {
                   lastModifiedTasks.add(
-                    () -> {
-                      HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-                      HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
-                      if (logger.isLoggable(Level.FINE)) {
-                        logger.log(
-                          Level.FINE,
-                          "called, subrequest={0}, book={1}",
-                          new Object[] {
+                      () -> {
+                        HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
+                        HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
+                        if (logger.isLoggable(Level.FINE)) {
+                          logger.log(
+                              Level.FINE,
+                              "called, subrequest={0}, book={1}",
+                              new Object[]{
+                                  subrequest,
+                                  book
+                              }
+                          );
+                        }
+                        return SiteMapServlet.getLastModified(
+                            servletContext,
                             subrequest,
+                            subresponse,
+                            views,
                             book
-                          }
                         );
                       }
-                      return SiteMapServlet.getLastModified(
-                        servletContext,
-                        subrequest,
-                        subresponse,
-                        views,
-                        book
-                      );
-                    }
                   );
                 }
               }
@@ -252,26 +252,26 @@ public class SiteMapIndexServlet extends HttpServlet {
               }
               for (int i = 0; i < booksWithSiteMapUrlSize; i++) {
                 locs.add(
-                  new SiteMapUrl(
-                    booksWithSiteMapUrl.get(i).getPathPrefix(),
-                    lastModifieds.get(i)
-                  )
+                    new SiteMapUrl(
+                        booksWithSiteMapUrl.get(i).getPathPrefix(),
+                        lastModifieds.get(i)
+                    )
                 );
               }
             } else {
               // Single implementation
               Book book = booksWithSiteMapUrl.get(0);
               locs.add(
-                new SiteMapUrl(
-                  book.getPathPrefix(),
-                  SiteMapServlet.getLastModified(
-                    servletContext,
-                    req,
-                    resp,
-                    views,
-                    book
+                  new SiteMapUrl(
+                      book.getPathPrefix(),
+                      SiteMapServlet.getLastModified(
+                          servletContext,
+                          req,
+                          resp,
+                          views,
+                          book
+                      )
                   )
-                )
               );
             }
           } else {
@@ -281,26 +281,26 @@ public class SiteMapIndexServlet extends HttpServlet {
           // Sequential implementation
           for (Book book : books) {
             if (
-              hasSiteMapUrl(
-                servletContext,
-                req,
-                resp,
-                views,
-                book,
-                book.getContentRoot()
-              )
-            ) {
-              locs.add(
-                new SiteMapUrl(
-                  book.getPathPrefix(),
-                  SiteMapServlet.getLastModified(
+                hasSiteMapUrl(
                     servletContext,
                     req,
                     resp,
                     views,
-                    book
-                  )
+                    book,
+                    book.getContentRoot()
                 )
+            ) {
+              locs.add(
+                  new SiteMapUrl(
+                      book.getPathPrefix(),
+                      SiteMapServlet.getLastModified(
+                          servletContext,
+                          req,
+                          resp,
+                          views,
+                          book
+                      )
+                  )
               );
             }
           }
@@ -359,17 +359,17 @@ public class SiteMapIndexServlet extends HttpServlet {
       out.println("    <sitemap>");
       out.print("        <loc>");
       URIEncoder.encodeURI( // Encode again to force RFC 3986 US-ASCII
-        Canonical.encodeCanonicalURL(
-          resp,
-          HttpServletUtil.getAbsoluteURL(
-            req,
-            URIEncoder.encodeURI(
-              loc.getLoc() + SiteMapServlet.SERVLET_PATH
-            )
-          )
-        ),
-        textInXhtmlEncoder,
-        out
+          Canonical.encodeCanonicalURL(
+              resp,
+              HttpServletUtil.getAbsoluteURL(
+                  req,
+                  URIEncoder.encodeURI(
+                      loc.getLoc() + SiteMapServlet.SERVLET_PATH
+                  )
+              )
+          ),
+          textInXhtmlEncoder,
+          out
       );
       out.println("</loc>");
       ReadableInstant lastmod = loc.getLastmod();
