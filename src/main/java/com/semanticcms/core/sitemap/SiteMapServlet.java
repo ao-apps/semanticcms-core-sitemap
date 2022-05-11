@@ -25,6 +25,7 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoapps.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoapps.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+
 import com.aoapps.lang.attribute.Attribute;
 import com.aoapps.lang.exception.WrappedException;
 import com.aoapps.lang.io.ContentType;
@@ -69,7 +70,7 @@ public class SiteMapServlet extends HttpServlet {
 
   private static final Charset ENCODING = StandardCharsets.UTF_8;
 
-  private static Book getBook(SemanticCMS semanticCMS, HttpServletRequest req) {
+  private static Book getBook(SemanticCMS semanticCms, HttpServletRequest req) {
     // Find the book for this request
     String servletPath = req.getServletPath();
     if (!servletPath.endsWith(SERVLET_PATH)) {
@@ -77,19 +78,19 @@ public class SiteMapServlet extends HttpServlet {
       return null;
     }
     Path bookPath;
-    {
-      String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
-      if (bookName.isEmpty()) {
-        bookPath = Path.ROOT;
-      } else {
-        try {
-          bookPath = Path.valueOf(bookName);
-        } catch (ValidationException e) {
-          throw new WrappedException(e);
+      {
+        String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
+        if (bookName.isEmpty()) {
+          bookPath = Path.ROOT;
+        } else {
+          try {
+            bookPath = Path.valueOf(bookName);
+          } catch (ValidationException e) {
+            throw new WrappedException(e);
+          }
         }
       }
-    }
-    Book book = semanticCMS.getPublishedBooks().get(bookPath);
+    Book book = semanticCms.getPublishedBooks().get(bookPath);
     if (book == null) {
       // Book not published
       return null;
@@ -118,8 +119,7 @@ public class SiteMapServlet extends HttpServlet {
   ) throws ServletException, IOException {
     assert
         book.equals(SemanticCMS.getInstance(servletContext).getPublishedBooks().get(book.getBookRef().getPath()))
-        : "Book not published: " + book
-    ;
+        : "Book not published: " + book;
     assert book.isAccessible();
     // The most recent is kept here, but set to null the first time a missing
     // per page/view last modified time is found

@@ -299,7 +299,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       scmUrl="@{project.scm.url}"
     >
       <ul>
-        <li>Application-scope variables combined into single "semanticCMS" variable.</li>
+        <li>Application-scope variables combined into single "semanticCms" variable.</li>
         <li>Using latest releases of dependencies.</li>
       </ul>
     </changelog:release>
