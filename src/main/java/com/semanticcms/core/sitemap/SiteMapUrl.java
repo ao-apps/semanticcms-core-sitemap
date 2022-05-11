@@ -49,7 +49,7 @@ class SiteMapUrl implements Comparable<SiteMapUrl> {
 
   /**
    * Ordered by most recent first (with unknown modified times last), then
-   * by loc;
+   * by loc.
    * <p>
    * Note: The ordering of nulls last is required by {@link SiteMapIndexServlet#getLastModified(javax.servlet.http.HttpServletRequest)}.
    * </p>

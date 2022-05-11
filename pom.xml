@@ -115,13 +115,6 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId><artifactId>maven-checkstyle-plugin</artifactId>
-        <configuration>
-          <!-- TODO: Clean-up Checkstyle -->
-          <failOnViolation>false</failOnViolation>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-maven-plugin</artifactId>
         <configuration>
           <!-- TODO: Clean-up SpotBugs -->

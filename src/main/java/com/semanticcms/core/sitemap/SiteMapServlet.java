@@ -25,6 +25,7 @@ package com.semanticcms.core.sitemap;
 
 import static com.aoapps.encoding.TextInXhtmlEncoder.encodeTextInXhtml;
 import static com.aoapps.encoding.TextInXhtmlEncoder.textInXhtmlEncoder;
+
 import com.aoapps.lang.attribute.Attribute;
 import com.aoapps.lang.io.ContentType;
 import com.aoapps.net.URIEncoder;
@@ -65,7 +66,7 @@ public class SiteMapServlet extends HttpServlet {
 
   private static final Charset ENCODING = StandardCharsets.UTF_8;
 
-  private static Book getBook(SemanticCMS semanticCMS, HttpServletRequest req) {
+  private static Book getBook(SemanticCMS semanticCms, HttpServletRequest req) {
     // Find the book for this request
     String servletPath = req.getServletPath();
     if (!servletPath.endsWith(SERVLET_PATH)) {
@@ -76,7 +77,7 @@ public class SiteMapServlet extends HttpServlet {
     if (bookName.isEmpty()) {
       bookName = "/";
     }
-    return semanticCMS.getBooks().get(bookName);
+    return semanticCms.getBooks().get(bookName);
   }
 
   /**
@@ -150,8 +151,8 @@ public class SiteMapServlet extends HttpServlet {
   @Override
   protected long getLastModified(HttpServletRequest req) {
     ServletContext servletContext = getServletContext();
-    SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
-    Book book = getBook(semanticCMS, req);
+    SemanticCMS semanticCms = SemanticCMS.getInstance(servletContext);
+    Book book = getBook(semanticCms, req);
     if (book == null) {
       log("Book not found: " + req.getServletPath());
       return -1;
@@ -161,7 +162,7 @@ public class SiteMapServlet extends HttpServlet {
             getServletContext(),
             req,
             RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).get(),
-            semanticCMS.getViews(),
+            semanticCms.getViews(),
             book
         );
         return lastModified == null ? -1 : lastModified.getMillis();
@@ -175,13 +176,13 @@ public class SiteMapServlet extends HttpServlet {
   @Override
   protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
     final ServletContext servletContext = getServletContext();
-    SemanticCMS semanticCMS = SemanticCMS.getInstance(servletContext);
-    final Book book = getBook(semanticCMS, req);
+    SemanticCMS semanticCms = SemanticCMS.getInstance(servletContext);
+    final Book book = getBook(semanticCms, req);
     if (book == null) {
       resp.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    final SortedSet<View> views = semanticCMS.getViews();
+    final SortedSet<View> views = semanticCms.getViews();
 
     final SortedSet<SiteMapUrl> urls = new TreeSet<>();
     CapturePage.traversePagesAnyOrder(
