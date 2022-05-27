@@ -357,8 +357,8 @@ public class SiteMapIndexServlet extends HttpServlet {
     out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
     out.println("<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
     for (SiteMapUrl loc : locs) {
-      out.println("    <sitemap>");
-      out.print("        <loc>");
+      out.println("  <sitemap>");
+      out.print("    <loc>");
       URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
           Canonical.encodeCanonicalURL(
               resp,
@@ -375,11 +375,11 @@ public class SiteMapIndexServlet extends HttpServlet {
       out.println("</loc>");
       ReadableInstant lastmod = loc.getLastmod();
       if (lastmod != null) {
-        out.print("        <lastmod>");
+        out.print("    <lastmod>");
         encodeTextInXhtml(iso8601.print(lastmod), out);
         out.println("</lastmod>");
       }
-      out.println("    </sitemap>");
+      out.println("  </sitemap>");
     }
     out.println("</sitemapindex>");
   }

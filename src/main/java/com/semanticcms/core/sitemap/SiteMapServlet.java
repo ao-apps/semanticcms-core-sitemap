@@ -223,8 +223,8 @@ public class SiteMapServlet extends HttpServlet {
     out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
     out.println("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
     for (SiteMapUrl url : urls) {
-      out.println("    <url>");
-      out.print("        <loc>");
+      out.println("  <url>");
+      out.print("    <loc>");
       // RFC 3986 US-ASCII, although RFC 3987 might be possible as per https://www.google.com/sitemaps/faq.html#faq_xml_encoding
       URIEncoder.encodeURI(
           url.getLoc(),
@@ -234,11 +234,11 @@ public class SiteMapServlet extends HttpServlet {
       out.println("</loc>");
       ReadableInstant lastmod = url.getLastmod();
       if (lastmod != null) {
-        out.print("        <lastmod>");
+        out.print("    <lastmod>");
         encodeTextInXhtml(iso8601.print(lastmod), out);
         out.println("</lastmod>");
       }
-      out.println("    </url>");
+      out.println("  </url>");
     }
     out.println("</urlset>");
   }
