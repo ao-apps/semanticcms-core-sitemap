@@ -46,7 +46,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     <sonar.coverage.exclusions>**.*</sonar.coverage.exclusions>
   </properties>
 
-  <name>SemanticCMS Core Sitemap²</name>
+  <name>SemanticCMS Core Sitemap</name>
   <url>https://semanticcms.com/core/sitemap/</url>
   <description>Automatic sitemaps for SemanticCMS.</description>
   <inceptionYear>2016</inceptionYear>
