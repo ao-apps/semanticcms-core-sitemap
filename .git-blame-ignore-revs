@@ -19,3 +19,9 @@ c3434cad2fbcb6551e694a723da2564ca2280d18
 # Performed manual checkstyle clean-up
 000db52e3f47351a18673f5a2e36268bb1a864ba
 7b75e816d2d7be35d90f90867e4b6c645666f3de
+
+# two-space indentation
+cfa3b6ef4a1059cdd01684cddea267ef8f8d4c45
+
+# Added all whitespace-only commits to .git-blame-ignore-revs
+a3f7a56828ecb554e5872b6851eccfbdde8ab4c2
