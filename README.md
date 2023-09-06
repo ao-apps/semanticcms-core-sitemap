@@ -17,7 +17,7 @@
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?branch=1.x&project=com.semanticcms%3Asemanticcms-core-sitemap&metric=sqale_rating)](https://sonarcloud.io/component_measures?branch=1.x&id=com.semanticcms%3Asemanticcms-core-sitemap&metric=Maintainability)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?branch=1.x&project=com.semanticcms%3Asemanticcms-core-sitemap&metric=coverage)](https://sonarcloud.io/component_measures?branch=1.x&id=com.semanticcms%3Asemanticcms-core-sitemap&metric=Coverage)
 
-Automatic sitemaps for [SemanticCMS](https://github.com/ao-apps/semanticcms).
+Automatic [sitemaps](https://www.sitemaps.org/) for [SemanticCMS](https://github.com/ao-apps/semanticcms).
 
 ## Project Links
 * [Project Home](https://semanticcms.com/core/sitemap/)
