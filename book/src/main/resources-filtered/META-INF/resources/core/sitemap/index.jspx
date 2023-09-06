@@ -34,7 +34,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     title="@{documented.name}"
     description="@{documented.description}"
     datePublished="2016-10-18T18:08:00-05:00"
-    dateModified="2023-04-14T16:43:04Z"
+    dateModified="2023-09-06T20:12:33Z"
   >
     <core:child page="changelog" />
     <core:child page="apidocs/" />
@@ -62,7 +62,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       />
     </header>
     <p>
-      Automatic sitemaps for <core:link book="/" page="/" />.
+      Automatic <ao:a href="https://www.sitemaps.org/">sitemaps</ao:a> for <core:link book="/" page="/" />.
     </p>
     <section:nav label="Project Links">
       <ul>
