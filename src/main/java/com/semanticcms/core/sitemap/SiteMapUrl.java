@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -31,12 +31,18 @@ import org.joda.time.ReadableInstant;
  */
 class SiteMapUrl implements Comparable<SiteMapUrl> {
 
+  private final boolean absolute;
   private final String loc;
   private final ReadableInstant lastmod;
 
-  SiteMapUrl(String loc, ReadableInstant lastmod) {
+  SiteMapUrl(boolean absolute, String loc, ReadableInstant lastmod) {
+    this.absolute = absolute;
     this.loc = loc;
     this.lastmod = lastmod;
+  }
+
+  boolean isAbsolute() {
+    return absolute;
   }
 
   String getLoc() {

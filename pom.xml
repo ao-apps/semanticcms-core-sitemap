@@ -40,6 +40,8 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     <description.html><![CDATA[Automatic <a target="${javadoc.target}" href="https://www.sitemaps.org/">sitemaps</a> for <a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>.]]></description.html>
     <!-- TODO: Implement tests -->
     <sonar.coverage.exclusions>**.*</sonar.coverage.exclusions>
+    <!-- Dependencies -->
+    <commons-lang3.version>3.13.0</commons-lang3.version>
   </properties>
 
   <name>SemanticCMS Core Sitemap</name>
@@ -173,6 +175,11 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                       <includes>element-list, package-list</includes>
                       <outputDirectory>${project.build.directory}/offlineLinks/com.aoapps/ao-tempfiles-servlet</outputDirectory>
                     </artifactItem>
+                    <artifactItem>
+                      <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><classifier>javadoc</classifier>
+                      <includes>element-list, package-list</includes>
+                      <outputDirectory>${project.build.directory}/offlineLinks/org.apache.commons/commons-lang3</outputDirectory>
+                    </artifactItem>
                     <!-- ao-javadoc-offline: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId><classifier>javadoc</classifier> -->
                     <artifactItem>
                       <groupId>joda-time</groupId><artifactId>joda-time</artifactId><classifier>javadoc</classifier>
@@ -240,6 +247,10 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                 <offlineLink>
                   <url>https://oss.aoapps.com/tempfiles/servlet/apidocs/</url>
                   <location>${project.build.directory}/offlineLinks/com.aoapps/ao-tempfiles-servlet</location>
+                </offlineLink>
+                <offlineLink>
+                  <url>https://javadoc.io/doc/org.apache.commons/commons-lang3/${commons-lang3.version}/</url>
+                  <location>${project.build.directory}/offlineLinks/org.apache.commons/commons-lang3</location>
                 </offlineLink>
                 <!-- ao-javadoc-offline: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId><classifier>javadoc</classifier> -->
                 <offlineLink>
@@ -344,6 +355,9 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>ao-tempfiles-servlet</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
       </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>${commons-lang3.version}</version>
+      </dependency>
       <!-- javaee-web-api-bom: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
       <dependency>
         <groupId>joda-time</groupId><artifactId>joda-time</artifactId><version>2.12.5</version>
@@ -400,9 +414,6 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>ao-web-resources-servlet</artifactId><version>0.5.0${POST-SNAPSHOT}</version>
       </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.13.0</version>
-      </dependency>
       <!-- javaee-web-api-bom: <groupId>javax.el</groupId><artifactId>javax.el-api</artifactId> -->
       <!-- javaee-web-api-bom: <groupId>javax.servlet.jsp</groupId><artifactId>javax.servlet.jsp-api</artifactId> -->
       <dependency>
@@ -451,6 +462,9 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     </dependency>
     <dependency>
       <groupId>com.aoapps</groupId><artifactId>ao-tempfiles-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId>
