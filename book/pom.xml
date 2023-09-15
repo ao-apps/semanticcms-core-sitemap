@@ -122,9 +122,6 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
             <dependency>org.apache.taglibs:taglibs-standard-spec</dependency>
             <!-- Direct -->
             <dependency>javax.servlet.jsp:javax.servlet.jsp-api</dependency>
-            <!-- Runtime Direct -->
-            <dependency>com.semanticcms:semanticcms-core-pages-jspx</dependency>
-            <dependency>org.apache.taglibs:taglibs-standard-impl</dependency>
           </usedDependencies>
           <ignoredDependencies>
             <!-- No "module-info.java" in some release builds -->
@@ -313,9 +310,9 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>ao-style</artifactId><version>2.0.1${POST-SNAPSHOT}</version>
       </dependency>
-      <!-- BOM -->
+      <!-- Imports -->
       <dependency>
-        <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId><version>7.0.1${POST-SNAPSHOT}</version>
+        <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId><version>7.0.1-POST-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -362,6 +359,12 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     <dependency>
       <groupId>org.apache.taglibs</groupId><artifactId>taglibs-standard-impl</artifactId>
       <scope>runtime</scope>
+    </dependency>
+    <!-- Imports (Reactor build order only) -->
+    <dependency>
+      <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId><version>7.0.1-POST-SNAPSHOT</version>
+      <type>pom</type>
+      <exclusions><exclusion><artifactId>*</artifactId><groupId>*</groupId></exclusion></exclusions>
     </dependency>
   </dependencies>
 </project>
