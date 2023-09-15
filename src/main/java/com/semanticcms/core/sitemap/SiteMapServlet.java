@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -201,6 +201,7 @@ public class SiteMapServlet extends HttpServlet {
             ) {
               urls.add(
                   new SiteMapUrl(
+                      true,
                       view.getCanonicalUrl(servletContext, req, resp, page),
                       view.getLastModified(servletContext, req, resp, page)
                   )
@@ -225,6 +226,7 @@ public class SiteMapServlet extends HttpServlet {
     for (SiteMapUrl url : urls) {
       out.println("  <url>");
       out.print("    <loc>");
+      assert url.isAbsolute();
       // RFC 3986 US-ASCII, although RFC 3987 might be possible as per https://www.google.com/sitemaps/faq.html#faq_xml_encoding
       URIEncoder.encodeURI(
           url.getLoc(),

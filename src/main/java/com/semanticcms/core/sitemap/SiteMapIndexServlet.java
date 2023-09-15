@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2018, 2019, 2020, 2021, 2022  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -47,12 +47,19 @@ import com.semanticcms.core.servlet.CapturePage;
 import com.semanticcms.core.servlet.ConcurrencyCoordinator;
 import com.semanticcms.core.servlet.SemanticCMS;
 import com.semanticcms.core.servlet.View;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UncheckedIOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -61,11 +68,16 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebListener;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang3.exception.UncheckedException;
+import org.joda.time.DateTime;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -80,11 +92,106 @@ public class SiteMapIndexServlet extends HttpServlet {
 
   private static final Logger logger = Logger.getLogger(SiteMapIndexServlet.class.getName());
 
+  // Note: Matches ao-ant-tasks:GenerateJavadocSitemap.java:SITEMAP_INDEX_NAME (but with a slash)
   public static final String SERVLET_PATH = "/sitemap-index.xml";
+
+  // Note: Matches ao-ant-tasks:GenerateJavadocSitemap.java:META_INF_DIRECTORY + SITEMAP_INDEX_NAME (but with a slash)
+  private static final String META_INF_SITEMAP_INDEX_NAME = "/META-INF" + SERVLET_PATH;
 
   private static final String CONTENT_TYPE = ContentType.XML;
 
+  // Note: Matches ao-ant-tasks:SeoJavadocFilter.java:ENCODING
   private static final Charset ENCODING = StandardCharsets.UTF_8;
+
+  private static final String SITEMAP_OPEN = "<sitemap>";
+
+  private static final String SITEMAP_CLOSE = "</sitemap>";
+
+  private static final String LOC_OPEN = "<loc>";
+
+  private static final String LOC_CLOSE = "</loc>";
+
+  private static final String LASTMOD_OPEN = "<lastmod>";
+
+  private static final String LASTMOD_CLOSE = "</lastmod>";
+
+  /**
+   * Scans for additional sitemaps in <code>META-INF/sitemap-index.xml</code> of all JARs on application start-up.
+   */
+  @WebListener("Scans for additional sitemaps in META-INF/sitemap-index.xml of all JARs on application start-up.")
+  public static class JarSitemapIndexInitializer implements ServletContextListener {
+
+    private static final ScopeEE.Application.Attribute<SortedSet<SiteMapUrl>> JAR_SITEMAP_INDEXES =
+        ScopeEE.APPLICATION.attribute(JarSitemapIndexInitializer.class.getName() + ".jarSitemapIndexes");
+
+    @Override
+    public void contextInitialized(ServletContextEvent event) {
+      try {
+        SortedSet<SiteMapUrl> jarSitemapIndexes = new TreeSet<>();
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (cl == null) {
+          cl = ClassLoader.getSystemClassLoader();
+        }
+        Enumeration<URL> sitemapIndexResources = cl.getResources(META_INF_SITEMAP_INDEX_NAME);
+        while (sitemapIndexResources.hasMoreElements()) {
+          URL url = sitemapIndexResources.nextElement();
+          URLConnection conn = url.openConnection();
+          conn.setUseCaches(false);
+          int count = 0;
+          try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), ENCODING))) {
+            String loc = null;
+            ReadableInstant lastmod = null;
+            String line;
+            while ((line = in.readLine()) != null) {
+              line = line.trim();
+              if (line.startsWith(LOC_OPEN)) {
+                if (!line.endsWith(LOC_CLOSE)) {
+                  throw new ParseException("No " + LOC_CLOSE + " after " + LOC_OPEN, 0);
+                }
+                loc = line.substring(LOC_OPEN.length(), line.length() - LOC_CLOSE.length());
+              } else if (line.startsWith(LASTMOD_OPEN)) {
+                if (!line.endsWith(LASTMOD_CLOSE)) {
+                  throw new ParseException("No " + LASTMOD_CLOSE + " after " + LASTMOD_OPEN, 0);
+                }
+                lastmod = new DateTime(line.substring(LASTMOD_OPEN.length(), line.length() - LASTMOD_CLOSE.length()));
+              } else if (line.startsWith(SITEMAP_CLOSE)) {
+                if (loc == null) {
+                  throw new ParseException("No " + LOC_OPEN + " before " + SITEMAP_CLOSE, 0);
+                }
+                if (lastmod == null) {
+                  throw new ParseException("No " + LASTMOD_OPEN + " before " + SITEMAP_CLOSE, 0);
+                }
+                jarSitemapIndexes.add(new SiteMapUrl(true, loc, lastmod));
+                count++;
+                loc = null;
+                lastmod = null;
+              }
+            }
+          }
+          logger.info("Found sitemap index at " + url + " containing " + count + " "
+              + (count == 1 ? "sitemap" : "sitemaps"));
+        }
+        JAR_SITEMAP_INDEXES.context(event.getServletContext()).set(jarSitemapIndexes);
+      } catch (IOException e) {
+        throw new UncheckedIOException(e);
+      } catch (ParseException e) {
+        throw new UncheckedException(e);
+      }
+    }
+
+    private static SortedSet<SiteMapUrl> getJarSitemapIndexes(ServletContext servletContext) throws ServletException {
+      SortedSet<SiteMapUrl> jarSitemapIndexes = JAR_SITEMAP_INDEXES.context(servletContext).get();
+      if (jarSitemapIndexes == null) {
+        throw new ServletException(JarSitemapIndexInitializer.class.getName() + " not initialized");
+      }
+      return jarSitemapIndexes;
+    }
+
+    @Override
+    public void contextDestroyed(ServletContextEvent event) {
+      // Nothing to do
+    }
+  }
 
   /**
    * The sitemap locations are resolved at the beginning of the request and
@@ -140,7 +247,7 @@ public class SiteMapIndexServlet extends HttpServlet {
       SemanticCMS semanticCms = SemanticCMS.getInstance(servletContext);
       final SortedSet<View> views = semanticCms.getViews();
 
-      SortedSet<SiteMapUrl> locs = new TreeSet<>();
+      SortedSet<SiteMapUrl> locs = new TreeSet<>(JarSitemapIndexInitializer.getJarSitemapIndexes(servletContext));
         {
           Collection<Book> books = semanticCms.getBooks().values();
           int numBooks = books.size();
@@ -254,6 +361,7 @@ public class SiteMapIndexServlet extends HttpServlet {
                   for (int i = 0; i < booksWithSiteMapUrlSize; i++) {
                     locs.add(
                         new SiteMapUrl(
+                            false,
                             booksWithSiteMapUrl.get(i).getPathPrefix(),
                             lastModifieds.get(i)
                         )
@@ -264,6 +372,7 @@ public class SiteMapIndexServlet extends HttpServlet {
                   Book book = booksWithSiteMapUrl.get(0);
                   locs.add(
                       new SiteMapUrl(
+                          false,
                           book.getPathPrefix(),
                           SiteMapServlet.getLastModified(
                               servletContext,
@@ -293,6 +402,7 @@ public class SiteMapIndexServlet extends HttpServlet {
               ) {
                 locs.add(
                     new SiteMapUrl(
+                        false,
                         book.getPathPrefix(),
                         SiteMapServlet.getLastModified(
                             servletContext,
@@ -357,10 +467,11 @@ public class SiteMapIndexServlet extends HttpServlet {
     out.println("<?xml version=\"1.0\" encoding=\"" + ENCODING + "\"?>");
     out.println("<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
     for (SiteMapUrl loc : locs) {
-      out.println("  <sitemap>");
-      out.print("    <loc>");
-      URIEncoder.encodeURI(// Encode again to force RFC 3986 US-ASCII
-          Canonical.encodeCanonicalURL(
+      out.println("  " + SITEMAP_OPEN);
+      out.print("    " + LOC_OPEN);
+      // Encode again to force RFC 3986 US-ASCII
+      URIEncoder.encodeURI(loc.isAbsolute() ? loc.getLoc()
+          : Canonical.encodeCanonicalURL(
               resp,
               HttpServletUtil.getAbsoluteURL(
                   req,
@@ -372,14 +483,14 @@ public class SiteMapIndexServlet extends HttpServlet {
           textInXhtmlEncoder,
           out
       );
-      out.println("</loc>");
+      out.println(LOC_CLOSE);
       ReadableInstant lastmod = loc.getLastmod();
       if (lastmod != null) {
-        out.print("    <lastmod>");
+        out.print("    " + LASTMOD_OPEN);
         encodeTextInXhtml(iso8601.print(lastmod), out);
-        out.println("</lastmod>");
+        out.println(LASTMOD_CLOSE);
       }
-      out.println("  </sitemap>");
+      out.println("  " + SITEMAP_CLOSE);
     }
     out.println("</sitemapindex>");
   }
