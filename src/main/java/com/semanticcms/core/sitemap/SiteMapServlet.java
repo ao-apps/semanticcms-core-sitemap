@@ -214,7 +214,7 @@ public class SiteMapServlet extends HttpServlet {
         childPage -> book.equals(childPage.getBook())
     );
 
-    final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();
+    final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTimeNoMillis();
 
     resp.resetBuffer();
     resp.setContentType(CONTENT_TYPE);
