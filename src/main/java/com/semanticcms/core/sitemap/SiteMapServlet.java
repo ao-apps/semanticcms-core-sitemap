@@ -190,7 +190,7 @@ public class SiteMapServlet extends HttpServlet {
             HtmlRenderer.getInstance(servletContext).getViews(),
             book
         );
-        return lastModified == null ? -1 : lastModified.getMillis();
+        return lastModified == null ? -1 : SiteMapIndexServlet.truncateToSecond(lastModified.getMillis());
       } catch (ServletException | IOException e) {
         log("getLastModified failed", e);
         return -1;

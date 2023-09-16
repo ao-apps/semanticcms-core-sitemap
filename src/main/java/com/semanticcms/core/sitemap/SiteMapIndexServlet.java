@@ -58,6 +58,8 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -445,6 +447,13 @@ public class SiteMapIndexServlet extends HttpServlet {
   }
 
   /**
+   * Rounds down to remove milliseconds.
+   */
+  static long truncateToSecond(long timeInMillis) {
+    return Instant.ofEpochMilli(timeInMillis).truncatedTo(ChronoUnit.SECONDS).toEpochMilli();
+  }
+
+  /**
    * Last modified is known only when the last modified is known for all books,
    * and it is the most recent of all the per-book last modified.
    * <p>
@@ -462,7 +471,7 @@ public class SiteMapIndexServlet extends HttpServlet {
       return -1;
     }
     ReadableInstant first = locs.first().getLastmod();
-    return first == null ? -1 : first.getMillis();
+    return first == null ? -1 : truncateToSecond(first.getMillis());
   }
 
   @Override
