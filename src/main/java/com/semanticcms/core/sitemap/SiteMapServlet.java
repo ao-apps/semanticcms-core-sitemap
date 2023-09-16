@@ -44,6 +44,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.servlet.ServletContext;
@@ -52,8 +54,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.joda.time.ReadableInstant;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Creates a sitemap of one book.
@@ -238,7 +238,7 @@ public class SiteMapServlet extends HttpServlet {
         childPage -> book.getBookRef().equals(childPage.getBookRef())
     );
 
-    final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTimeNoMillis();
+    final DateFormat iso8601 = SiteMapIndexServlet.createIso8601Format();
 
     resp.resetBuffer();
     resp.setContentType(CONTENT_TYPE);
@@ -261,7 +261,7 @@ public class SiteMapServlet extends HttpServlet {
       ReadableInstant lastmod = url.getLastmod();
       if (lastmod != null) {
         out.print("    <lastmod>");
-        encodeTextInXhtml(iso8601.print(lastmod), out);
+        encodeTextInXhtml(iso8601.format(new Date(lastmod.getMillis())), out);
         out.println("</lastmod>");
       }
       out.println("  </url>");

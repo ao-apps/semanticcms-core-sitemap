@@ -57,14 +57,18 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.SortedSet;
+import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -82,8 +86,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.exception.UncheckedException;
 import org.joda.time.DateTime;
 import org.joda.time.ReadableInstant;
-import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Creates a site map index of all per-book sitemaps.
@@ -474,11 +476,23 @@ public class SiteMapIndexServlet extends HttpServlet {
     return first == null ? -1 : truncateToSecond(first.getMillis());
   }
 
+  /**
+   * Creates a date formatter.
+   * See <a href="https://stackoverflow.com/a/3914498/7121505">java - How to get current moment in ISO 8601 format with
+   * date, hour, and minute? - Stack Overflow</a>.
+   */
+  static DateFormat createIso8601Format() {
+    TimeZone tz = TimeZone.getTimeZone("UTC");
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
+    df.setTimeZone(tz);
+    return df;
+  }
+
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final SortedSet<SiteMapUrl> locs = getLocs(req);
 
-    final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTimeNoMillis();
+    final DateFormat iso8601 = createIso8601Format();
 
     resp.resetBuffer();
     resp.setContentType(CONTENT_TYPE);
@@ -508,7 +522,7 @@ public class SiteMapIndexServlet extends HttpServlet {
       ReadableInstant lastmod = loc.getLastmod();
       if (lastmod != null) {
         out.print("    " + LASTMOD_OPEN);
-        encodeTextInXhtml(iso8601.print(lastmod), out);
+        encodeTextInXhtml(iso8601.format(new Date(lastmod.getMillis())), out);
         out.println(LASTMOD_CLOSE);
       }
       out.println("  " + SITEMAP_CLOSE);
