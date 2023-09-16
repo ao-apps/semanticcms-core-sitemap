@@ -469,7 +469,7 @@ public class SiteMapIndexServlet extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final SortedSet<SiteMapUrl> locs = getLocs(req);
 
-    final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTime();
+    final DateTimeFormatter iso8601 = ISODateTimeFormat.dateTimeNoMillis();
 
     resp.resetBuffer();
     resp.setContentType(CONTENT_TYPE);
