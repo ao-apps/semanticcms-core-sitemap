@@ -60,7 +60,7 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
    * The modified time is based on the modified time of the class file for this servlet.
    * This is preferred over build timestamps in support of reproducible builds.
    */
-  private static final long lastModified;
+  private static final long LAST_MODIFIED;
 
   static {
     try {
@@ -75,12 +75,12 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
       }
       URLConnection conn = classFile.openConnection();
       conn.setUseCaches(false);
-      long lm = conn.getLastModified();
+      long lastModified = conn.getLastModified();
       conn.getInputStream().close();
-      if (lm == 0) {
+      if (lastModified == 0) {
         throw new IOException("Unknown last-modified in class file: " + classFilename);
       }
-      lastModified = lm;
+      LAST_MODIFIED = lastModified;
     } catch (IOException e) {
       throw new ExceptionInInitializerError(e);
     }
@@ -88,7 +88,7 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
 
   @Override
   protected long getLastModified(HttpServletRequest req) {
-    return SiteMapIndexServlet.truncateToSecond(lastModified);
+    return SiteMapIndexServlet.truncateToSecond(LAST_MODIFIED);
   }
 
   @Override
