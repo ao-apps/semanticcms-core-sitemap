@@ -192,6 +192,12 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                       <includes>element-list, package-list</includes>
                       <outputDirectory>${project.build.directory}/offlineLinks/com.github.spotbugs/spotbugs-annotations</outputDirectory>
                     </artifactItem>
+                    <!-- Test Direct -->
+                    <artifactItem>
+                      <groupId>junit</groupId><artifactId>junit</artifactId><classifier>javadoc</classifier>
+                      <includes>element-list, package-list</includes>
+                      <outputDirectory>${project.build.directory}/offlineLinks/junit/junit</outputDirectory>
+                    </artifactItem>
                   </artifactItems>
                 </configuration>
               </execution>
@@ -254,6 +260,11 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                 <offlineLink>
                   <url>https://javadoc.io/doc/com.github.spotbugs/spotbugs-annotations/${spotbugs-annotations.version}/</url>
                   <location>${project.build.directory}/offlineLinks/com.github.spotbugs/spotbugs-annotations</location>
+                </offlineLink>
+                <!-- Test Direct -->
+                <offlineLink>
+                  <url>https://junit.org/junit4/javadoc/latest/</url>
+                  <location>${project.build.directory}/offlineLinks/junit/junit</location>
                 </offlineLink>
               </offlineLinks>
             </configuration>
@@ -398,6 +409,18 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       <dependency>
         <groupId>com.google.code.findbugs</groupId><artifactId>jsr305</artifactId><version>3.0.2</version>
       </dependency>
+      <!-- Test Direct -->
+      <dependency>
+        <groupId>junit</groupId><artifactId>junit</artifactId><version>4.13.2</version>
+      </dependency>
+      <!-- Test Transitive -->
+      <dependency>
+        <groupId>org.hamcrest</groupId><artifactId>hamcrest</artifactId><version>2.2</version>
+      </dependency>
+      <dependency>
+        <!-- Shim for junit 4.13.2 -->
+        <groupId>org.hamcrest</groupId><artifactId>hamcrest-core</artifactId><version>2.2</version>
+      </dependency>
       <!-- Imports -->
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId><version>7.0.1-POST-SNAPSHOT</version>
@@ -451,6 +474,11 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     <dependency>
       <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId>
       <optional>true</optional>
+    </dependency>
+    <!-- Test Direct -->
+    <dependency>
+      <groupId>junit</groupId><artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
     <!-- Imports (Reactor build order only) -->
     <dependency>

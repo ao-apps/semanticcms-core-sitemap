@@ -64,12 +64,8 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
 
   static {
     try {
-      ClassLoader cl = Thread.currentThread().getContextClassLoader();
-      if (cl == null) {
-        cl = ClassLoader.getSystemClassLoader();
-      }
-      String classFilename = '/' + SiteMapRobotsTxtServlet.class.getName().replace('.', '/') + ".class";
-      URL classFile = cl.getResource(classFilename);
+      String classFilename = SiteMapRobotsTxtServlet.class.getSimpleName() + ".class";
+      URL classFile = SiteMapRobotsTxtServlet.class.getResource(classFilename);
       if (classFile == null) {
         throw new IOException("Unable to find class file: " + classFilename);
       }

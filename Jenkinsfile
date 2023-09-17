@@ -43,6 +43,9 @@ def upstreamProjects = [
   'servlet', // <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId>
   // No Jenkins: <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId>
 
+  // Test Direct
+  // No Jenkins: <groupId>junit</groupId><artifactId>junit</artifactId>
+
   // BOM
   '../../oss/javaee-web-api-bom', // <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId>
 ]
