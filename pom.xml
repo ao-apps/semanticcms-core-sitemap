@@ -40,8 +40,6 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
 / <a target="${javadoc.target}" href="https://semanticcms.com/core/">Core</a>
 / <a target="${javadoc.target}" href="${project.url}">Sitemap</a>]]></javadoc.breadcrumbs>
     <description.html><![CDATA[Automatic <a target="${javadoc.target}" href="https://www.sitemaps.org/">sitemaps</a> for <a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>.]]></description.html>
-    <!-- TODO: Implement tests -->
-    <sonar.coverage.exclusions>**.*</sonar.coverage.exclusions>
     <!-- Dependencies -->
     <commons-lang3.version>3.13.0</commons-lang3.version>
     <spotbugs-annotations.version>4.7.3</spotbugs-annotations.version>
