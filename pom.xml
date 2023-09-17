@@ -44,6 +44,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     <sonar.coverage.exclusions>**.*</sonar.coverage.exclusions>
     <!-- Dependencies -->
     <commons-lang3.version>3.13.0</commons-lang3.version>
+    <spotbugs-annotations.version>4.7.3</spotbugs-annotations.version>
   </properties>
 
   <name>SemanticCMS Core Sitemap</name>
@@ -111,18 +112,6 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       </snapshots>
     </repository>
   </repositories>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-maven-plugin</artifactId>
-        <configuration>
-          <!-- TODO: Clean-up SpotBugs -->
-          <failOnError>false</failOnError>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 
   <profiles>
     <profile>
@@ -198,6 +187,11 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                       <includes>element-list, package-list</includes>
                       <outputDirectory>${project.build.directory}/offlineLinks/com.semanticcms/semanticcms-core-servlet</outputDirectory>
                     </artifactItem>
+                    <artifactItem>
+                      <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><classifier>javadoc</classifier>
+                      <includes>element-list, package-list</includes>
+                      <outputDirectory>${project.build.directory}/offlineLinks/com.github.spotbugs/spotbugs-annotations</outputDirectory>
+                    </artifactItem>
                   </artifactItems>
                 </configuration>
               </execution>
@@ -256,6 +250,10 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                 <offlineLink>
                   <url>https://semanticcms.com/core/servlet/apidocs/</url>
                   <location>${project.build.directory}/offlineLinks/com.semanticcms/semanticcms-core-servlet</location>
+                </offlineLink>
+                <offlineLink>
+                  <url>https://javadoc.io/doc/com.github.spotbugs/spotbugs-annotations/${spotbugs-annotations.version}/</url>
+                  <location>${project.build.directory}/offlineLinks/com.github.spotbugs/spotbugs-annotations</location>
                 </offlineLink>
               </offlineLinks>
             </configuration>
@@ -352,6 +350,9 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       <dependency>
         <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId><version>1.18.4${POST-SNAPSHOT}</version>
       </dependency>
+      <dependency>
+        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>${spotbugs-annotations.version}</version>
+      </dependency>
       <!-- Transitive -->
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>ao-collections</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
@@ -394,6 +395,9 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       </dependency>
       <!-- javaee-web-api-bom: <groupId>javax.el</groupId><artifactId>javax.el-api</artifactId> -->
       <!-- javaee-web-api-bom: <groupId>javax.servlet.jsp</groupId><artifactId>javax.servlet.jsp-api</artifactId> -->
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId><artifactId>jsr305</artifactId><version>3.0.2</version>
+      </dependency>
       <!-- Imports -->
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId><version>7.0.1-POST-SNAPSHOT</version>
@@ -443,6 +447,10 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     </dependency>
     <dependency>
       <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId>
+      <optional>true</optional>
     </dependency>
     <!-- Imports (Reactor build order only) -->
     <dependency>

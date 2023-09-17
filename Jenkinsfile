@@ -41,6 +41,7 @@ def upstreamProjects = [
   // No Jenkins: <groupId>joda-time</groupId><artifactId>joda-time</artifactId>
   'model', // <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-model</artifactId>
   'servlet', // <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId>
+  // No Jenkins: <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId>
 
   // BOM
   '../../oss/javaee-web-api-bom', // <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId>
