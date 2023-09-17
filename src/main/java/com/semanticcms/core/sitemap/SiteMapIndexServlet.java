@@ -179,8 +179,8 @@ public class SiteMapIndexServlet extends HttpServlet {
               }
             }
           }
-          logger.info("Found sitemap index at " + url + " containing " + count + " "
-              + (count == 1 ? "sitemap" : "sitemaps"));
+          logger.log(Level.INFO, "Found sitemap index at {0} containing {1} {2}",
+              new Object[]{url, count, count == 1 ? "sitemap" : "sitemaps"});
         }
         JAR_SITEMAP_INDEXES.context(event.getServletContext()).set(jarSitemapIndexes);
       } catch (IOException e) {
