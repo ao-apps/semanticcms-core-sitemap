@@ -29,6 +29,8 @@ import com.aoapps.servlet.http.Canonical;
 import com.aoapps.servlet.http.HttpServletUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.ServletException;
@@ -55,20 +57,38 @@ public class SiteMapRobotsTxtServlet extends HttpServlet {
   private static final Charset ENCODING = StandardCharsets.UTF_8;
 
   /**
-   * TODO: Consider a Maven-filter-provided build time annotation instead of using init time.
-   *       This would give consistent results between nodes in a cluster, as long as the same
-   *       build of software deployed to each.
+   * The modified time is based on the modified time of the class file for this servlet.
+   * This is preferred over build timestamps in support of reproducible builds.
    */
-  private long initTime;
+  private static final long lastModified;
 
-  @Override
-  public void init() {
-    initTime = System.currentTimeMillis();
+  static {
+    try {
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      if (cl == null) {
+        cl = ClassLoader.getSystemClassLoader();
+      }
+      String classFilename = '/' + SiteMapRobotsTxtServlet.class.getName().replace('.', '/') + ".class";
+      URL classFile = cl.getResource(classFilename);
+      if (classFile == null) {
+        throw new IOException("Unable to find class file: " + classFilename);
+      }
+      URLConnection conn = classFile.openConnection();
+      conn.setUseCaches(false);
+      long lm = conn.getLastModified();
+      conn.getInputStream().close();
+      if (lm == 0) {
+        throw new IOException("Unknown last-modified in class file: " + classFilename);
+      }
+      lastModified = lm;
+    } catch (IOException e) {
+      throw new ExceptionInInitializerError(e);
+    }
   }
 
   @Override
   protected long getLastModified(HttpServletRequest req) {
-    return SiteMapIndexServlet.truncateToSecond(initTime);
+    return SiteMapIndexServlet.truncateToSecond(lastModified);
   }
 
   @Override
