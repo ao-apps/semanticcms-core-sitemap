@@ -48,6 +48,7 @@ import com.semanticcms.core.model.PageRef;
 import com.semanticcms.core.pages.CaptureLevel;
 import com.semanticcms.core.renderer.html.HtmlRenderer;
 import com.semanticcms.core.renderer.html.View;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -224,23 +225,26 @@ public class SiteMapIndexServlet extends HttpServlet {
       final Book book,
       PageRef pageRef
   ) throws ServletException, IOException {
-    Boolean result = CapturePage.traversePagesAnyOrder(
-        servletContext,
+    @SuppressWarnings("Convert2Lambda") // Cannot put @SuppressFBWarnings on lambda
+    Boolean result = CapturePage.traversePagesAnyOrder(servletContext,
         req,
         resp,
         pageRef,
-        CaptureLevel.META,
-        page -> {
-          // TODO: Chance for more concurrency here by view?
-          for (View view : views) {
-            if (
-                view.getAllowRobots(servletContext, req, resp, page)
-                    && view.isApplicable(servletContext, req, resp, page)
-            ) {
-              return true;
+        CaptureLevel.META, new CapturePage.PageHandler<>() {
+          @Override
+          @SuppressFBWarnings("NP_BOOLEAN_RETURN_NULL")
+          public Boolean handlePage(Page page) throws ServletException, IOException {
+            // TODO: Chance for more concurrency here by view?
+            for (View view : views) {
+              if (
+                  view.getAllowRobots(servletContext, req, resp, page)
+                  && view.isApplicable(servletContext, req, resp, page)
+                  ) {
+                return true;
+              }
             }
+            return null;
           }
-          return null;
         },
         Page::getChildRefs,
         childPage -> book.getBookRef().equals(childPage.getBookRef())

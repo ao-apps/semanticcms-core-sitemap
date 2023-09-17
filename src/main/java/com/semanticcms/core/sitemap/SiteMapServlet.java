@@ -40,6 +40,7 @@ import com.semanticcms.core.model.Page;
 import com.semanticcms.core.pages.CaptureLevel;
 import com.semanticcms.core.renderer.html.HtmlRenderer;
 import com.semanticcms.core.renderer.html.View;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -116,6 +117,7 @@ public class SiteMapServlet extends HttpServlet {
    *
    * @return  the most recently last modified or {@code null} if unknown
    */
+  @SuppressWarnings("Convert2Lambda")
   static ReadableInstant getLastModified(
       final ServletContext servletContext,
       final HttpServletRequest req,
@@ -130,35 +132,37 @@ public class SiteMapServlet extends HttpServlet {
     // The most recent is kept here, but set to null the first time a missing
     // per page/view last modified time is found
     final ReadableInstant[] result = new ReadableInstant[1];
-    CapturePage.traversePagesAnyOrder(
-        servletContext,
+    CapturePage.traversePagesAnyOrder(servletContext,
         req,
         resp,
         book.getContentRoot(),
-        CaptureLevel.META,
-        page -> {
-          // TODO: Chance for more concurrency here by view?
-          for (View view : views) {
-            if (
-                view.getAllowRobots(servletContext, req, resp, page)
-                    && view.isApplicable(servletContext, req, resp, page)
-            ) {
-              ReadableInstant lastModified = view.getLastModified(servletContext, req, resp, page);
-              if (lastModified == null) {
-                // Stop searching, return null for this book
-                result[0] = null;
-                return false;
-              } else {
-                if (
-                    result[0] == null
-                        || lastModified.compareTo(result[0]) > 0
-                ) {
-                  result[0] = lastModified;
+        CaptureLevel.META, new CapturePage.PageHandler<>() {
+          @Override
+          @SuppressFBWarnings("NP_BOOLEAN_RETURN_NULL")
+          public Boolean handlePage(Page page) throws ServletException, IOException {
+            // TODO: Chance for more concurrency here by view?
+            for (View view : views) {
+              if (
+                  view.getAllowRobots(servletContext, req, resp, page)
+                  && view.isApplicable(servletContext, req, resp, page)
+                  ) {
+                ReadableInstant lastModified = view.getLastModified(servletContext, req, resp, page);
+                if (lastModified == null) {
+                  // Stop searching, return null for this book
+                  result[0] = null;
+                  return false;
+                } else {
+                  if (
+                      result[0] == null
+                      || lastModified.compareTo(result[0]) > 0
+                      ) {
+                    result[0] = lastModified;
+                  }
                 }
               }
             }
+            return null;
           }
-          return null;
         },
         Page::getChildRefs,
         childPage -> book.getBookRef().equals(childPage.getBookRef())

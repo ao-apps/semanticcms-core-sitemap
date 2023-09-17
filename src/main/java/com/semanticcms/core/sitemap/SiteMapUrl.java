@@ -24,6 +24,7 @@
 package com.semanticcms.core.sitemap;
 
 import com.aoapps.lang.Strings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.joda.time.ReadableInstant;
 
 /**
@@ -61,12 +62,13 @@ class SiteMapUrl implements Comparable<SiteMapUrl> {
    * </p>
    */
   @Override
+  @SuppressFBWarnings("EQ_COMPARETO_USE_OBJECT_EQUALS")
   public int compareTo(SiteMapUrl o) {
     if (lastmod != null) {
       if (o.lastmod != null) {
-        int diff = lastmod.compareTo(o.lastmod);
+        int diff = o.lastmod.compareTo(lastmod); // Reversed order for descending
         if (diff != 0) {
-          return -diff;
+          return diff;
         }
       } else {
         // nulls last
