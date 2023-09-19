@@ -39,6 +39,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     <javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>
 / <a target="${javadoc.target}" href="https://semanticcms.com/core/">Core</a>
 / <a target="${javadoc.target}" href="${project.url}">Sitemap</a>]]></javadoc.breadcrumbs>
+    
     <description.html><![CDATA[Automatic <a target="${javadoc.target}" href="https://www.sitemaps.org/">sitemaps</a> for <a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>.]]></description.html>
     <!-- Dependencies -->
     <commons-lang3.version>3.13.0</commons-lang3.version>

@@ -41,6 +41,9 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     <documented.artifactId>semanticcms-core-sitemap</documented.artifactId>
     <documented.name>SemanticCMS Core Sitemap</documented.name>
     <documented.description>Automatic sitemaps for SemanticCMS.</documented.description>
+    <javadoc.breadcrumbs><![CDATA[<a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>
+/ <a target="${javadoc.target}" href="https://semanticcms.com/core/">Core</a>
+/ <a target="${javadoc.target}" href="${project.url}">Sitemap</a>]]></javadoc.breadcrumbs>
 
     <description.html><![CDATA[Documentation for <a target="${javadoc.target}" href="${project.url}">${documented.name}</a> in <a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a> format.]]></description.html>
     <!-- SonarQube -->
