@@ -37,7 +37,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2016-10-30T18:51:32-05:00"
-    dateModified="2023-09-17T20:57:06Z"
+    dateModified="2023-09-24T08:46:01Z"
   >
     <c:set var="latestRelease" value="1.15.0" />
     <c:if test="${
@@ -52,7 +52,17 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
         artifactId="@{documented.artifactId}"
         repository="@{nexusUrl}content/repositories/snapshots/"
         scmUrl="@{project.scm.url}"
-      />
+      >
+        <ul>
+          <li>
+            Removed incorrect direct declaration of a POM dependency.  Uses of the previous release may fail with:
+            <code>
+              Execution attach-javadocs of goal org.apache.maven.plugins:maven-javadoc-plugin:3.6.0:jar failed:
+              '…/javaee-web-api-bom-7.0.1.pom' not allowed on the path, only outputDirectories and jars are accepted
+            </code>
+          </li>
+        </ul>
+      </changelog:release>
     </c:if>
 
     <changelog:release
