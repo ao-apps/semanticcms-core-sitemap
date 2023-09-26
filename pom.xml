@@ -41,9 +41,6 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
 / <a target="${javadoc.target}" href="${project.url}">Sitemap</a>]]></javadoc.breadcrumbs>
 
     <description.html><![CDATA[Automatic <a target="${javadoc.target}" href="https://www.sitemaps.org/">sitemaps</a> for <a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>.]]></description.html>
-    <!-- Dependencies -->
-    <commons-lang3.version>3.13.0</commons-lang3.version>
-    <spotbugs-annotations.version>4.7.3</spotbugs-annotations.version>
   </properties>
 
   <name>SemanticCMS Core Sitemap</name>
@@ -240,7 +237,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                   <location>${project.build.directory}/offlineLinks/com.aoapps/ao-tempfiles-servlet</location>
                 </offlineLink>
                 <offlineLink>
-                  <url>https://javadoc.io/doc/org.apache.commons/commons-lang3/${commons-lang3.version}/</url>
+                  <url>https://javadoc.io/doc/org.apache.commons/commons-lang3/${org.apache.commons:commons-lang3:jar.version}/</url>
                   <location>${project.build.directory}/offlineLinks/org.apache.commons/commons-lang3</location>
                 </offlineLink>
                 <!-- ao-javadoc-offline: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId><classifier>javadoc</classifier> -->
@@ -257,7 +254,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                   <location>${project.build.directory}/offlineLinks/com.semanticcms/semanticcms-core-servlet</location>
                 </offlineLink>
                 <offlineLink>
-                  <url>https://javadoc.io/doc/com.github.spotbugs/spotbugs-annotations/${spotbugs-annotations.version}/</url>
+                  <url>https://javadoc.io/doc/com.github.spotbugs/spotbugs-annotations/${com.github.spotbugs:spotbugs-annotations:jar.version}/</url>
                   <location>${project.build.directory}/offlineLinks/com.github.spotbugs/spotbugs-annotations</location>
                 </offlineLink>
                 <!-- Test Direct -->
@@ -348,7 +345,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
         <groupId>com.aoapps</groupId><artifactId>ao-tempfiles-servlet</artifactId><version>3.0.0${POST-SNAPSHOT}</version>
       </dependency>
       <dependency>
-        <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>${commons-lang3.version}</version>
+        <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.13.0</version>
       </dependency>
       <!-- javaee-web-api-bom: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
       <dependency>
@@ -361,7 +358,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
         <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId><version>1.19.1${POST-SNAPSHOT}</version>
       </dependency>
       <dependency>
-        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>${spotbugs-annotations.version}</version>
+        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>4.7.3</version>
       </dependency>
       <!-- Transitive -->
       <dependency>
