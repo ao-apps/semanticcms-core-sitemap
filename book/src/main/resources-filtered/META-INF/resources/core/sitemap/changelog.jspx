@@ -37,7 +37,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2016-10-30T18:51:32-05:00"
-    dateModified="2023-09-24T08:49:10Z"
+    dateModified="2023-10-07T18:16:37Z"
   >
     <c:set var="latestRelease" value="1.15.1" />
     <c:if test="${
@@ -52,7 +52,14 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
         artifactId="@{documented.artifactId}"
         repository="@{nexusUrl}content/repositories/snapshots/"
         scmUrl="@{project.scm.url}"
-      />
+      >
+        <ul>
+          <li>
+            Only register servlet at <code>/robots.txt</code> when there is no existing web resource.
+            This allows sites to provide custom <code>/robots.txt</code>.
+          </li>
+        </ul>
+      </changelog:release>
     </c:if>
 
     <changelog:release

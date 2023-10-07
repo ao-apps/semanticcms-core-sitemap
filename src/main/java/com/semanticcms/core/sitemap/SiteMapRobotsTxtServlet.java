@@ -34,18 +34,15 @@ import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Adds the sitemap index to /robots.txt
+ * Generates a /robots.txt including the sitemap index
+ *
+ * @see SiteMapRobotsTxtInitializer
  */
-@WebServlet(
-    urlPatterns = SiteMapRobotsTxtServlet.SERVLET_PATH,
-    loadOnStartup = 1
-)
 public class SiteMapRobotsTxtServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
