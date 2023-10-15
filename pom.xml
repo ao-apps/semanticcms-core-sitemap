@@ -358,7 +358,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
         <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId><version>1.20.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
       <dependency>
-        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>4.7.3</version>
+        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>4.8.0</version>
       </dependency>
       <!-- Transitive -->
       <dependency>
