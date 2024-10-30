@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -468,9 +468,8 @@ public class SiteMapIndexServlet extends HttpServlet {
   /**
    * Last modified is known only when the last modified is known for all books,
    * and it is the most recent of all the per-book last modified.
-   * <p>
-   * Note: This depends on the nulls-last ordering of {@link SiteMapUrl#compareTo(com.semanticcms.core.sitemap.SiteMapUrl)}.
-   * </p>
+   *
+   * <p>Note: This depends on the nulls-last ordering of {@link SiteMapUrl#compareTo(com.semanticcms.core.sitemap.SiteMapUrl)}.</p>
    */
   @Override
   protected long getLastModified(HttpServletRequest req) {
