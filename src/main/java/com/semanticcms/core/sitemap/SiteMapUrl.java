@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
+ * Copyright (C) 2019, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -57,9 +57,8 @@ class SiteMapUrl implements Comparable<SiteMapUrl> {
   /**
    * Ordered by most recent first (with unknown modified times last), then
    * by loc.
-   * <p>
-   * Note: The ordering of nulls last is required by {@link SiteMapIndexServlet#getLastModified(javax.servlet.http.HttpServletRequest)}.
-   * </p>
+   *
+   * <p>Note: The ordering of nulls last is required by {@link SiteMapIndexServlet#getLastModified(javax.servlet.http.HttpServletRequest)}.</p>
    */
   @Override
   @SuppressFBWarnings("EQ_COMPARETO_USE_OBJECT_EQUALS")
