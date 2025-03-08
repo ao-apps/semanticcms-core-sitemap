@@ -44,7 +44,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
 
     <!-- Plugin Dependencies -->
     <!--
-      spotbugs-4.9.2 with spotbugs-maven-plugin-4.9.1.0 seems confused.  It is consider some
+      spotbugs-4.9.2 with spotbugs-maven-plugin-4.9.2.0 seems confused.  It is consider some
       annotations as both necessary and unnecessary.  With or without the annotation, there is one failure or
       another.  Stay on spotbugs-4.9.1 until this is resolved.
     -->
