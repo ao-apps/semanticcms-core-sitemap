@@ -28,16 +28,6 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
   xsi:schemaLocation="http://mojo.codehaus.org/versions-maven-plugin/rule/2.0.0 https://www.mojohaus.org/versions-maven-plugin/xsd/rule-2.0.0.xsd"
 >
   <rules>
-    <rule groupId="com.github.spotbugs" artifactId="spotbugs" comparisonMethod="maven">
-      <ignoreVersions>
-        <!--
-          spotbugs-4.9.2 with spotbugs-maven-plugin-4.9.2.0 seems confused.  It is consider some
-          annotations as both necessary and unnecessary.  With or without the annotation, there is one failure or
-          another.  Stay on spotbugs-4.9.1 until this is resolved.
-        -->
-        <ignoreVersion type="exact">4.9.2</ignoreVersion>
-      </ignoreVersions>
-    </rule>
     <rule groupId="org.hamcrest" comparisonMethod="maven">
       <ignoreVersions>
         <ignoreVersion type="regex">.*-rc[0-9]+</ignoreVersion>

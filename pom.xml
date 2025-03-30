@@ -41,14 +41,6 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
 / <a target="${javadoc.target}" href="${project.url}">Sitemap</a>]]></javadoc.breadcrumbs>
 
     <description.html><![CDATA[Automatic <a target="${javadoc.target}" href="https://www.sitemaps.org/">sitemaps</a> for <a target="${javadoc.target}" href="https://semanticcms.com/">SemanticCMS</a>.]]></description.html>
-
-    <!-- Plugin Dependencies -->
-    <!--
-      spotbugs-4.9.2 with spotbugs-maven-plugin-4.9.2.0 seems confused.  It is consider some
-      annotations as both necessary and unnecessary.  With or without the annotation, there is one failure or
-      another.  Stay on spotbugs-4.9.1 until this is resolved.
-    -->
-    <com.github.spotbugs.spotbugs.version>4.9.1</com.github.spotbugs.spotbugs.version>
   </properties>
 
   <name>SemanticCMS Core Sitemap</name>
@@ -366,7 +358,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
         <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId><version>1.21.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
       <dependency>
-        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>4.9.2</version>
+        <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId><version>4.9.3</version>
       </dependency>
       <!-- Transitive -->
       <dependency>
