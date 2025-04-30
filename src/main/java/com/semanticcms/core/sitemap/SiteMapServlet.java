@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022, 2023, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -85,18 +85,18 @@ public class SiteMapServlet extends HttpServlet {
       return null;
     }
     Path bookPath;
-      {
-        String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
-        if (bookName.isEmpty()) {
-          bookPath = Path.ROOT;
-        } else {
-          try {
-            bookPath = Path.valueOf(bookName);
-          } catch (ValidationException e) {
-            throw new WrappedException(e);
-          }
+    {
+      String bookName = servletPath.substring(0, servletPath.length() - SERVLET_PATH.length());
+      if (bookName.isEmpty()) {
+        bookPath = Path.ROOT;
+      } else {
+        try {
+          bookPath = Path.valueOf(bookName);
+        } catch (ValidationException e) {
+          throw new WrappedException(e);
         }
       }
+    }
     Book book = semanticCms.getPublishedBooks().get(bookPath);
     if (book == null) {
       // Book not published

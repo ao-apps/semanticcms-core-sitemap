@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -264,185 +264,185 @@ public class SiteMapIndexServlet extends HttpServlet {
       final SortedSet<View> views = htmlRenderer.getViews();
 
       SortedSet<SiteMapUrl> locs = new TreeSet<>(JarSitemapIndexInitializer.getJarSitemapIndexes(servletContext));
+      {
+        List<Book> books;
         {
-          List<Book> books;
-          {
-            // Filter published and accessible only
-            Collection<Book> values = semanticCms.getPublishedBooks().values();
-            books = new ArrayList<>(values.size());
-            for (Book book : values) {
-              if (book.isAccessible()) {
-                books.add(book);
-              }
-            }
-          }
-          int numBooks = books.size();
-          if (
-              numBooks > 1
-                  && ConcurrencyCoordinator.useConcurrentSubrequests(req)
-          ) {
-            // Concurrent implementation
-            final HttpServletRequest threadSafeReq = new UnmodifiableCopyHttpServletRequest(req);
-            final HttpServletResponse threadSafeResp = new UnmodifiableCopyHttpServletResponse(resp);
-            final TempFileContext tempFileContext = TempFileContextEE.get(req);
-            List<Book> booksWithSiteMapUrl;
-              {
-                List<Callable<Boolean>> tasks = new ArrayList<>(numBooks);
-                  {
-                    for (final Book book : books) {
-                      tasks.add(
-                          () -> {
-                            HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-                            HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
-                            if (logger.isLoggable(Level.FINE)) {
-                              logger.log(
-                                  Level.FINE,
-                                  "called, subrequest={0}, book={1}",
-                                  new Object[]{
-                                      subrequest,
-                                      book
-                                  }
-                              );
-                            }
-                            return hasSiteMapUrl(
-                                servletContext,
-                                subrequest,
-                                subresponse,
-                                views,
-                                book,
-                                book.getContentRoot()
-                            );
-                          }
-                      );
-                    }
-                  }
-                List<Boolean> results;
-                try {
-                  results = semanticCms.getExecutors().getPerProcessor().callAll(tasks);
-                } catch (InterruptedException e) {
-                  // Restore the interrupted status
-                  Thread.currentThread().interrupt();
-                  throw new ServletException(e);
-                } catch (ExecutionException e) {
-                  // Maintain expected exception types while not losing stack trace
-                  ExecutionExceptions.wrapAndThrow(e, IOException.class, IOException::new);
-                  throw new ServletException(e);
-                }
-                // Now find the last modified with concurrency
-                booksWithSiteMapUrl = new ArrayList<>(numBooks);
-                  {
-                    int i = 0;
-                    for (Book book : books) {
-                      if (results.get(i++)) {
-                        booksWithSiteMapUrl.add(book);
-                      }
-                    }
-                    assert i == numBooks;
-                  }
-              }
-              int booksWithSiteMapUrlSize = booksWithSiteMapUrl.size();
-              if (booksWithSiteMapUrlSize > 0) {
-                if (booksWithSiteMapUrlSize > 1) {
-                  // Concurrent implementation
-                  List<Callable<ReadableInstant>> lastModifiedTasks = new ArrayList<>(booksWithSiteMapUrlSize);
-                    {
-                      for (final Book book : booksWithSiteMapUrl) {
-                        lastModifiedTasks.add(
-                            () -> {
-                              HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
-                              HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
-                              if (logger.isLoggable(Level.FINE)) {
-                                logger.log(
-                                    Level.FINE,
-                                    "called, subrequest={0}, book={1}",
-                                    new Object[]{
-                                        subrequest,
-                                        book
-                                    }
-                                );
-                              }
-                              return SiteMapServlet.getLastModified(
-                                  servletContext,
-                                  subrequest,
-                                  subresponse,
-                                  views,
-                                  book
-                              );
-                            }
-                        );
-                      }
-                    }
-                  List<ReadableInstant> lastModifieds;
-                  try {
-                    lastModifieds = semanticCms.getExecutors().getPerProcessor().callAll(lastModifiedTasks);
-                  } catch (InterruptedException e) {
-                    // Restore the interrupted status
-                    Thread.currentThread().interrupt();
-                    throw new ServletException(e);
-                  } catch (ExecutionException e) {
-                    // Maintain expected exception types while not losing stack trace
-                    ExecutionExceptions.wrapAndThrow(e, IOException.class, IOException::new);
-                    throw new ServletException(e);
-                  }
-                  for (int i = 0; i < booksWithSiteMapUrlSize; i++) {
-                    locs.add(
-                        new SiteMapUrl(
-                            false,
-                            booksWithSiteMapUrl.get(i).getBookRef().getPrefix(),
-                            lastModifieds.get(i)
-                        )
-                    );
-                  }
-                } else {
-                  // Single implementation
-                  Book book = booksWithSiteMapUrl.get(0);
-                  locs.add(
-                      new SiteMapUrl(
-                          false,
-                          book.getBookRef().getPrefix(),
-                          SiteMapServlet.getLastModified(
-                              servletContext,
-                              req,
-                              resp,
-                              views,
-                              book
-                          )
-                      )
-                  );
-                }
-              } else {
-                // Nothing to do
-              }
-          } else {
-            // Sequential implementation
-            for (Book book : books) {
-              if (
-                  hasSiteMapUrl(
-                      servletContext,
-                      req,
-                      resp,
-                      views,
-                      book,
-                      book.getContentRoot()
-                  )
-              ) {
-                locs.add(
-                    new SiteMapUrl(
-                        false,
-                        book.getBookRef().getPrefix(),
-                        SiteMapServlet.getLastModified(
-                            servletContext,
-                            req,
-                            resp,
-                            views,
-                            book
-                        )
-                    )
-                );
-              }
+          // Filter published and accessible only
+          Collection<Book> values = semanticCms.getPublishedBooks().values();
+          books = new ArrayList<>(values.size());
+          for (Book book : values) {
+            if (book.isAccessible()) {
+              books.add(book);
             }
           }
         }
+        int numBooks = books.size();
+        if (
+            numBooks > 1
+                && ConcurrencyCoordinator.useConcurrentSubrequests(req)
+        ) {
+          // Concurrent implementation
+          final HttpServletRequest threadSafeReq = new UnmodifiableCopyHttpServletRequest(req);
+          final HttpServletResponse threadSafeResp = new UnmodifiableCopyHttpServletResponse(resp);
+          final TempFileContext tempFileContext = TempFileContextEE.get(req);
+          List<Book> booksWithSiteMapUrl;
+          {
+            List<Callable<Boolean>> tasks = new ArrayList<>(numBooks);
+            {
+              for (final Book book : books) {
+                tasks.add(
+                    () -> {
+                      HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
+                      HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
+                      if (logger.isLoggable(Level.FINE)) {
+                        logger.log(
+                            Level.FINE,
+                            "called, subrequest={0}, book={1}",
+                            new Object[]{
+                                subrequest,
+                                book
+                            }
+                        );
+                      }
+                      return hasSiteMapUrl(
+                          servletContext,
+                          subrequest,
+                          subresponse,
+                          views,
+                          book,
+                          book.getContentRoot()
+                      );
+                    }
+                );
+              }
+            }
+            List<Boolean> results;
+            try {
+              results = semanticCms.getExecutors().getPerProcessor().callAll(tasks);
+            } catch (InterruptedException e) {
+              // Restore the interrupted status
+              Thread.currentThread().interrupt();
+              throw new ServletException(e);
+            } catch (ExecutionException e) {
+              // Maintain expected exception types while not losing stack trace
+              ExecutionExceptions.wrapAndThrow(e, IOException.class, IOException::new);
+              throw new ServletException(e);
+            }
+            // Now find the last modified with concurrency
+            booksWithSiteMapUrl = new ArrayList<>(numBooks);
+            {
+              int i = 0;
+              for (Book book : books) {
+                if (results.get(i++)) {
+                  booksWithSiteMapUrl.add(book);
+                }
+              }
+              assert i == numBooks;
+            }
+          }
+          int booksWithSiteMapUrlSize = booksWithSiteMapUrl.size();
+          if (booksWithSiteMapUrlSize > 0) {
+            if (booksWithSiteMapUrlSize > 1) {
+              // Concurrent implementation
+              List<Callable<ReadableInstant>> lastModifiedTasks = new ArrayList<>(booksWithSiteMapUrlSize);
+              {
+                for (final Book book : booksWithSiteMapUrl) {
+                  lastModifiedTasks.add(
+                      () -> {
+                        HttpServletRequest subrequest = new HttpServletSubRequest(threadSafeReq);
+                        HttpServletResponse subresponse = new HttpServletSubResponse(threadSafeResp, tempFileContext);
+                        if (logger.isLoggable(Level.FINE)) {
+                          logger.log(
+                              Level.FINE,
+                              "called, subrequest={0}, book={1}",
+                              new Object[]{
+                                  subrequest,
+                                  book
+                              }
+                          );
+                        }
+                        return SiteMapServlet.getLastModified(
+                            servletContext,
+                            subrequest,
+                            subresponse,
+                            views,
+                            book
+                        );
+                      }
+                  );
+                }
+              }
+              List<ReadableInstant> lastModifieds;
+              try {
+                lastModifieds = semanticCms.getExecutors().getPerProcessor().callAll(lastModifiedTasks);
+              } catch (InterruptedException e) {
+                // Restore the interrupted status
+                Thread.currentThread().interrupt();
+                throw new ServletException(e);
+              } catch (ExecutionException e) {
+                // Maintain expected exception types while not losing stack trace
+                ExecutionExceptions.wrapAndThrow(e, IOException.class, IOException::new);
+                throw new ServletException(e);
+              }
+              for (int i = 0; i < booksWithSiteMapUrlSize; i++) {
+                locs.add(
+                    new SiteMapUrl(
+                        false,
+                        booksWithSiteMapUrl.get(i).getBookRef().getPrefix(),
+                        lastModifieds.get(i)
+                    )
+                );
+              }
+            } else {
+              // Single implementation
+              Book book = booksWithSiteMapUrl.get(0);
+              locs.add(
+                  new SiteMapUrl(
+                      false,
+                      book.getBookRef().getPrefix(),
+                      SiteMapServlet.getLastModified(
+                          servletContext,
+                          req,
+                          resp,
+                          views,
+                          book
+                      )
+                  )
+              );
+            }
+          } else {
+            // Nothing to do
+          }
+        } else {
+          // Sequential implementation
+          for (Book book : books) {
+            if (
+                hasSiteMapUrl(
+                    servletContext,
+                    req,
+                    resp,
+                    views,
+                    book,
+                    book.getContentRoot()
+                )
+            ) {
+              locs.add(
+                  new SiteMapUrl(
+                      false,
+                      book.getBookRef().getPrefix(),
+                      SiteMapServlet.getLastModified(
+                          servletContext,
+                          req,
+                          resp,
+                          views,
+                          book
+                      )
+                  )
+              );
+            }
+          }
+        }
+      }
       locsAttribute.set(locs);
       super.service(req, resp);
     } finally {
