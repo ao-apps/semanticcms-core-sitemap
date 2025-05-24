@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022, 2023  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2019, 2020, 2021, 2022, 2023, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -128,7 +128,7 @@ public class SiteMapServlet extends HttpServlet {
                 } else {
                   if (
                       result[0] == null
-                      || lastModified.compareTo(result[0]) > 0
+                        || lastModified.compareTo(result[0]) > 0
                       ) {
                     result[0] = lastModified;
                   }
