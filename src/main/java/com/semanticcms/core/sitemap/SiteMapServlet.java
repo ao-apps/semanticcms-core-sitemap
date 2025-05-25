@@ -154,7 +154,7 @@ public class SiteMapServlet extends HttpServlet {
                 } else {
                   if (
                       result[0] == null
-                      || lastModified.compareTo(result[0]) > 0
+                        || lastModified.compareTo(result[0]) > 0
                       ) {
                     result[0] = lastModified;
                   }
