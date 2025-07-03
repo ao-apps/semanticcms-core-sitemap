@@ -23,7 +23,7 @@ Automatic [sitemaps](https://www.sitemaps.org/) for [SemanticCMS](https://github
 * [Project Home](https://semanticcms.com/core/sitemap/)
 * [Changelog](https://semanticcms.com/core/sitemap/changelog)
 * [API Docs](https://semanticcms.com/core/sitemap/apidocs/)
-* [Maven Central Repository](https://central.sonatype.com/artifact/com.semanticcms/semanticcms-core-sitemap)
+* [Central Repository](https://central.sonatype.com/artifact/com.semanticcms/semanticcms-core-sitemap)
 * [GitHub](https://github.com/ao-apps/semanticcms-core-sitemap)
 
 ## Contact Us
