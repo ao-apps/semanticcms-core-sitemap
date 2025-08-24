@@ -1135,7 +1135,7 @@ void analysisSteps() {
   script {
     try {
       timeout(time: 15, unit: 'MINUTES') {
-        tools = []
+        def tools = []
         tools << checkStyle(pattern: 'target/checkstyle-result.xml', skipSymbolicLinks: true)
         tools << java()
         tools << javaDoc()
