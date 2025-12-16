@@ -32,10 +32,10 @@ def upstreamProjects = [
   '../../oss/encoding', // <groupId>com.aoapps</groupId><artifactId>ao-encoding</artifactId>
   '../../oss/lang', // <groupId>com.aoapps</groupId><artifactId>ao-lang</artifactId>
   '../../oss/net-types', // <groupId>com.aoapps</groupId><artifactId>ao-net-types</artifactId>
-  '../../oss/servlet-subrequest', // <groupId>com.aoapps</groupId><artifactId>ao-servlet-subrequest</artifactId>
-  '../../oss/servlet-util', // <groupId>com.aoapps</groupId><artifactId>ao-servlet-util</artifactId>
+  '../../oss/servlet-subrequest-javaee', // <groupId>com.aoapps</groupId><artifactId>ao-servlet-subrequest</artifactId>
+  '../../oss/servlet-util-javaee', // <groupId>com.aoapps</groupId><artifactId>ao-servlet-util</artifactId>
   '../../oss/tempfiles', // <groupId>com.aoapps</groupId><artifactId>ao-tempfiles</artifactId>
-  '../../oss/tempfiles-servlet', // <groupId>com.aoapps</groupId><artifactId>ao-tempfiles-servlet</artifactId>
+  '../../oss/tempfiles-servlet-javaee', // <groupId>com.aoapps</groupId><artifactId>ao-tempfiles-servlet</artifactId>
   // No Jenkins: <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId>
   // No Jenkins: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId>
   // No Jenkins: <groupId>joda-time</groupId><artifactId>joda-time</artifactId>
