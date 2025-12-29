@@ -37,7 +37,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2016-10-30T18:51:32-05:00"
-    dateModified="2025-07-02T23:05:45Z"
+    dateModified="2025-12-26T03:55:26Z"
   >
     <c:set var="latestRelease" value="1.15.1" />
     <c:if test="${
@@ -53,6 +53,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
         scmUrl="@{project.scm.url}"
       >
         <ul>
+          <li>Minimum Java version changed from 11 to 17.</li>
           <li>
             Only register servlet at <code>/robots.txt</code> when there is no existing web resource.
             This allows sites to provide custom <code>/robots.txt</code>.
