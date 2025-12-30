@@ -45,8 +45,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.util.Date;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import javax.servlet.ServletContext;
@@ -54,7 +55,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.joda.time.ReadableInstant;
 
 /**
  * Creates a sitemap of one book.
@@ -118,7 +118,7 @@ public class SiteMapServlet extends HttpServlet {
    * @return  the most recently last modified or {@code null} if unknown
    */
   @SuppressWarnings("Convert2Lambda")
-  static ReadableInstant getLastModified(
+  static ZonedDateTime getLastModified(
       final ServletContext servletContext,
       final HttpServletRequest req,
       final HttpServletResponse resp,
@@ -131,7 +131,7 @@ public class SiteMapServlet extends HttpServlet {
     assert book.isAccessible();
     // The most recent is kept here, but set to null the first time a missing
     // per page/view last modified time is found
-    final ReadableInstant[] result = new ReadableInstant[1];
+    final ZonedDateTime[] result = new ZonedDateTime[1];
     CapturePage.traversePagesAnyOrder(servletContext,
         req,
         resp,
@@ -146,7 +146,7 @@ public class SiteMapServlet extends HttpServlet {
                   view.getAllowRobots(servletContext, req, resp, page)
                   && view.isApplicable(servletContext, req, resp, page)
                   ) {
-                ReadableInstant lastModified = view.getLastModified(servletContext, req, resp, page);
+                ZonedDateTime lastModified = view.getLastModified(servletContext, req, resp, page);
                 if (lastModified == null) {
                   // Stop searching, return null for this book
                   result[0] = null;
@@ -193,14 +193,14 @@ public class SiteMapServlet extends HttpServlet {
       return -1;
     } else {
       try {
-        ReadableInstant lastModified = getLastModified(
+        ZonedDateTime lastModified = getLastModified(
             getServletContext(),
             req,
             RESPONSE_IN_REQUEST_ATTRIBUTE.context(req).get(),
             HtmlRenderer.getInstance(servletContext).getViews(),
             book
         );
-        return lastModified == null ? -1 : SiteMapIndexServlet.truncateToSecond(lastModified.getMillis());
+        return lastModified == null ? -1 : SiteMapIndexServlet.truncateToSecond(lastModified.toInstant().toEpochMilli());
       } catch (ServletException | IOException e) {
         log("getLastModified failed", e);
         return -1;
@@ -248,8 +248,6 @@ public class SiteMapServlet extends HttpServlet {
         childPage -> book.getBookRef().equals(childPage.getBookRef())
     );
 
-    final DateFormat iso8601 = SiteMapIndexServlet.createIso8601Format();
-
     resp.resetBuffer();
     resp.setContentType(CONTENT_TYPE);
     resp.setCharacterEncoding(ENCODING.name());
@@ -271,10 +269,10 @@ public class SiteMapServlet extends HttpServlet {
           out
       );
       out.println("</loc>");
-      ReadableInstant lastmod = url.getLastmod();
+      ZonedDateTime lastmod = url.getLastmod();
       if (lastmod != null) {
         out.print("    <lastmod>");
-        encodeTextInXhtml(iso8601.format(new Date(lastmod.getMillis())), out);
+        encodeTextInXhtml(lastmod.toInstant().atZone(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT), out);
         out.println("</lastmod>");
       }
       out.println("  </url>");
