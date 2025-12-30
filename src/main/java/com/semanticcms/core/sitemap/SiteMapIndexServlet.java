@@ -57,18 +57,17 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.SortedSet;
-import java.util.TimeZone;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -84,8 +83,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.exception.UncheckedException;
-import org.joda.time.DateTime;
-import org.joda.time.ReadableInstant;
 
 /**
  * Creates a site map index of all per-book sitemaps.
@@ -151,7 +148,7 @@ public class SiteMapIndexServlet extends HttpServlet {
           int count = 0;
           try (BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), ENCODING))) {
             String loc = null;
-            ReadableInstant lastmod = null;
+            ZonedDateTime lastmod = null;
             String line;
             while ((line = in.readLine()) != null) {
               line = line.trim();
@@ -164,7 +161,7 @@ public class SiteMapIndexServlet extends HttpServlet {
                 if (!line.endsWith(LASTMOD_CLOSE)) {
                   throw new ParseException("No " + LASTMOD_CLOSE + " after " + LASTMOD_OPEN, 0);
                 }
-                lastmod = new DateTime(line.substring(LASTMOD_OPEN.length(), line.length() - LASTMOD_CLOSE.length()));
+                lastmod = ZonedDateTime.parse(line.substring(LASTMOD_OPEN.length(), line.length() - LASTMOD_CLOSE.length()));
               } else if (line.startsWith(SITEMAP_CLOSE)) {
                 if (loc == null) {
                   throw new ParseException("No " + LOC_OPEN + " before " + SITEMAP_CLOSE, 0);
@@ -332,7 +329,7 @@ public class SiteMapIndexServlet extends HttpServlet {
           if (booksWithSiteMapUrlSize > 0) {
             if (booksWithSiteMapUrlSize > 1) {
               // Concurrent implementation
-              List<Callable<ReadableInstant>> lastModifiedTasks = new ArrayList<>(booksWithSiteMapUrlSize);
+              List<Callable<ZonedDateTime>> lastModifiedTasks = new ArrayList<>(booksWithSiteMapUrlSize);
               {
                 for (final Book book : booksWithSiteMapUrl) {
                   lastModifiedTasks.add(
@@ -360,7 +357,7 @@ public class SiteMapIndexServlet extends HttpServlet {
                   );
                 }
               }
-              List<ReadableInstant> lastModifieds;
+              List<ZonedDateTime> lastModifieds;
               try {
                 lastModifieds = semanticCms.getExecutors().getPerProcessor().callAll(lastModifiedTasks);
               } catch (InterruptedException e) {
@@ -465,31 +462,17 @@ public class SiteMapIndexServlet extends HttpServlet {
     if (locs.isEmpty()) {
       return -1;
     }
-    ReadableInstant last = locs.last().getLastmod();
+    ZonedDateTime last = locs.last().getLastmod();
     if (last == null) {
       return -1;
     }
-    ReadableInstant first = locs.first().getLastmod();
-    return first == null ? -1 : truncateToSecond(first.getMillis());
-  }
-
-  /**
-   * Creates a date formatter.
-   * See <a href="https://stackoverflow.com/a/3914498/7121505">java - How to get current moment in ISO 8601 format with
-   * date, hour, and minute? - Stack Overflow</a>.
-   */
-  static DateFormat createIso8601Format() {
-    TimeZone tz = TimeZone.getTimeZone("UTC");
-    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
-    df.setTimeZone(tz);
-    return df;
+    ZonedDateTime first = locs.first().getLastmod();
+    return first == null ? -1 : truncateToSecond(first.toInstant().toEpochMilli());
   }
 
   @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     final SortedSet<SiteMapUrl> locs = getLocs(req);
-
-    final DateFormat iso8601 = createIso8601Format();
 
     resp.resetBuffer();
     resp.setContentType(CONTENT_TYPE);
@@ -519,10 +502,10 @@ public class SiteMapIndexServlet extends HttpServlet {
           out
       );
       out.println(LOC_CLOSE);
-      ReadableInstant lastmod = loc.getLastmod();
+      ZonedDateTime lastmod = loc.getLastmod();
       if (lastmod != null) {
         out.print("    " + LASTMOD_OPEN);
-        encodeTextInXhtml(iso8601.format(new Date(lastmod.getMillis())), out);
+        encodeTextInXhtml(lastmod.toInstant().atZone(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT), out);
         out.println(LASTMOD_CLOSE);
       }
       out.println("  " + SITEMAP_CLOSE);

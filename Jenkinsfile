@@ -38,7 +38,6 @@ def upstreamProjects = [
   '../../oss/tempfiles-servlet', // <groupId>com.aoapps</groupId><artifactId>ao-tempfiles-servlet</artifactId>
   // No Jenkins: <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId>
   // No Jenkins: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId>
-  // No Jenkins: <groupId>joda-time</groupId><artifactId>joda-time</artifactId>
   'model', // <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-model</artifactId>
   'servlet', // <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-servlet</artifactId>
   // No Jenkins: <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId>

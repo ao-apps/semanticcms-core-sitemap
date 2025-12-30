@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2019, 2020, 2021, 2022, 2023, 2024  AO Industries, Inc.
+ * Copyright (C) 2019, 2020, 2021, 2022, 2023, 2024, 2025  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -25,7 +25,7 @@ package com.semanticcms.core.sitemap;
 
 import com.aoapps.lang.Strings;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import org.joda.time.ReadableInstant;
+import java.time.ZonedDateTime;
 
 /**
  * One URL within a sitemap.
@@ -34,9 +34,9 @@ class SiteMapUrl implements Comparable<SiteMapUrl> {
 
   private final boolean absolute;
   private final String loc;
-  private final ReadableInstant lastmod;
+  private final ZonedDateTime lastmod;
 
-  SiteMapUrl(boolean absolute, String loc, ReadableInstant lastmod) {
+  SiteMapUrl(boolean absolute, String loc, ZonedDateTime lastmod) {
     this.absolute = absolute;
     this.loc = loc;
     this.lastmod = lastmod;
@@ -50,7 +50,7 @@ class SiteMapUrl implements Comparable<SiteMapUrl> {
     return loc;
   }
 
-  ReadableInstant getLastmod() {
+  ZonedDateTime getLastmod() {
     return lastmod;
   }
 
