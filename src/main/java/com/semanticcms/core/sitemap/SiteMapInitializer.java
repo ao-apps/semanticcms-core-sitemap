@@ -1,6 +1,6 @@
 /*
  * semanticcms-core-sitemap - Automatic sitemaps for SemanticCMS.
- * Copyright (C) 2016, 2017, 2022  AO Industries, Inc.
+ * Copyright (C) 2016, 2017, 2022, 2025, 2026  AO Industries, Inc.
  *     support@aoindustries.com
  *     7262 Bull Pen Cir
  *     Mobile, AL 36695
@@ -25,11 +25,11 @@ package com.semanticcms.core.sitemap;
 
 import com.semanticcms.core.controller.Book;
 import com.semanticcms.core.controller.SemanticCMS;
+import jakarta.servlet.ServletContainerInitializer;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRegistration;
 import java.util.Set;
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
 
 /**
  * Dynamically adds the SiteMapServlet to /sitemap.xml on each book.

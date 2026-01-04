@@ -167,7 +167,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                       <includes>element-list, package-list</includes>
                       <outputDirectory>${project.build.directory}/offlineLinks/org.apache.commons/commons-lang3</outputDirectory>
                     </artifactItem>
-                    <!-- ao-javadoc-offline: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId><classifier>javadoc</classifier> -->
+                    <!-- ao-javadoc-offline: <groupId>jakarta.servlet</groupId><artifactId>jakarta.servlet-api</artifactId><classifier>javadoc</classifier> -->
                     <artifactItem>
                       <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-controller</artifactId><classifier>javadoc</classifier>
                       <includes>element-list, package-list</includes>
@@ -245,7 +245,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                   <url>https://javadoc.io/doc/org.apache.commons/commons-lang3/${org.apache.commons:commons-lang3:jar.version}/</url>
                   <location>${project.build.directory}/offlineLinks/org.apache.commons/commons-lang3</location>
                 </offlineLink>
-                <!-- ao-javadoc-offline: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId><classifier>javadoc</classifier> -->
+                <!-- ao-javadoc-offline: <groupId>jakarta.servlet</groupId><artifactId>jakarta.servlet-api</artifactId><classifier>javadoc</classifier> -->
                 <offlineLink>
                   <url>https://semanticcms.com/core/controller/apidocs/</url>
                   <location>${project.build.directory}/offlineLinks/com.semanticcms/semanticcms-core-controller</location>
@@ -307,9 +307,6 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
                 <!--
                   Releases use "Automatic-Module-Name" instead of "module-info.java"
                   since has direct dependencies that are not yet modularized:
-                  javax.el-api-3.0.0.jar
-                  javax.servlet.jsp-api-2.3.3.jar
-                  javax.servlet-api-3.1.0.jar
                   jsr305-3.0.2.jar
                 -->
                 <Automatic-Module-Name>${module.name}</Automatic-Module-Name>
@@ -360,7 +357,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       <dependency>
         <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId><version>3.20.0</version>
       </dependency>
-      <!-- javaee-web-api-bom: <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId> -->
+      <!-- jakartaee-web-profile-bom: <groupId>jakarta.servlet</groupId><artifactId>jakarta.servlet-api</artifactId> -->
       <dependency>
         <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-controller</artifactId><version>3.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
@@ -416,8 +413,8 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       <dependency>
         <groupId>com.aoapps</groupId><artifactId>ao-web-resources-servlet</artifactId><version>0.7.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
-      <!-- javaee-web-api-bom: <groupId>javax.el</groupId><artifactId>javax.el-api</artifactId> -->
-      <!-- javaee-web-api-bom: <groupId>javax.servlet.jsp</groupId><artifactId>javax.servlet.jsp-api</artifactId> -->
+      <!-- jakartaee-web-profile-bom: <groupId>jakarta.el</groupId><artifactId>jakarta.el-api</artifactId> -->
+      <!-- jakartaee-web-profile-bom: <groupId>jakarta.servlet.jsp</groupId><artifactId>jakarta.servlet.jsp-api</artifactId> -->
       <dependency>
         <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-pages-local</artifactId><version>3.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
       </dependency>
@@ -447,7 +444,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       </dependency>
       <!-- Imports -->
       <dependency>
-        <groupId>com.aoapps</groupId><artifactId>javaee-web-api-bom</artifactId><version>7.0.1-POST-SNAPSHOT</version>
+        <groupId>com.aoapps</groupId><artifactId>jakartaee-web-profile-bom</artifactId><version>10.0.0-SNAPSHOT<!-- ${POST-SNAPSHOT} --></version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -484,7 +481,7 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
       <groupId>org.apache.commons</groupId><artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId><artifactId>javax.servlet-api</artifactId>
+      <groupId>jakarta.servlet</groupId><artifactId>jakarta.servlet-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.semanticcms</groupId><artifactId>semanticcms-core-controller</artifactId>
