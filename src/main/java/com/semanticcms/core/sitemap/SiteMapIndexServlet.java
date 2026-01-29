@@ -204,8 +204,8 @@ public class SiteMapIndexServlet extends HttpServlet {
 
   /**
    * The sitemap locations are resolved at the beginning of the request and
-   * used by both {@link #getLastModified(jakarta.servlet.http.HttpServletRequest)}
-   * and {@link #doGet(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)}.
+   * used by both {@link SiteMapIndexServlet#getLastModified(jakarta.servlet.http.HttpServletRequest)}
+   * and {@link SiteMapIndexServlet#doGet(jakarta.servlet.http.HttpServletRequest, jakarta.servlet.http.HttpServletResponse)}.
    */
   private static final ScopeEE.Request.Attribute<SortedSet<SiteMapUrl>> LOCS_ATTRIBUTE =
       ScopeEE.REQUEST.attribute(SiteMapIndexServlet.class.getName() + ".locs");
