@@ -37,9 +37,9 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
     shortTitle="Changelog"
     tocLevels="1"
     datePublished="2016-10-30T18:51:32-05:00"
-    dateModified="2026-01-15T22:52:15Z"
+    dateModified="2026-02-03T01:46:33Z"
   >
-    <c:set var="latestRelease" value="1.15.1" />
+    <c:set var="latestRelease" value="1.22.0" />
     <c:if test="${
       fn:endsWith('@{project.version}', '-SNAPSHOT')
       and !fn:endsWith('@{project.version}', '-POST-SNAPSHOT')
@@ -56,14 +56,26 @@ along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/
           <li>Minimum Java version changed from 11 to 17.</li>
           <li>Updated to <ao:a href="https://jakarta.ee/specifications/webprofile/10/">Jakarta EE Web Profile 10</ao:a> (Servlet 6.0, JSP 3.1, EL 5.0, and JSTL 3.0).</li>
           <li>Added <core:link book="/core/pages" page="/" /> support.</li>
-          <li>
-            Only register servlet at <code>/robots.txt</code> when there is no existing web resource.
-            This allows sites to provide custom <code>/robots.txt</code>.
-          </li>
-          <li>Updated to <ao:a href="https://checkstyle.org/releasenotes.html#Release_13.0.0">Checkstyle 13.0.0</ao:a>.</li>
         </ul>
       </changelog:release>
     </c:if>
+
+    <changelog:release
+      projectName="@{documented.name}"
+      version="1.22.0"
+      datePublished="2026-02-03T01:46:33Z"
+      groupId="@{project.groupId}"
+      artifactId="@{documented.artifactId}"
+      scmUrl="@{project.scm.url}"
+    >
+      <ul>
+        <li>
+          Only register servlet at <code>/robots.txt</code> when there is no existing web resource.
+          This allows sites to provide custom <code>/robots.txt</code>.
+        </li>
+        <li>Updated to <ao:a href="https://checkstyle.org/releasenotes.html#Release_13.1.0">Checkstyle 13.1.0</ao:a>.</li>
+      </ul>
+    </changelog:release>
 
     <changelog:release
       projectName="@{documented.name}"
