@@ -56,6 +56,7 @@ import org.joda.time.format.ISODateTimeFormat;
  *
  * @see  SiteMapInitializer  The url-patterns are dynamically registered to have a sitemap.xml in each book.
  */
+// TODO: "Sitemap" instead of "SiteMap"
 public class SiteMapServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
