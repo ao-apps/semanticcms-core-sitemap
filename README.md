@@ -19,6 +19,12 @@
 
 Automatic [sitemaps](https://www.sitemaps.org/) for [SemanticCMS](https://github.com/ao-apps/semanticcms).
 
+## End of Life
+This alpha branch never reached a production state.  This development path was leading to a solution with a level
+of complexity that exceeds the complexity of the problems being solved.  We have designed a simpler alternative that
+better builds on the existing Jakarta EE platform.  We will keep these alpha branches for reference, but will no
+longer be updating or building these branches.
+
 ## Project Links
 * [Project Home](https://semanticcms.com/core/sitemap/)
 * [Changelog](https://semanticcms.com/core/sitemap/changelog)
