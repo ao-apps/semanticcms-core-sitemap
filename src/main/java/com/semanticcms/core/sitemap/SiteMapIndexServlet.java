@@ -177,7 +177,7 @@ public class SiteMapIndexServlet extends HttpServlet {
             }
           }
           logger.log(Level.INFO, "Found sitemap index at {0} containing {1} {2}",
-              new Object[]{url, count, count == 1 ? "sitemap" : "sitemaps"});
+              new Object[] {url, count, count == 1 ? "sitemap" : "sitemaps"});
         }
         JAR_SITEMAP_INDEXES.context(event.getServletContext()).set(jarSitemapIndexes);
       } catch (IOException e) {
@@ -283,7 +283,7 @@ public class SiteMapIndexServlet extends HttpServlet {
                         logger.log(
                             Level.FINE,
                             "called, subrequest={0}, book={1}",
-                            new Object[]{
+                            new Object[] {
                                 subrequest,
                                 book
                             }
@@ -340,7 +340,7 @@ public class SiteMapIndexServlet extends HttpServlet {
                           logger.log(
                               Level.FINE,
                               "called, subrequest={0}, book={1}",
-                              new Object[]{
+                              new Object[] {
                                   subrequest,
                                   book
                               }
