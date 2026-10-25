@@ -21,8 +21,6 @@
  * along with semanticcms-core-sitemap.  If not, see <https://www.gnu.org/licenses/>.
  */
 module com.semanticcms.core.sitemap {
-  exports com.semanticcms.core.sitemap;
-  provides jakarta.servlet.ServletContainerInitializer with com.semanticcms.core.sitemap.SiteMapInitializer;
   // Direct
   requires com.aoapps.concurrent; // <groupId>com.aoapps</groupId><artifactId>ao-concurrent</artifactId>
   requires com.aoapps.encoding; // <groupId>com.aoapps</groupId><artifactId>ao-encoding</artifactId>
@@ -39,4 +37,8 @@ module com.semanticcms.core.sitemap {
   requires static com.github.spotbugs.annotations; // <groupId>com.github.spotbugs</groupId><artifactId>spotbugs-annotations</artifactId>
   // Java SE
   requires java.logging;
+
+  exports com.semanticcms.core.sitemap;
+
+  provides jakarta.servlet.ServletContainerInitializer with com.semanticcms.core.sitemap.SiteMapInitializer;
 }
